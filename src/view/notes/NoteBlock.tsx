@@ -1,13 +1,12 @@
 interface NoteBlockProps {
     id: number;
     active: boolean;
+    onContentChange: (index:number, newContent: string) => void;
     onActiveSwitch: (index:number, newValue: boolean) => void;
     content: string;
 };
-export const NoteBlock = ({ id, active, content, onActiveSwitch }: NoteBlockProps) => {
-    const passActive = (value: boolean) => {
-        onActiveSwitch?.(id, value);
-    };
+export const NoteBlock = ({ id, active, content, onContentChange, onActiveSwitch }: NoteBlockProps) => {
+        
     return (
         active ?
             <input
@@ -15,10 +14,11 @@ export const NoteBlock = ({ id, active, content, onActiveSwitch }: NoteBlockProp
                 placeholder={'Add note here...'}
                 defaultValue={content}
                 autoFocus
-                onBlur={() => passActive(false)}
+                onBlur={() => onActiveSwitch?.(id, false)}
+                onChange={(e) => onContentChange?.(id, e.target.value)}
             />
             :
-            <h3 onClick={() => passActive(true)}>{content}</h3>
+            <h3 onClick={() => onActiveSwitch?.(id, true)}>{content}</h3>
     );
 }
 

@@ -15,7 +15,7 @@ type activeBlock =
 
 export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
     const [activeBlock, setActiveBlock] = useState<activeBlock>({ index: 0, active: false });
-    let blocks = content.split('\n');
+    const [blocks,setBlocks] = useState(content.split('\n'));
 
     const handleActiveSwitch = (index: number, value: boolean) => {
         if(isActive){
@@ -26,6 +26,11 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         setActiveBlock({ index, active: false });
         onNoteFocus?.();
     }
+    const handleContentChange = (index:number, block: string) => {
+        const newBlocks = [...blocks];
+        newBlocks[index] = block;
+        setBlocks(newBlocks);
+    }
     return (
         <div>
             <h3>{title}</h3>
@@ -35,6 +40,7 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                     id={index}
                     active={activeBlock.index === index ? activeBlock.active : false}
                     content={block}
+                    onContentChange={handleContentChange}
                     onActiveSwitch={handleActiveSwitch} 
                 />)}
         </div>
