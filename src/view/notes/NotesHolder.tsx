@@ -4,6 +4,7 @@ import Note from "./Note";
 export const NotesHolder = () => {
     // Temp notes
     const tempNotes = [
+        { title: "MD Header Note", content: "# H1\n## H2\n### H3" },
         { title: "Note 1", content: "Example Note 1 Block 1\n Block 2" },
         { title: "Note 2", content: "Example Note 2 Block 1\n Block 2" },
     ];

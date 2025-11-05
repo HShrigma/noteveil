@@ -6,9 +6,9 @@ interface MarkdownContentProps{
 export const MarkdownContent = ({id, content, onActiveSwitch }: MarkdownContentProps) => {
     const interpretMD = () => {
         if(content[0] === '#'){
-            if(content[1] === '#') return <h2>{content}</h2>
-            if(content[2] === '#') return <h3>{content}</h3>
-            return <h1>{content}</h1>
+            if(content[1] === '#') return <h2>{content.slice(3)}</h2>
+            if(content[2] === '#') return <h3>{content.slice(2)}</h3>
+            return <h1>{content.slice(1)}</h1>
         }
         return content;
     };
