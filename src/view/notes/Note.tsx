@@ -4,17 +4,27 @@ import NoteBlock from "./NoteBlock";
 interface NoteProps {
     title: string;
     content: string;
+    isActive: boolean;
+    onNoteFocus: () => void;
 };
+
 type activeBlock =
     {
         index: number, active: boolean
     };
-export const Note = ({ title, content }: NoteProps) => {
+
+export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
     const [activeBlock, setActiveBlock] = useState<activeBlock>({ index: 0, active: false });
     let blocks = content.split('\n');
+
     const handleActiveSwitch = (index: number, value: boolean) => {
-        console.log(`i:${index}, v:${value}`);
-        setActiveBlock({ index, active: value });
+        if(isActive){
+            setActiveBlock({ index, active: value });
+            return;
+        }
+
+        setActiveBlock({ index, active: false });
+        onNoteFocus?.();
     }
     return (
         <div>

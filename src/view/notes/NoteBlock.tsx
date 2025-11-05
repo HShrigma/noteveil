@@ -14,7 +14,8 @@ export const NoteBlock = ({ id, active, content, onActiveSwitch }: NoteBlockProp
                 name='noteBody'
                 placeholder={'Add note here...'}
                 defaultValue={content}
-                onBlur={() => passActive(true)}
+                autoFocus
+                onBlur={() => passActive(false)}
             />
             :
             <h3 onClick={() => passActive(true)}>{content}</h3>
