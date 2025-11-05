@@ -6,11 +6,11 @@ interface NoteProps {
 };
 
 export const Note = ({ title, content }: NoteProps) => {
-    
+    let blocks = content.split('\n');
     return (
         <div>
             <h3>{title}</h3>
-            <NoteBlock content={content}/>
+            {blocks.map(block => <NoteBlock content={block}/>)}
         </div>
     );
 }

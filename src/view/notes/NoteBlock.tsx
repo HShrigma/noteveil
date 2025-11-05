@@ -3,7 +3,7 @@ interface NoteBlockProps {
 };
 export const NoteBlock = ({ content }: NoteBlockProps) => {
 
-    return (<textarea
+    return (<input
         name='noteBody'
         placeholder={'Add note here...'}
         value={content}
