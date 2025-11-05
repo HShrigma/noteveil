@@ -1,6 +1,6 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import NoteBlock from "./NoteBlock";
-
+import { clampArray } from "../utils/mathUtils";
 interface NoteProps {
     title: string;
     content: string;
@@ -26,11 +26,24 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         setActiveBlock({ index, active: false });
         onNoteFocus?.();
     }
+    
     const handleContentChange = (index:number, block: string) => {
         const newBlocks = [...blocks];
         newBlocks[index] = block;
         setBlocks(newBlocks);
     }
+
+    const handleUserInput = (index:number, value: React.KeyboardEvent) => {
+        console.log(value.key);
+        switch(value.key){
+            case 'ArrowUp':
+                setActiveBlock({ index: clampArray(index - 1, blocks), active: true });
+                break;
+            case 'ArrowDown':
+                setActiveBlock({ index: clampArray(index + 1, blocks), active: true });
+                break;
+        }
+    };
     return (
         <div>
             <h3>{title}</h3>
@@ -42,6 +55,7 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                     content={block}
                     onContentChange={handleContentChange}
                     onActiveSwitch={handleActiveSwitch} 
+                    onKeyDown={handleUserInput}
                 />)}
         </div>
     );
