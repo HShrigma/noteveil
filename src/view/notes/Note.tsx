@@ -10,7 +10,7 @@ export const Note = ({ title, content }: NoteProps) => {
     return (
         <div>
             <h3>{title}</h3>
-            {blocks.map(block => <NoteBlock content={block}/>)}
+            {blocks.map((block, index) => <NoteBlock key={index} content={block} />)}
         </div>
     );
 }
