@@ -1,22 +1,23 @@
-import { useState } from "react";
-
 interface NoteBlockProps {
-    key: number;
+    id: number;
+    active: boolean;
+    onActiveSwitch: (index:number, newValue: boolean) => void;
     content: string;
 };
-export const NoteBlock = ({ content }: NoteBlockProps) => {
-    const [active, setActive] = useState(false);
-
+export const NoteBlock = ({ id, active, content, onActiveSwitch }: NoteBlockProps) => {
+    const passActive = (value: boolean) => {
+        onActiveSwitch?.(id, value);
+    };
     return (
-        active ? 
+        active ?
             <input
-            name='noteBody'
-            placeholder={'Add note here...'}
-            value={content}
-            onBlur={() => setActive(false)}
-            /> 
-        : 
-            <h3 onClick={() => setActive(true)}>{content}</h3>
+                name='noteBody'
+                placeholder={'Add note here...'}
+                defaultValue={content}
+                onBlur={() => passActive(true)}
+            />
+            :
+            <h3 onClick={() => passActive(true)}>{content}</h3>
     );
 }
 
