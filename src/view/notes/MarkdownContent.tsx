@@ -4,15 +4,14 @@ interface MarkdownContentProps {
     onActiveSwitch: (index: number, newValue: boolean) => void;
 };
 export const MarkdownContent = ({ id, content, onActiveSwitch }: MarkdownContentProps) => {
-
-    const renderStyled = (input:string = content) => {
+    const renderStyled = (input: string = content) => {
         const parts: React.ReactNode[] = [];
         let i = 0;
         let elCount = 0;
+
         while (i < input.length) {
             // Look for formatting markers
             if (input.startsWith('***', i)) {
-                // Found bold-italic start
                 const end = input.indexOf('***', i + 3);
                 if (end !== -1) {
                     const textInside = input.substring(i + 3, end);
@@ -22,17 +21,15 @@ export const MarkdownContent = ({ id, content, onActiveSwitch }: MarkdownContent
                 }
             }
             else if (input.startsWith('**', i)) {
-                // Found bold start
                 const end = input.indexOf('**', i + 2);
                 if (end !== -1) {
                     const textInside = input.substring(i + 2, end);
-                    parts.push(<strong key={elCount++} >{textInside}</strong>);
+                    parts.push(<strong key={elCount++}>{textInside}</strong>);
                     i = end + 2;
                     continue;
                 }
             }
             else if (input.startsWith('*', i)) {
-                // Found italic start  
                 const end = input.indexOf('*', i + 1);
                 if (end !== -1) {
                     const textInside = input.substring(i + 1, end);
@@ -42,12 +39,13 @@ export const MarkdownContent = ({ id, content, onActiveSwitch }: MarkdownContent
                 }
             }
 
-            // No formatting found, collect plain text
-            let plainTextEnd = i;
+            // No formatting found - collect plain text until next potential marker
+            let plainTextEnd = i + 1;
             while (plainTextEnd < input.length &&
                 !input.startsWith('*', plainTextEnd)) {
                 plainTextEnd++;
             }
+
             const plainText = input.substring(i, plainTextEnd);
             if (plainText) parts.push(plainText);
             i = plainTextEnd;
