@@ -15,10 +15,10 @@ type activeBlock =
 
 export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
     const [activeBlock, setActiveBlock] = useState<activeBlock>({ index: 0, active: false });
-    const [blocks,setBlocks] = useState(content.split('\n'));
+    const [blocks, setBlocks] = useState(content.split('\n'));
 
     const handleActiveSwitch = (index: number, value: boolean) => {
-        if(isActive){
+        if (isActive) {
             setActiveBlock({ index, active: value });
             return;
         }
@@ -26,23 +26,50 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         setActiveBlock({ index, active: false });
         onNoteFocus?.();
     }
-    
-    const handleContentChange = (index:number, block: string) => {
+
+    const handleContentChange = (index: number, block: string) => {
         const newBlocks = [...blocks];
         newBlocks[index] = block;
         setBlocks(newBlocks);
-    }
+    };
 
-    const handleUserInput = (index:number, value: React.KeyboardEvent) => {
+    const insertNewBlock = (index: number) => {
+        const newBlocks = [...blocks];
+        if (index >= blocks.length) {
+            newBlocks.push('');
+        }
+        else {
+            newBlocks.splice(index, 0, '');
+        }
+        setBlocks(newBlocks);
+    };
+    const removeBlock = (index:number) => {
+        const newBlocks = [...blocks];
+        newBlocks.splice(index,1);
+        setBlocks(newBlocks);
+    }
+    const handleUserInput = (index: number, value: React.KeyboardEvent) => {
         console.log(value.key);
-        switch(value.key){
+        switch (value.key) {
             case 'ArrowUp':
                 setActiveBlock({ index: clampArray(index - 1, blocks), active: true });
                 break;
             case 'ArrowDown':
                 setActiveBlock({ index: clampArray(index + 1, blocks), active: true });
                 break;
-        }
+            case 'Enter':
+                value.preventDefault();
+                insertNewBlock(index + 1);
+                setActiveBlock({ index: index + 1, active: true });
+                break;
+            case 'Backspace':
+                if(blocks[index] === '' && blocks.length > 1){
+                    removeBlock(index);
+                    setActiveBlock({ index: index - 1, active: true });
+                }
+            break;
+            default: break;
+        };
     };
     return (
         <div>
@@ -54,7 +81,7 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                     active={activeBlock.index === index ? activeBlock.active : false}
                     content={block}
                     onContentChange={handleContentChange}
-                    onActiveSwitch={handleActiveSwitch} 
+                    onActiveSwitch={handleActiveSwitch}
                     onKeyDown={handleUserInput}
                 />)}
         </div>
