@@ -1,3 +1,5 @@
+import MarkdownContent from "./MarkdownContent";
+
 interface NoteBlockProps {
     id: number;
     active: boolean;
@@ -19,10 +21,12 @@ export const NoteBlock = ({ id, active, content, onContentChange, onActiveSwitch
                 onChange={(e) => onContentChange?.(id, e.target.value)}
                 onKeyDown={(e) => onKeyDown?.(id, e)}
             />
-            : content === '' ?
-                <h3 onClick={() => onActiveSwitch?.(id, true)}> <br></br> </h3>
-                :
-                <h3 onClick={() => onActiveSwitch?.(id, true)}>{content}</h3>
+            : <MarkdownContent 
+                key={id}
+                id={id}
+                content={content}
+                onActiveSwitch={onActiveSwitch}
+            />
     );
 }
 

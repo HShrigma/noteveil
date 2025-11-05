@@ -49,7 +49,6 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         setBlocks(newBlocks);
     }
     const handleUserInput = (index: number, value: React.KeyboardEvent) => {
-        console.log(value.key);
         switch (value.key) {
             case 'ArrowUp':
                 setActiveBlock({ index: clampArray(index - 1, blocks), active: true });
@@ -63,7 +62,7 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                 setActiveBlock({ index: index + 1, active: true });
                 break;
             case 'Backspace':
-                if(blocks[index] === '' && blocks.length > 1){
+                if(blocks[index] === '' && blocks.length > 1 && index !== 0){
                     removeBlock(index);
                     setActiveBlock({ index: index - 1, active: true });
                 }
