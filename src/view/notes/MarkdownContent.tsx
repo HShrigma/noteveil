@@ -4,11 +4,25 @@ interface MarkdownContentProps{
     onActiveSwitch: (index: number, newValue: boolean) => void;
 };
 export const MarkdownContent = ({id, content, onActiveSwitch }: MarkdownContentProps) => {
+    const interpretMD = () => {
+        if(content[0] === '#'){
+            if(content[1] === '#') return <h2>{content}</h2>
+            if(content[2] === '#') return <h3>{content}</h3>
+            return <h1>{content}</h1>
+        }
+        return content;
+    };
+
+    const renderContent = () => {
+        switch (content) {
+            case '':
+                return <br/>
+            default:
+                return interpretMD();
+        }
+    };
     return (
-             content === '' ?
-                <h3 onClick={() => onActiveSwitch?.(id, true)}> <br></br> </h3>
-                :
-            <h3 onClick={() => onActiveSwitch?.(id, true)}>{content}</h3>
+            <div onClick={() => onActiveSwitch?.(id, true)}>{renderContent()}</div>
     );
 };
 export default MarkdownContent;
