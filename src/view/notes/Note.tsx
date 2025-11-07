@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import NoteBlock from "./NoteBlock";
 import { clampArray } from "../utils/mathUtils";
+import { NoteBlockSeparator } from "../utils/registries";
+
 interface NoteProps {
     title: string;
     content: string;
@@ -15,7 +17,7 @@ type activeBlock =
 
 export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
     const [activeBlock, setActiveBlock] = useState<activeBlock>({ index: 0, active: false });
-    const [blocks, setBlocks] = useState(content.split('\n'));
+    const [blocks, setBlocks] = useState(content.split(NoteBlockSeparator));
 
     const handleActiveSwitch = (index: number, value: boolean) => {
         if (isActive) {
@@ -43,9 +45,9 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         }
         setBlocks(newBlocks);
     };
-    const removeBlock = (index:number) => {
+    const removeBlock = (index: number) => {
         const newBlocks = [...blocks];
-        newBlocks.splice(index,1);
+        newBlocks.splice(index, 1);
         setBlocks(newBlocks);
     }
     const handleUserInput = (index: number, value: React.KeyboardEvent) => {
@@ -62,11 +64,22 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                 setActiveBlock({ index: index + 1, active: true });
                 break;
             case 'Backspace':
-                if(blocks[index] === '' && blocks.length > 1 && index !== 0){
+                if (blocks[index] === '' && blocks.length > 1 && index !== 0) {
                     removeBlock(index);
                     setActiveBlock({ index: index - 1, active: true });
                 }
-            break;
+                break;
+            case 'Tab':
+                value.preventDefault();
+                const input = value.currentTarget as HTMLInputElement;
+                const cursorPos = input.selectionStart ?? 0;
+                const newContent = blocks[index].substring(0, cursorPos) + '  ' + blocks[index].substring(cursorPos);
+                handleContentChange(index, newContent);
+                setTimeout(() => {
+                    input.selectionStart = cursorPos + 2;
+                    input.selectionEnd = cursorPos + 2;
+                }, 0);
+                break;
             default: break;
         };
     };

@@ -12,7 +12,7 @@ export const NoteBlock = ({ id, active, content, onContentChange, onActiveSwitch
 
     return (
         active ?
-            <input
+            <textarea
                 name='noteBody'
                 placeholder={'Add note here...'}
                 defaultValue={content}

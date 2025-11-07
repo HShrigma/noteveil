@@ -1,13 +1,14 @@
 import { useState } from "react";
 import Note from "./Note";
+import { NoteBlockSeparator } from "../utils/registries";
 
 export const NotesHolder = () => {
     // Temp notes
     const tempNotes = [
-        { title: "MD Header Note", content: "# H1\n## H2\n### H3" },
-        { title: "MD Stylized", content: "none\n*italics*\n**bold**\n***bolditalics***" },
-        { title: "MD Specials", content: "### ---\n---\n### *empty*\n" },
-        { title: "MD ulist Note", content: "-   l1\n    -l2\n   -l3" },
+        { title: "MD Header Note", content: `# H1${NoteBlockSeparator}## H2${NoteBlockSeparator}### H3` },
+        { title: "MD Stylized", content: `none${NoteBlockSeparator}*italics*${NoteBlockSeparator}**bold**${NoteBlockSeparator}***bolditalics***` },
+        { title: "MD Specials", content: `### ---${NoteBlockSeparator}---${NoteBlockSeparator}### *empty*${NoteBlockSeparator}` },
+        { title: "MD ulist Note", content: `-   l1${NoteBlockSeparator}    -l2${NoteBlockSeparator}   -l3` },
     ];
     const [notes, setNotes] = useState(tempNotes);
 
