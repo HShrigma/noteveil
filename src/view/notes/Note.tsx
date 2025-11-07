@@ -50,6 +50,10 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
         newBlocks.splice(index, 1);
         setBlocks(newBlocks);
     }
+
+    const hasParagraph = (item:string) => {
+         return item.indexOf(NoteBlockSeparator) !== -1;
+    }
     const handleUserInput = (index: number, value: React.KeyboardEvent) => {
         switch (value.key) {
             case 'ArrowUp':
@@ -59,9 +63,10 @@ export const Note = ({ title, content, isActive, onNoteFocus }: NoteProps) => {
                 setActiveBlock({ index: clampArray(index + 1, blocks), active: true });
                 break;
             case 'Enter':
-                value.preventDefault();
-                insertNewBlock(index + 1);
-                setActiveBlock({ index: index + 1, active: true });
+                if(hasParagraph(blocks[index])){
+                    insertNewBlock(index + 1);
+                    setActiveBlock({ index: index + 1, active: true });
+                }
                 break;
             case 'Backspace':
                 if (blocks[index] === '' && blocks.length > 1 && index !== 0) {
