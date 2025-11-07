@@ -5,7 +5,7 @@ export const NotesHolder = () => {
     // Temp notes
     const tempNotes = [
         { title: "MD Header Note", content: "# H1\n## H2\n### H3" },
-        { title: "MD Specials", content: "none\n*italics*\n**bold**\n***bolditalics***" },
+        { title: "MD Stylized", content: "none\n*italics*\n**bold**\n***bolditalics***" },
         { title: "MD Specials", content: "### ---\n---\n### *empty*\n" },
         { title: "MD ulist Note", content: "-   l1\n    -l2\n   -l3" },
     ];
