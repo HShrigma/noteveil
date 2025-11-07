@@ -19,7 +19,6 @@ export const Note = ({ id,title, content, isActive, onNoteFocus,onContentChange 
                 name='noteBody'
                 placeholder={'Add note here...'}
                 value={content}
-                autoFocus
                 onChange={(e) => onContentChange?.(id, e.target.value)}
             />
             : 

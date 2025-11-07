@@ -1,25 +1,31 @@
 import { useState } from 'react';
 import Note from './Note';
 
+type NoteActivity = {
+    index: number,
+    active: boolean
+};
+
 export const NotesHolder = () => {
     // Temp notes
     const tempNotes = [
         { title: 'MD Header Note', content: '# H1\n## H2\n### H3' },
         { title: 'MD Stylized', content: 'none\n*italics*\n**bold**\n***bolditalics***' },
         { title: 'MD Specials', content: '### ---\n---\n### *empty*\n' },
-        { title: 'MD ulist Note', content: '-   l1\n    -l2\n   -l3' },
+        { title: 'MD ulist Note', content: '- l1 \n  - l2'},
     ];
     const [notes, setNotes] = useState(tempNotes);
 
-    const [activeNoteIndex,setActiveNoteIndex] = useState(0);
+    const [ActiveNote, setActiveNote] = useState<NoteActivity>({ index: 0, active: false });
 
-    const checkActiveNote = (index: number) => { 
-        setActiveNoteIndex(index);
+    const updateActiveNote = (activity: NoteActivity) => { 
+        setActiveNote(activity);
     };
     
     const onContentChangeHanlder = ( index: number, content:string) => {
         const newNotes = [...notes];
         newNotes[index].content = content;
+        setNotes(newNotes);
     };
     
     return (
@@ -29,8 +35,8 @@ export const NotesHolder = () => {
                 id={index}
                 title={note.title}
                 content={note.content} 
-                isActive={index === activeNoteIndex}
-                onNoteFocus={() => checkActiveNote(index)}
+                isActive={index === ActiveNote.index ? ActiveNote.active : false}
+                onNoteFocus={() => updateActiveNote({index,active:true})}
                 onContentChange={onContentChangeHanlder}
             />)}
         </>
