@@ -10,23 +10,25 @@ interface NoteProps {
     isActive: boolean;
     focusTarget: 'title' | 'content' | null;
     onNoteFocus: (value: NoteActivity) => void;
+    onNoteDelete: (index: number) => void;
     onContentChange: (id: number, content: string) => void;
     onTitleChange: (id: number, title: string) => void;
     onTitleSubmit: (id: number) => void;
     clearFocusTarget: () => void;
 };
 
-export const Note = ({ 
-    id, 
-    title, 
-    content, 
-    isActive, 
+export const Note = ({
+    id,
+    title,
+    content,
+    isActive,
     focusTarget,
-    onNoteFocus, 
-    onContentChange, 
-    onTitleChange, 
+    onNoteFocus,
+    onNoteDelete,
+    onContentChange,
+    onTitleChange,
     onTitleSubmit,
-    clearFocusTarget 
+    clearFocusTarget
 }: NoteProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
@@ -37,10 +39,10 @@ export const Note = ({
         }
     }, [focusTarget, isActive, clearFocusTarget]);
 
-    const emitFocusSignal = (isActive: boolean) => { 
-        onNoteFocus?.({ index: id, active: isActive }); 
+    const emitFocusSignal = (isActive: boolean) => {
+        onNoteFocus?.({ index: id, active: isActive });
     };
-    
+
     const signalActive = () => { emitFocusSignal(true); };
     const signalInactive = () => { emitFocusSignal(false); };
 
@@ -53,8 +55,23 @@ export const Note = ({
                 input.preventDefault();
                 if (input.shiftKey) {
                     onNoteFocus?.({ index: id - 1, active: true });
-                } else {
-                    onNoteFocus?.({ index: id + 1, active: true });
+                }
+                else {
+                    const target = input.currentTarget as HTMLTextAreaElement;
+                    const start = target.selectionStart;
+                    const end = target.selectionEnd;
+
+                    // Insert two spaces at cursor position
+                    const newValue =
+                        content.substring(0, start) + "  " + content.substring(end);
+
+                    // Update the content
+                    onContentChange?.(id, newValue);
+
+                    // Move cursor after inserted spaces (handled in next tick)
+                    requestAnimationFrame(() => {
+                        target.selectionStart = target.selectionEnd = start + 2;
+                    });
                 }
                 break;
             default:
@@ -64,9 +81,9 @@ export const Note = ({
 
     return (
         <div>
-            <EditableTitle 
-                id={id} 
-                title={title} 
+            <EditableTitle
+                id={id}
+                title={title}
                 onEdit={onTitleChange}
                 onSubmit={onTitleSubmit}
                 autoFocus={focusTarget === 'title'}
@@ -90,6 +107,7 @@ export const Note = ({
                     <button onClick={signalActive}>Edit</button>
                 </div>
             }
+            <button onClick={() => onNoteDelete?.(id)}>Delete</button>
         </div>
     );
 }

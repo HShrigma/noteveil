@@ -37,6 +37,16 @@ export const NotesHolder = () => {
         setActiveNote({ index, active: true });
     };
 
+    const onNoteDelete = (index: number) => {
+        if (!notes[index]) return;
+        
+        const newNotes = [...notes];
+        newNotes.splice(index,1);
+        
+        setNotes(newNotes);
+        setActiveNote({index:0,active:false});
+        setFocusTarget(null);
+    }
     const onAddNote = () => {
         if(notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
@@ -58,6 +68,7 @@ export const NotesHolder = () => {
                     isActive={index === ActiveNote.index ? ActiveNote.active : false}
                     focusTarget={index === ActiveNote.index ? focusTarget : null}
                     onNoteFocus={updateActiveNote}
+                    onNoteDelete={onNoteDelete}
                     onContentChange={onContentChangeHandler}
                     onTitleChange={onTitleChangeHandler}
                     onTitleSubmit={onTitleSubmit}
