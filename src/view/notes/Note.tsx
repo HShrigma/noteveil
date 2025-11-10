@@ -10,7 +10,9 @@ interface NoteProps {
 };
 
 export const Note = ({ id, title, content, isActive, onNoteFocus, onContentChange }: NoteProps) => {
-    const signalInactive = () => { onNoteFocus?.({ index: id, active: false }); };
+    const emitFocusSignal = (isActive: boolean) => { onNoteFocus?.({ index: id, active: isActive }); }
+    const signalActive = () => { emitFocusSignal(true); };
+    const signalInactive = () => { emitFocusSignal(false); };
 
     const onKeyDownHandler = (input: React.KeyboardEvent) => {
         switch (input.key) {
@@ -61,8 +63,9 @@ export const Note = ({ id, title, content, isActive, onNoteFocus, onContentChang
                     <button onClick={signalInactive}>Submit</button>
                 </div>
                 :
-                <div onClick={() => onNoteFocus?.({ index: id, active: true })}>
+                <div onClick={signalActive}>
                     <Markdown>{content}</Markdown>
+                    <button onClick={signalActive}>Edit</button>
                 </div>
 
             }
