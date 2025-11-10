@@ -15,8 +15,8 @@ export const NotesHolder = () => {
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ index: 0, active: false });
 
     const updateActiveNote = (activity: NoteActivity) => { 
-        activity.index %= notes.length;
-        setActiveNote(activity);
+            activity.index %= notes.length;
+            setActiveNote(activity);
     };
 
     const onTitleChangeHanlder = (index: number, title: string) => {
@@ -30,9 +30,11 @@ export const NotesHolder = () => {
         setNotes(newNotes);
     };
     const onAddNote = () => {
+        if(notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
-        newNotes.unshift({ title: 'new', content : ''})
+        newNotes.unshift({ title: '', content : ''})
         setNotes(newNotes);
+        setActiveNote({ index: 0, active: true });
     } 
     return (
         <div>
