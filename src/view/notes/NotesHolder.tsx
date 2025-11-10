@@ -27,9 +27,14 @@ export const NotesHolder = () => {
         newNotes[index].content = content;
         setNotes(newNotes);
     };
-    
+    const onAddNote = () => {
+        const newNotes = [...notes];
+        newNotes.unshift({ title: 'new', content : ''})
+        setNotes(newNotes);
+    } 
     return (
-        <>
+        <div>
+            <button onClick={ onAddNote}>Add Note</button>
             {notes.map((note, index) => <Note 
                 key={index}
                 id={index}
@@ -39,7 +44,7 @@ export const NotesHolder = () => {
                 onNoteFocus={() => updateActiveNote({index,active:true})}
                 onContentChange={onContentChangeHanlder}
             />)}
-        </>
+        </div>
     );
 }
 
