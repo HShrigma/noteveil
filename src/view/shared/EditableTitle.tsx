@@ -1,14 +1,40 @@
-import {  useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
-interface EditableTitleProps{
+interface EditableTitleProps {
     id: number;
-    title:string;
-    onEdit: (index:number, newValue:string) => void;
+    title: string;
+    onEdit: (index: number, newValue: string) => void;
+    onSubmit: (index: number) => void;
+    autoFocus?: boolean;
 };
-export const EditableTitle = ({ id, title, onEdit }: EditableTitleProps) => {
-    const [active,setActive] = useState(title === '');
 
-    console.log(`active ${id}: ${title === ''}`);
+export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
+    const [active, setActive] = useState(title === '');
+    const inputRef = useRef<HTMLInputElement>(null);
+
+    useEffect(() => {
+        if (title === '') {
+            setActive(true);
+        }
+    }, [title, id]);
+
+    useEffect(() => {
+        if (active && inputRef.current && autoFocus) {
+            inputRef.current.focus();
+        }
+    }, [active, autoFocus]);
+
+    const handleSubmit = () => {
+        setActive(false);
+        onSubmit?.(id);
+    };
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleSubmit();
+        }
+    };
+
     let clickCount = 0;
     const clickTimeout = 400;
 
@@ -18,7 +44,7 @@ export const EditableTitle = ({ id, title, onEdit }: EditableTitleProps) => {
             setActive(true);
             clickCount = 0;
         }
-        setTimeout(() => clickCount = 0,clickTimeout)
+        setTimeout(() => clickCount = 0, clickTimeout);
     };
 
     return(
@@ -26,16 +52,13 @@ export const EditableTitle = ({ id, title, onEdit }: EditableTitleProps) => {
            { active ? 
                 <>
                     <input
-                        onChange={(e) => onEdit?.(id,e.target.value)}
+                        ref={inputRef}
+                        onChange={(e) => onEdit?.(id, e.target.value)}
+                        onKeyDown={handleKeyDown}
                         value={title}
-                        autoFocus
                         placeholder="Enter Title..." 
                     />
-                    <button 
-                        onClick={() => {
-                            setActive(false);
-                            onEdit?.(id,title);
-                        }}>Submit</button>
+                    <button onClick={handleSubmit}>Submit</button>
                 </>
             :
                 <>
