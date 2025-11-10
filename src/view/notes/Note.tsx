@@ -1,3 +1,4 @@
+import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
 import type { NoteActivity } from "../utils/registries";
 interface NoteProps {
@@ -7,13 +8,13 @@ interface NoteProps {
     isActive: boolean;
     onNoteFocus: (value: NoteActivity) => void;
     onContentChange: (id: number, content: string) => void;
+    onTitleChange: (id: number, title: string) => void;
 };
 
-export const Note = ({ id, title, content, isActive, onNoteFocus, onContentChange }: NoteProps) => {
+export const Note = ({ id, title, content, isActive, onNoteFocus, onContentChange, onTitleChange }: NoteProps) => {
     const emitFocusSignal = (isActive: boolean) => { onNoteFocus?.({ index: id, active: isActive }); }
     const signalActive = () => { emitFocusSignal(true); };
     const signalInactive = () => { emitFocusSignal(false); };
-
     const onKeyDownHandler = (input: React.KeyboardEvent) => {
         switch (input.key) {
             case "Enter":
@@ -48,7 +49,7 @@ export const Note = ({ id, title, content, isActive, onNoteFocus, onContentChang
     }
     return (
         <div>
-            <h3>{title}</h3>
+            <EditableTitle id={id} title={title} onEdit={onTitleChange} />
             {isActive ?
                 <div>
                     <textarea

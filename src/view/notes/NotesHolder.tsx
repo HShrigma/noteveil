@@ -18,7 +18,12 @@ export const NotesHolder = () => {
         activity.index %= notes.length;
         setActiveNote(activity);
     };
-    
+
+    const onTitleChangeHanlder = (index: number, title: string) => {
+        const newNotes = [...notes];
+        newNotes[index].title = title;
+        setNotes(newNotes);
+    };
     const onContentChangeHanlder = ( index: number, content:string) => {
         const newNotes = [...notes];
         newNotes[index].content = content;
@@ -40,6 +45,7 @@ export const NotesHolder = () => {
                 isActive={index === ActiveNote.index ? ActiveNote.active : false}
                 onNoteFocus={updateActiveNote}
                 onContentChange={onContentChangeHanlder}
+                onTitleChange={onTitleChangeHanlder}
             />)}
         </div>
     );
