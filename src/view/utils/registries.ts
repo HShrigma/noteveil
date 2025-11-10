@@ -3,4 +3,9 @@ export const MAIN_STATES = {
     NOTES_DISPLAY: 'notesDisplay',
 } as const;
 
+export type NoteActivity = {
+    index: number,
+    active: boolean
+};
+
 export type MainState = typeof MAIN_STATES[keyof typeof MAIN_STATES];

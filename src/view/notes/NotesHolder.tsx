@@ -1,10 +1,6 @@
 import { useState } from 'react';
 import Note from './Note';
-
-type NoteActivity = {
-    index: number,
-    active: boolean
-};
+import type { NoteActivity } from '../utils/registries';
 
 export const NotesHolder = () => {
     // Temp notes
@@ -19,6 +15,7 @@ export const NotesHolder = () => {
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ index: 0, active: false });
 
     const updateActiveNote = (activity: NoteActivity) => { 
+        activity.index %= notes.length;
         setActiveNote(activity);
     };
     
@@ -41,7 +38,7 @@ export const NotesHolder = () => {
                 title={note.title}
                 content={note.content} 
                 isActive={index === ActiveNote.index ? ActiveNote.active : false}
-                onNoteFocus={() => updateActiveNote({index,active:true})}
+                onNoteFocus={updateActiveNote}
                 onContentChange={onContentChangeHanlder}
             />)}
         </div>
