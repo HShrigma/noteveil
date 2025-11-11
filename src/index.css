@@ -33,3 +33,6 @@ body {
   background-color: var(--tokyo-night-subtle);
 }
 
+@layer utilities {
+  .font-firabase { font-family: 'Fira Code', monospace; }
+}

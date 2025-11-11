@@ -19,8 +19,8 @@ export const MainScreen = ({ state }: MainSreenProps) => {
         }
     }
     return (
-        <>
+        <div className="p-6 bg-[#16161e] min-h-[calc(100vh-5rem)] overflow-auto">
             {getScreen()}
-        </>);
+        </div>);
 };
 export default MainScreen;

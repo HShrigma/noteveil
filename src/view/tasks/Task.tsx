@@ -1,10 +1,10 @@
-// This is an individual task 
+import { Trash2, Check, RotateCw } from "lucide-react";
 
-export interface TaskItem{
+export interface TaskItem {
     id: number;
     label: string;
     done: boolean;
-};
+}
 
 interface TaskProps {
     task: TaskItem;
@@ -12,33 +12,59 @@ interface TaskProps {
     onDelete: (id: number) => void;
 }
 
-// Component
 export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
-
-    // Methods
     const handleDoneClick = () => {
         onStatusChange?.(task.id, task.label, !task.done);
-    }
+    };
 
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onStatusChange?.(task.id, event.target.value, task.done);
-    }
+    };
 
     const handleDeleteClick = () => {
         onDelete?.(task.id);
-    }
-    // Final Component
+    };
+
     return (
-        <div>
-            <button onClick={handleDeleteClick}>Delete</button>
-            <input 
-            placeholder="Add Task..." 
-            onChange={handleInputChange}
-            value={task.label} 
+        <div
+            className={`flex items-center gap-3 px-4 py-2 rounded-md bg-[#1f2335] border border-[#2a2f47] 
+                  shadow-sm transition-all duration-150
+                  ${task.done ? "opacity-70" : "opacity-100 hover:shadow-[0_0_8px_#9d7cd8]"}`}
+        >
+            {/* Delete Button */}
+            <button
+                onClick={handleDeleteClick}
+                className="p-1 rounded-sm border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150"
+            >
+                <Trash2 size={16} />
+            </button>
+
+            {/* Label Input */}
+            <input
+                placeholder="Task..."
+                onChange={handleInputChange}
+                value={task.label}
+                className={`flex-1 bg-transparent border-b-2 outline-none font-mono font-semibold text-base tracking-wide px-1
+                    transition-all duration-150
+                    ${task.done
+                        ? "border-[#565f89] text-[#565f89] line-through focus:font-normal focus:font-firabase"
+                        : "border-[#9d7cd8] text-[#c0caf5] focus:font-normal focus:font-firabase"
+                    }`}
             />
-            <button onClick={handleDoneClick}> {task.done ? "Done" : "ToDo"}</button>
+
+            {/* Status Button */}
+            <button
+                onClick={handleDoneClick}
+                className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150
+    ${task.done
+                        ? "border-[#9ece6a] bg-transparent text-[#f6faff] hover:bg-[#9ece6a] hover:text-[#1a1b26]"
+                        : "border-[#8fbf5a] bg-[#8fbf5a] text-[#f6faff] hover:bg-[#a6d372]"}`}
+            >
+                {task.done ? <RotateCw size={16} strokeWidth={3}/> : <Check size={16} strokeWidth={4} />}
+            </button>
         </div>
     );
 };
 
 export default Task;
+
