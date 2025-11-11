@@ -80,7 +80,7 @@ export const Note = ({
     };
 
     return (
-        <div className="border border-gray-200 rounded-lg p-4 mb-4 shadow-sm bg-white">
+        <div>
             <EditableTitle
                 id={id}
                 title={title}
@@ -91,7 +91,6 @@ export const Note = ({
             {isActive ?
                 <div>
                     <textarea
-                        className="w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         ref={textareaRef}
                         name='noteBody'
                         placeholder={'Add note here...'}

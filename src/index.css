@@ -1,1 +1,34 @@
 @import "tailwindcss";
+
+:root {
+  /* Ensure dark color scheme is used for forms, scrollbars, etc. */
+  color-scheme: dark;
+
+  --tokyo-night-bg: #1a1b26;      /* Main background, dark gray/purple */
+  --tokyo-night-subtle: #16161e;  /* Slightly darker for cards, panels */
+  --tokyo-night-accent: #7aa2f7;  /* Blue accent for buttons, links */
+  --tokyo-night-purple: #9d7cd8;  /* Purple accent */
+  --tokyo-night-foreground: #c0caf5; /* Light gray for text */
+}
+
+body {
+  background-color: var(--tokyo-night-bg);
+  color: var(--tokyo-night-foreground);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif; /* Modern, clean font */
+}
+
+* {
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #7aa2f7;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-track {
+  background-color: #16161e;
+}

@@ -1,5 +1,4 @@
 import { useState } from 'react'
-import './style/App.css'
 import DefaultHeader from './view/Header'
 import MainScreen from './view/MainScreen'
 import { MAIN_STATES, type MainState } from './view/utils/registries'
