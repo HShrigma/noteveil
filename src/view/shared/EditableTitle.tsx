@@ -1,3 +1,4 @@
+import { Check, Edit } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 
 interface EditableTitleProps {
@@ -6,16 +7,14 @@ interface EditableTitleProps {
     onEdit: (index: number, newValue: string) => void;
     onSubmit: (index: number) => void;
     autoFocus?: boolean;
-};
+}
 
 export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
     const [active, setActive] = useState(title === '');
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (title === '') {
-            setActive(true);
-        }
+        if (title === '') setActive(true);
     }, [title, id]);
 
     useEffect(() => {
@@ -30,9 +29,7 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
     };
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') {
-            handleSubmit();
-        }
+        if (e.key === 'Enter') handleSubmit();
     };
 
     let clickCount = 0;
@@ -40,33 +37,50 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
 
     const checkDoubleClick = () => {
         clickCount++;
-        if(clickCount >= 2) {
+        if (clickCount >= 2) {
             setActive(true);
             clickCount = 0;
         }
         setTimeout(() => clickCount = 0, clickTimeout);
     };
 
-    return(
-        <>
-           { active ? 
+    return (
+        <div className="flex items-center gap-2">
+            {active ? (
                 <>
                     <input
                         ref={inputRef}
                         onChange={(e) => onEdit?.(id, e.target.value)}
                         onKeyDown={handleKeyDown}
                         value={title}
-                        placeholder="Enter Title..." 
+                        placeholder="Enter Title..."
+                        className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150"
                     />
-                    <button onClick={handleSubmit}>Submit</button>
+                    <button
+                        onClick={handleSubmit}
+                        className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+                    >
+                        <Check size={18} strokeWidth={3} />
+                    </button>
                 </>
-            :
+            ) : (
                 <>
-                    <h3 onClick={checkDoubleClick}>{title}</h3>
-                    <button onClick={() => setActive(true)}>Edit</button>
+                    <h3
+                        onClick={checkDoubleClick}
+                        className="flex-1 text-purple-400 font-bold tracking-wide cursor-pointer"
+                    >
+                        {title}
+                    </h3>
+                    <button
+                        className="p-2 rounded-sm bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+                        onClick={() => setActive(true)}
+                    >
+                        <Edit size={18} strokeWidth={3} />
+                    </button>
                 </>
-            }
-        </>
+            )}
+        </div>
     );
 };
+
 export default EditableTitle;

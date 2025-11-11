@@ -36,3 +36,138 @@ body {
 @layer utilities {
   .font-firabase { font-family: 'Fira Code', monospace; }
 }
+
+/* Markdown container */
+.markdown-body {
+  color: #c0caf5; /* foreground */
+  font-family: 'JetBrains Mono', monospace;
+  line-height: 1.6;
+  word-break: break-word;
+  white-space: pre-wrap; /* preserve line breaks */
+}
+
+/* Headings */
+.markdown-body h1 {
+  color: #9d7cd8;
+  font-weight: bold;
+  font-size: 1.75rem;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+.markdown-body h2 {
+  color: #7aa2f7;
+  font-weight: bold;
+  font-size: 1.5rem;
+  margin-top: 0.9rem;
+  margin-bottom: 0.45rem;
+}
+.markdown-body h3 {
+  color: #bb9af7;
+  font-weight: bold;
+  font-size: 1.25rem;
+  margin-top: 0.8rem;
+  margin-bottom: 0.4rem;
+}
+.markdown-body h4,
+.markdown-body h5,
+.markdown-body h6 {
+  color: #c0caf5;
+  font-weight: bold;
+  margin-top: 0.6rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Paragraphs and lists */
+.markdown-body p,
+.markdown-body li {
+  margin-bottom: 0.5rem;
+}
+
+/* Bold / Italics */
+.markdown-body strong {
+  color: #f7768e;
+}
+.markdown-body em {
+  color: #7aa2f7;
+  font-style: italic;
+}
+.markdown-body strong em {
+  color: #bb9af7;
+  font-weight: bold;
+  font-style: italic;
+}
+
+/* Lists */
+.markdown-body ul {
+  list-style-type: disc;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.markdown-body ol {
+  list-style-type: decimal;
+  padding-left: 1.5rem;
+  margin-bottom: 0.5rem;
+}
+.markdown-body li {
+  padding-left: 0.25rem; /* indent for terminal feel */
+}
+
+/* Horizontal rules */
+.markdown-body hr {
+  border-color: #2a2f47;
+  border-style: solid;
+  border-width: 1px 0 0 0;
+  margin: 1rem 0;
+}
+
+/* Inline code */
+.markdown-body code {
+  background-color: #16161e;
+  color: #c0caf5;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: normal;
+}
+
+/* Code blocks */
+.markdown-body pre {
+  background-color: #16161e;
+  color: #c0caf5;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  overflow-x: auto;
+  margin-bottom: 1rem;
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+/* Links */
+.markdown-body a {
+  color: #7aa2f7;
+  text-decoration: underline;
+}
+.markdown-body a:hover {
+  color: #9d7cd8;
+}
+
+/* Blockquotes */
+.markdown-body blockquote {
+  border-left: 3px solid #7aa2f7;
+  padding-left: 1rem;
+  color: #7aa2f7;
+  font-style: italic;
+  background-color: #16161e;
+  border-radius: 4px;
+  margin: 0.5rem 0;
+}
+
+/* Extra terminal feel: spacing for multiple lines */
+.markdown-body pre,
+.markdown-body blockquote,
+.markdown-body ul,
+.markdown-body ol {
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+

@@ -2,6 +2,7 @@ import { useRef, useEffect } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
 import type { NoteActivity } from "../utils/registries";
+import { Check, Edit, Trash2 } from "lucide-react";
 
 interface NoteProps {
     id: number;
@@ -38,6 +39,13 @@ export const Note = ({
             clearFocusTarget();
         }
     }, [focusTarget, isActive, clearFocusTarget]);
+    useEffect(() => {
+        if (textareaRef.current) {
+            const target = textareaRef.current;
+            target.style.height = "auto";
+            target.style.height = target.scrollHeight + "px";
+        }
+    }, [content, isActive]);
 
     const emitFocusSignal = (isActive: boolean) => {
         onNoteFocus?.({ index: id, active: isActive });
@@ -80,7 +88,11 @@ export const Note = ({
     };
 
     return (
-        <div>
+        <div
+            className={`flex flex-col gap-3 p-4 rounded-md bg-[#1a1b26] border border-[#2a2f47] 
+    ${isActive ? 'border-[#9d7cd8] shadow-[0_0_8px_#9d7cd8]' : ''}`}
+        >
+            {/* Editable Title */}
             <EditableTitle
                 id={id}
                 title={title}
@@ -88,27 +100,63 @@ export const Note = ({
                 onSubmit={onTitleSubmit}
                 autoFocus={focusTarget === 'title'}
             />
-            {isActive ?
-                <div>
+
+            {/* Active Note */}
+            {isActive ? (
+                <div className="flex flex-col gap-2">
                     <textarea
                         ref={textareaRef}
-                        name='noteBody'
-                        placeholder={'Add note here...'}
+                        name="noteBody"
+                        placeholder="Add note here..."
                         value={content}
                         autoFocus={focusTarget === 'content'}
                         onChange={(e) => onContentChange?.(id, e.target.value)}
+                        onInput={(e) => {
+                            const target = e.currentTarget;
+                            target.style.height = "auto"; // reset
+                            target.style.height = target.scrollHeight + "px"; // adjust to scroll height
+                        }}
                         onKeyDown={onKeyDownHandler}
+                        className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
-                    <button onClick={signalInactive}>Submit</button>
+                    <div className="flex justify-between mt-2">
+                        <button
+                            onClick={() => onNoteDelete?.(id)}
+                            className="flex items-center gap-1 px-3 py-1 rounded-sm bg-red-500 text-[#f7768e] hover:bg-red-600 hover:shadow-[0_0_10px_#f7768e] transition-all duration-150"
+                        >
+                            <Trash2 size={16} strokeWidth={3} />
+                            Delete
+                        </button>
+                        <button
+                            onClick={signalInactive}
+                            className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
+                        >
+                            <Check size={18} strokeWidth={3} />
+                            Submit
+                        </button>
+                    </div>
                 </div>
-                :
-                <div onClick={signalActive}>
-                    <Markdown>{content}</Markdown>
-                    <button onClick={signalActive}>Edit</button>
+            ) : (
+                <div className="flex flex-col gap-1">
+                    <div onClick={signalActive} 
+                            className=" markdown-body"
+                        >
+                        <Markdown>
+                            {content}
+                        </Markdown>
+                    </div>
+                    <button
+                        className="flex items-center gap-1 px-3 py-1 rounded-sm bg-purple-500 text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150 w-max"
+                        onClick={signalActive}
+                    >
+                        <Edit size={16} strokeWidth={3} />
+                        Edit
+                    </button>
                 </div>
-            }
-            <button onClick={() => onNoteDelete?.(id)}>Delete</button>
+            )}
+
         </div>
+
     );
 }
 
