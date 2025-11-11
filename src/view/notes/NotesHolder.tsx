@@ -57,7 +57,7 @@ export const NotesHolder = () => {
     };
 
     return (
-        <div>
+        <div className="p-8 bg-blue-100">
             <button onClick={onAddNote}>Add Note</button>
             {notes.map((note, index) => (
                 <Note 
