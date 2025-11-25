@@ -15,8 +15,8 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
   const getButtonClass = (isActive: boolean) =>
     `${baseButtonClass} ${
       isActive
-        ? 'bg-red-400 text-[#e8adff] shadow-lg shadow-[0_0_16px_#f7768e]'
-        : 'bg-red-500 text-[#f6e0ff] shadow-md hover:bg-red-400 hover:text-[#e8adff] hover:shadow-[0_0_12px_#f7768e]'
+        ? 'bg-red-800 text-gray-200 py-2 rounded-xl shadow-lg shadow-[0_0_16px_#f7768e]'
+        : 'bg-transparent text-red-400 rounded-xl shadow-md hover:bg-red-400 hover:text-red-200 hover:shadow-[0_0_12px_#f7768e]'
     }`;
 
   const TopBar = () => (
