@@ -19,6 +19,7 @@ export const NotesHolder = () => {
     const updateActiveNote = (activity: NoteActivity) => {
         activity.index %= notes.length;
         setActiveNote(activity);
+        setFocusTarget('content');
     };
 
     const onTitleChangeHandler = (index: number, title: string) => {
