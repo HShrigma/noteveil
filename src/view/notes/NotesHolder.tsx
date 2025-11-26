@@ -72,22 +72,24 @@ export const NotesHolder = () => {
             </div>
 
             {/* Notes List */}
-            {notes.map((note, index) => (
-                <Note
-                    key={index}
-                    id={index}
-                    title={note.title}
-                    content={note.content}
-                    isActive={index === ActiveNote.index ? ActiveNote.active : false}
-                    focusTarget={index === ActiveNote.index ? focusTarget : null}
-                    onNoteFocus={updateActiveNote}
-                    onNoteDelete={onNoteDelete}
-                    onContentChange={onContentChangeHandler}
-                    onTitleChange={onTitleChangeHandler}
-                    onTitleSubmit={onTitleSubmit}
-                    clearFocusTarget={() => setFocusTarget(null)}
-                />
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-min">
+                {notes.map((note, index) => (
+                    <Note
+                        key={index}
+                        id={index}
+                        title={note.title}
+                        content={note.content}
+                        isActive={index === ActiveNote.index ? ActiveNote.active : false}
+                        focusTarget={index === ActiveNote.index ? focusTarget : null}
+                        onNoteFocus={updateActiveNote}
+                        onNoteDelete={onNoteDelete}
+                        onContentChange={onContentChangeHandler}
+                        onTitleChange={onTitleChangeHandler}
+                        onTitleSubmit={onTitleSubmit}
+                        clearFocusTarget={() => setFocusTarget(null)}
+                    />
+                ))}
+            </div>
         </div>
 
     );

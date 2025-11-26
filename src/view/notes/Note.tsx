@@ -119,11 +119,6 @@ export const Note = ({
                         onKeyDown={onKeyDownHandler}
                         className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
-                    {/* Keybinding hints */}
-                    <div className="flex justify-between text-xs text-[#565f89] mt-1 px-2">
-                        <span>Tab - Indent | Shift+Tab - Next note</span>
-                        <span>Ctrl+Enter = submit</span>
-                    </div>
                     <div className="flex justify-between mt-2">
                         <button
                             onClick={() => onNoteDelete?.(id)}
@@ -140,7 +135,12 @@ export const Note = ({
                             Submit
                         </button>
                     </div>
-                </div>
+                     {/* Keybinding hints */}
+                    <div className="flex justify-between text-xs text-[#565f89] mt-1 px-2">
+                        <span>Shift+Tab - Next note</span>
+                        <span>Ctrl+Enter = submit</span>
+                    </div>
+               </div>
             ) : (
                 <div className="flex flex-col gap-1">
                     <div onClick={signalActive} 
