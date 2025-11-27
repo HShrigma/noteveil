@@ -1,5 +1,6 @@
 import { Check, Edit } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import { triggerScreenShake } from "../utils/screenShake";
 
 interface EditableTitleProps {
     id: number;
@@ -11,10 +12,17 @@ interface EditableTitleProps {
 
 export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
     const [active, setActive] = useState(title === '');
+    const [showingSubmitHint, setShowingSubmitHint] = useState(false);
+
     const inputRef = useRef<HTMLInputElement>(null);
 
     useEffect(() => {
-        if (title === '') setActive(true);
+        if (title.trim() === '') {
+            setActive(true);
+        }
+        else {
+            setShowingSubmitHint(false);
+        }
     }, [title, id]);
 
     useEffect(() => {
@@ -24,6 +32,12 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
     }, [active, autoFocus]);
 
     const handleSubmit = () => {
+        if (title.trim() === '') {
+            setShowingSubmitHint(true);
+            triggerScreenShake();
+            return;
+        }
+
         setActive(false);
         onSubmit?.(id);
     };
@@ -45,26 +59,33 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
     };
 
     return (
-        <div className="flex items-center gap-2">
+        <>
             {active ? (
-                <>
-                    <input
-                        ref={inputRef}
-                        onChange={(e) => onEdit?.(id, e.target.value)}
-                        onKeyDown={handleKeyDown}
-                        value={title}
-                        placeholder="Enter Title..."
-                        className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150"
-                    />
-                    <button
-                        onClick={handleSubmit}
-                        className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
-                    >
-                        <Check size={18} strokeWidth={3} />
-                    </button>
-                </>
+                <div className="flex flex-col gap-1">
+                    <div className="flex items-center gap-2">
+
+                        <input
+                            ref={inputRef}
+                            onChange={(e) => onEdit?.(id, e.target.value)}
+                            onKeyDown={handleKeyDown}
+                            value={title}
+                            placeholder="Enter Title..."
+                            className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150"
+                        />
+                        <button
+                            onClick={handleSubmit}
+                            className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+                        >
+                            <Check size={18} strokeWidth={3} />
+                        </button>
+                    </div>
+                    {showingSubmitHint && (
+                        <div className="error-hint">Cannot submit an empty title</div>
+                    )}
+
+                </div>
             ) : (
-                <>
+                <div className="flex items-center gap-2">
                     <h3
                         onClick={checkDoubleClick}
                         className="flex-1 text-purple-400 font-bold tracking-wide cursor-pointer"
@@ -77,9 +98,9 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
                     >
                         <Edit size={18} strokeWidth={3} />
                     </button>
-                </>
+                </div>
             )}
-        </div>
+        </>
     );
 };
 

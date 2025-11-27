@@ -1,4 +1,4 @@
-export const triggerScreenShake = (timeout = 500) => {
+export const triggerScreenShake = (duration = 500) => {
     const root = document.getElementById("root");
     if (!root) return;
 
@@ -6,7 +6,7 @@ export const triggerScreenShake = (timeout = 500) => {
 
     setTimeout(() => {
         root.classList.remove("screen-shake");
-    }, timeout);
+    }, duration);
 };
 
 export const triggerScreenBob = (duration = 350) => {

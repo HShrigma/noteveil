@@ -37,6 +37,20 @@ body {
   .font-firabase { font-family: 'Fira Code', monospace; }
 }
 
+.error-hint {
+  font-size: 0.75rem;          
+  color: var(--tokyo-night-accent);
+  margin-top: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  animation: error-hint-pulse 1s ease-in-out infinite;
+}
+
+@keyframes error-hint-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
+}
+
 /* Markdown container */
 .markdown-body {
   color: #c0caf5; /* foreground */
