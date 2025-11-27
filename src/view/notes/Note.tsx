@@ -3,6 +3,7 @@ import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
 import type { NoteActivity } from "../utils/registries";
 import { Check, Edit, Trash2 } from "lucide-react";
+import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 
 interface NoteProps {
     id: number;
@@ -120,13 +121,10 @@ export const Note = ({
                         className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
                     <div className="flex justify-between mt-2">
-                        <button
-                            onClick={() => onNoteDelete?.(id)}
-                            className="flex items-center gap-1 px-3 py-1 rounded-sm bg-red-500 text-[#f7768e] hover:bg-red-600 hover:shadow-[0_0_10px_#f7768e] transition-all duration-150"
-                        >
-                            <Trash2 size={16} strokeWidth={3} />
-                            Delete
-                        </button>
+                        <ConfirmDeleteButton 
+                            onConfirm={() => onNoteDelete?.(id)}
+                            label="Delete"
+                        />
                         <button
                             onClick={signalInactive}
                             className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
