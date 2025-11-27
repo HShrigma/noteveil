@@ -3,6 +3,7 @@ import Note from './Note';
 import type { NoteActivity } from '../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
+import { triggerScreenShake } from "../utils/screenShake";
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -47,7 +48,7 @@ export const NotesHolder = () => {
         setActiveNote({ index, active: true });
     };
 
-    const onNoteDelete = (index: number) => {
+    const deleteNote = (index: number) => {
         if (!notes[index]) return;
 
         const newNotes = [...notes];
@@ -57,6 +58,12 @@ export const NotesHolder = () => {
         setActiveNote({ index: 0, active: false });
         setFocusTarget(null);
     }
+
+    const onNoteDelete = (index: number) => {
+        deleteNote(index);
+        triggerScreenShake(250);
+    }
+
     const onAddNote = () => {
         if (notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];

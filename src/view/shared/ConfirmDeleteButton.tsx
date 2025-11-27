@@ -10,14 +10,21 @@ interface ConfirmDeleteButtonProps {
 }
 export const ConfirmDeleteButton = ({ onConfirm, className = "", confirmClassName = "", label = "", confirmLabel = "Are you Sure?" }: ConfirmDeleteButtonProps) => {
     const [confirming, setConfirming] = useState(false);
+    const [shaking, setShaking] = useState(false);
 
     const handleConfirmClick = () => {
         if (confirming) onConfirm?.();
-        else setConfirming(true);
+        else {
+            setConfirming(true);
+            setShaking(true);
+        }
     }
     useEffect(() => {
         if (confirming) {
-            const timeout = setTimeout(() => setConfirming(false), 3000);
+            const timeout = setTimeout(() => {
+                setConfirming(false);
+                setShaking(true);
+            }, 3000);
             return () => clearTimeout(timeout);
         }
     }, [confirming]);
@@ -33,7 +40,7 @@ export const ConfirmDeleteButton = ({ onConfirm, className = "", confirmClassNam
     return <button
         type="button"
         onClick={handleConfirmClick}
-        className={ confirming ? getConfirmClassName() : getClassName()}
+        className={ `${confirming ? getConfirmClassName() : getClassName()} ${shaking ? "shake-subtle": ""}`}
     >
         <Trash2 size={16} strokeWidth={3} />
         {confirming ? confirmLabel : label}
