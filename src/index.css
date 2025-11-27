@@ -195,3 +195,15 @@ body {
   75% { transform: translateX(-2px); }
   90% { transform: translateX(2px); }
 }
+
+.screen-bob {
+  animation: screen-bob 0.35s ease-out;
+}
+
+@keyframes screen-bob {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-6px); }  /* small lift */
+  55%  { transform: translateY(2px); }   /* gentle settle */
+  75%  { transform: translateY(-1px); }  /* micro bounce */
+  100% { transform: translateY(0); }
+}

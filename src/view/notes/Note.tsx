@@ -2,8 +2,9 @@ import { useRef, useEffect } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
 import type { NoteActivity } from "../utils/registries";
-import { Check, Edit, Trash2 } from "lucide-react";
+import { Check, Edit} from "lucide-react";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
+import { triggerScreenBob } from "../utils/screenShake";
 
 interface NoteProps {
     id: number;
@@ -53,7 +54,7 @@ export const Note = ({
     };
 
     const signalActive = () => { emitFocusSignal(true); };
-    const signalInactive = () => { emitFocusSignal(false); };
+    const signalInactive = () => { emitFocusSignal(false); triggerScreenBob(150); };
 
     const onKeyDownHandler = (input: React.KeyboardEvent) => {
         switch (input.key) {
@@ -123,7 +124,7 @@ export const Note = ({
                     <div className="flex justify-between mt-2">
                         <ConfirmDeleteButton 
                             onConfirm={() => onNoteDelete?.(id)}
-                            label="Delete"
+                            label="delete"
                         />
                         <button
                             onClick={signalInactive}

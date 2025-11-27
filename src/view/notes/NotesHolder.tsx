@@ -3,7 +3,7 @@ import Note from './Note';
 import type { NoteActivity } from '../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
-import { triggerScreenShake } from "../utils/screenShake";
+import { triggerScreenShake, triggerScreenBob } from "../utils/screenShake";
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -46,6 +46,7 @@ export const NotesHolder = () => {
     const onTitleSubmit = (index: number) => {
         setFocusTarget('content');
         setActiveNote({ index, active: true });
+        triggerScreenBob(200);
     };
 
     const deleteNote = (index: number) => {
@@ -71,6 +72,7 @@ export const NotesHolder = () => {
         setNotes(newNotes);
         setFocusTarget('title');
         setActiveNote({ index: 0, active: true });
+        triggerScreenBob();
     };
 
     return (
