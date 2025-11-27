@@ -2,8 +2,16 @@ import { useState } from 'react';
 import Note from './Note';
 import type { NoteActivity } from '../utils/registries';
 import { Plus } from 'lucide-react';
+import Masonry from "react-masonry-css";
 
 export const NotesHolder = () => {
+    const breakpointColumnsObj = {
+        default: 4,
+        1024: 3,
+        768: 2,
+        500: 1,
+    };
+
     // Temp notes
     const tempNotes = [
         { title: 'MD Header Note', content: '# H1\n## H2\n### H3' },
@@ -59,9 +67,9 @@ export const NotesHolder = () => {
     };
 
     return (
-        <div className="flex flex-col gap-4 mt-2">
+        <div className="mt-2">
             {/* Add Note Button */}
-            <div className="flex justify-start">
+            <div className="flex justify-start mb-4">
                 <button
                     onClick={onAddNote}
                     className="flex items-center gap-2 px-3 py-1 rounded-full border-2 border-green-500 bg-green-500 text-[#f6faff] 
@@ -70,28 +78,32 @@ export const NotesHolder = () => {
                     <Plus size={18} strokeWidth={3} /> Add Note
                 </button>
             </div>
-
-            {/* Notes List */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 auto-rows-min">
+            <Masonry
+                breakpointCols={breakpointColumnsObj}
+                className="flex gap-4"
+                columnClassName="flex flex-col gap-4"
+            >
+                {/* Notes List */}
                 {notes.map((note, index) => (
-                    <Note
-                        key={index}
-                        id={index}
-                        title={note.title}
-                        content={note.content}
-                        isActive={index === ActiveNote.index ? ActiveNote.active : false}
-                        focusTarget={index === ActiveNote.index ? focusTarget : null}
-                        onNoteFocus={updateActiveNote}
-                        onNoteDelete={onNoteDelete}
-                        onContentChange={onContentChangeHandler}
-                        onTitleChange={onTitleChangeHandler}
-                        onTitleSubmit={onTitleSubmit}
-                        clearFocusTarget={() => setFocusTarget(null)}
-                    />
+                    <div key={index} className="break-inside-avoid mb-4">
+                        <Note
+                            key={index}
+                            id={index}
+                            title={note.title}
+                            content={note.content}
+                            isActive={index === ActiveNote.index ? ActiveNote.active : false}
+                            focusTarget={index === ActiveNote.index ? focusTarget : null}
+                            onNoteFocus={updateActiveNote}
+                            onNoteDelete={onNoteDelete}
+                            onContentChange={onContentChangeHandler}
+                            onTitleChange={onTitleChangeHandler}
+                            onTitleSubmit={onTitleSubmit}
+                            clearFocusTarget={() => setFocusTarget(null)}
+                        />
+                    </div>
                 ))}
-            </div>
+            </Masonry>
         </div>
-
     );
 }
 
