@@ -1,10 +1,10 @@
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
 import type { NoteActivity } from "../utils/registries";
 import { Check, Edit} from "lucide-react";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
-import { triggerScreenBob } from "../utils/screenShake";
+import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
 
 interface NoteProps {
     id: number;
@@ -34,7 +34,7 @@ export const Note = ({
     clearFocusTarget
 }: NoteProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-
+    const [showingSubmitHint, setShowingSubmitHint] = useState(false);
     useEffect(() => {
         if (focusTarget === 'content' && textareaRef.current && isActive) {
             textareaRef.current.focus();
@@ -49,12 +49,29 @@ export const Note = ({
         }
     }, [content, isActive]);
 
+    useEffect(() => {
+        if(content.trim() === '' && showingSubmitHint){
+            triggerScreenShake(150);
+        }
+        else{
+            setShowingSubmitHint(false);
+        }
+    },[showingSubmitHint,content])
+
     const emitFocusSignal = (isActive: boolean) => {
         onNoteFocus?.({ index: id, active: isActive });
     };
 
     const signalActive = () => { emitFocusSignal(true); };
-    const signalInactive = () => { emitFocusSignal(false); triggerScreenBob(150); };
+    const signalInactive = () => { 
+        if(content.trim() === '') {
+            setShowingSubmitHint(true);
+            return;
+        }
+        setShowingSubmitHint(false);
+        emitFocusSignal(false);
+        triggerScreenBob(150); 
+    };
 
     const onKeyDownHandler = (input: React.KeyboardEvent) => {
         switch (input.key) {
@@ -121,6 +138,9 @@ export const Note = ({
                         onKeyDown={onKeyDownHandler}
                         className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
+                    {showingSubmitHint && (
+                        <div className="error-hint">Cannot submit an empty note</div>
+                    )}
                     <div className="flex justify-between mt-2">
                         <ConfirmDeleteButton 
                             onConfirm={() => onNoteDelete?.(id)}
