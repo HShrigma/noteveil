@@ -1,5 +1,6 @@
 import { Check, Edit } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
+import ErrorHint from "./ErrorHint";
 import { triggerScreenShake } from "../utils/screenShake";
 
 interface EditableTitleProps {
@@ -12,18 +13,9 @@ interface EditableTitleProps {
 
 export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
     const [active, setActive] = useState(title === '');
-    const [showingSubmitHint, setShowingSubmitHint] = useState(false);
+    const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
     const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        if (title.trim() === '') {
-            setActive(true);
-        }
-        else {
-            setShowingSubmitHint(false);
-        }
-    }, [title, id]);
 
     useEffect(() => {
         if (active && inputRef.current && autoFocus) {
@@ -33,7 +25,7 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
 
     const handleSubmit = () => {
         if (title.trim() === '') {
-            setShowingSubmitHint(true);
+            setTriggerErrorCheck(true);
             triggerScreenShake();
             return;
         }
@@ -66,7 +58,7 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
 
                         <input
                             ref={inputRef}
-                            onChange={(e) => onEdit?.(id, e.target.value)}
+                            onChange={(e) => {onEdit?.(id, e.target.value); setTriggerErrorCheck(false);}}
                             onKeyDown={handleKeyDown}
                             value={title}
                             placeholder="Enter Title..."
@@ -79,9 +71,7 @@ export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }
                             <Check size={18} strokeWidth={3} />
                         </button>
                     </div>
-                    {showingSubmitHint && (
-                        <div className="error-hint">Cannot submit an empty title</div>
-                    )}
+                    <ErrorHint triggerCheck={triggerErrorCheck} toValidate={title} message="Cannot submit empty title" />
 
                 </div>
             ) : (

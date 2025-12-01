@@ -5,6 +5,7 @@ import type { NoteActivity } from "../utils/registries";
 import { Check, Edit} from "lucide-react";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
+import ErrorHint from "../shared/ErrorHint";
 
 interface NoteProps {
     id: number;
@@ -34,7 +35,7 @@ export const Note = ({
     clearFocusTarget
 }: NoteProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
-    const [showingSubmitHint, setShowingSubmitHint] = useState(false);
+    const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
     useEffect(() => {
         if (focusTarget === 'content' && textareaRef.current && isActive) {
             textareaRef.current.focus();
@@ -49,28 +50,19 @@ export const Note = ({
         }
     }, [content, isActive]);
 
-    useEffect(() => {
-        if(content.trim() === '' && showingSubmitHint){
-            triggerScreenShake(150);
-        }
-        else{
-            setShowingSubmitHint(false);
-        }
-    },[showingSubmitHint,content])
-
     const emitFocusSignal = (isActive: boolean) => {
         onNoteFocus?.({ index: id, active: isActive });
     };
 
     const signalActive = () => { emitFocusSignal(true); };
-    const signalInactive = () => { 
-        if(content.trim() === '') {
-            setShowingSubmitHint(true);
+    const signalInactive = () => {
+        if (content.trim() === '') {
+            setTriggerErrorCheck(true);
+            triggerScreenShake();
             return;
         }
-        setShowingSubmitHint(false);
         emitFocusSignal(false);
-        triggerScreenBob(150); 
+        triggerScreenBob(150);
     };
 
     const onKeyDownHandler = (input: React.KeyboardEvent) => {
@@ -129,7 +121,7 @@ export const Note = ({
                         placeholder="Add note here..."
                         value={content}
                         autoFocus={focusTarget === 'content'}
-                        onChange={(e) => onContentChange?.(id, e.target.value)}
+                        onChange={(e) => {onContentChange?.(id, e.target.value); setTriggerErrorCheck(false);}}
                         onInput={(e) => {
                             const target = e.currentTarget;
                             target.style.height = "auto"; // reset
@@ -138,11 +130,9 @@ export const Note = ({
                         onKeyDown={onKeyDownHandler}
                         className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
-                    {showingSubmitHint && (
-                        <div className="error-hint">Cannot submit an empty note</div>
-                    )}
+                    <ErrorHint triggerCheck={triggerErrorCheck} toValidate={content} message="Cannot submit an empty note" />
                     <div className="flex justify-between mt-2">
-                        <ConfirmDeleteButton 
+                        <ConfirmDeleteButton
                             onConfirm={() => onNoteDelete?.(id)}
                             label="delete"
                         />
@@ -154,17 +144,17 @@ export const Note = ({
                             Submit
                         </button>
                     </div>
-                     {/* Keybinding hints */}
+                    {/* Keybinding hints */}
                     <div className="flex justify-between text-xs text-[#565f89] mt-1 px-2">
                         <span>Shift+Tab - Next note</span>
                         <span>Ctrl+Enter = submit</span>
                     </div>
-               </div>
+                </div>
             ) : (
                 <div className="flex flex-col gap-1">
-                    <div onClick={signalActive} 
-                            className=" markdown-body"
-                        >
+                    <div onClick={signalActive}
+                        className=" markdown-body"
+                    >
                         <Markdown>
                             {content}
                         </Markdown>
