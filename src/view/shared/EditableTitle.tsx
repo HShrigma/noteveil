@@ -11,7 +11,7 @@ interface EditableTitleProps {
     autoFocus?: boolean;
 }
 
-export const EditableTitle = ({ id, title, onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
+export const EditableTitle = ({ id, title = '', onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
     const [active, setActive] = useState(title === '');
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 

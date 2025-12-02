@@ -1,63 +1,47 @@
 import { useState } from "react";
-import Tasks from "./Tasks";
+import TaskList, { type TaskListData } from "./TaskList";
 import type { TaskItem } from "./Task";
-import TaskAdder from "./TaskAdder";
+import Masonry from "react-masonry-css";
 
 export const TasksHolder = () => {
-  const [uniqueId, setUniqueId] = useState(4);
-  const [allTasks, setAllTasks] = useState<TaskItem[]>([
-    { id: 1, label: "Buy groceries", done: false },
-    { id: 2, label: "Walk the dog", done: true },
-    { id: 3, label: "Learn React", done: false },
+  const sampleTasks = [
+    {id: 0,label:"sample Task", done:false},
+    {id: 1,label:"do Thing", done:false},
+    {id: 2,label:"complete Thing", done:false},
+  ];
+  const [allTasks, setAllTasks] = useState<TaskListData[]>([
+    { id:0, title: "tasks 1", tasks: sampleTasks }, 
+    { id:1, title: "tasks 2", tasks: sampleTasks }
   ]);
 
-  const updateTasks = (id: number, label: string, completed: boolean) => {
-    setAllTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === id ? { ...task, label, done: completed } : task
-      )
-    );
+  const handleTaskChanged = (id: number, label: string, completed: boolean) => {
+  };
+  const addNewTask = (id:number, label: string) => {
   };
 
-  const addNewTask = (label: string) => {
-    const newId = uniqueId;
-    setUniqueId((prev) => prev + 1);
-    setAllTasks((prevTasks) => [...prevTasks, { id: newId, label, done: false }]);
+  const removeTask = (id: number, taskId: number) => {
+      const taskList = allTasks[id];
+      taskList.tasks.splice(1,taskId);
+      setAllTasks((prevTasks) => prevTasks.map( taskData => taskData.id !== id ? taskData : taskList ));
   };
 
-  const removeTask = (id: number) => {
-    setAllTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-  };
-
+  const editTaskTitle = (id:number, newValue: string) => {};
+  const submitTaskTitle = (id:number) => {};
   return (
-    <div className="font-mono text-[#c0caf5] flex flex-col gap-8">
-      {/* Active Tasks */}
-      <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]">
-        <h3 className="text-xl font-semibold text-[#9d7cd8] mb-3 tracking-wide">
-          ToDo
-        </h3>
-        <Tasks
-          inputTasks={allTasks.filter((task) => !task.done)}
-          onTaskChanged={updateTasks}
-          onDelete={removeTask}
-        />
-        <div className="mt-4">
-          <TaskAdder onTaskAdded={addNewTask} />
-        </div>
-      </section>
-
-      {/* Completed Tasks */}
-      <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]">
-        <h3 className="text-xl font-semibold text-[#9d7cd8] mb-3 tracking-wide">
-          Done
-        </h3>
-        <Tasks
-          inputTasks={allTasks.filter((task) => task.done)}
-          onTaskChanged={updateTasks}
-          onDelete={removeTask}
-        />
-      </section>
-    </div>
+    <Masonry className="font-mono text-[#c0caf5] flex flex-col gap-8">
+        {allTasks.map(task => 
+          <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]">
+            <TaskList
+              data={task}
+              onTaskChanged={handleTaskChanged}
+              onTaskAdded={addNewTask}
+              onTaskRemoved={removeTask}
+              onTitleEdited={editTaskTitle}
+              onTitleSubmitted={submitTaskTitle}
+            />
+          </section>
+      )}
+    </Masonry>
   );
 };
 
