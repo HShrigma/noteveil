@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
+import { triggerScreenBob } from "../utils/screenShake";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -15,23 +16,49 @@ export const TasksHolder = () => {
     { id: 2, label: "complete Thing", done: false },
   ];
   const [allTasks, setAllTasks] = useState<TaskListData[]>([
-    { id: 0, title: "tasks 1", tasks: sampleTasks },
-    { id: 1, title: "tasks 2", tasks: sampleTasks }
+    { id: 0, title: "tasks 1", tasks: [...sampleTasks] },
+    { id: 1, title: "tasks 2", tasks: [...sampleTasks] }
   ]);
 
-  const handleTaskChanged = (id: number, label: string, completed: boolean) => {
+  const getTaskListIndexById = (id:number) => {
+    return allTasks.findIndex(t => t.id === id);
+  }
+  const handleTaskChanged = (id: number, taskId: number, label: string, completed: boolean) => {
+    const listIndex = getTaskListIndexById(id);
+    const newTaskList = { ...allTasks[listIndex] };
+    newTaskList.tasks[newTaskList.tasks.findIndex(t => t.id === taskId)] = { id: taskId, label, done: completed };
+
+    setAllTasks(prev => prev.map( t => (t.id === id ? newTaskList : t)));
   };
-  const addNewTask = (id: number, label: string) => {
+
+  const addNewTask = (id: number, newTaskId: number, label: string) => {
+    const listIndex = getTaskListIndexById(id);
+    const newTaskList = { ...allTasks[listIndex] };
+    
+    newTaskList.tasks.push({ id: newTaskId, label, done: false });
+    setAllTasks(prev => prev.map( t => (t.id === id ? newTaskList : t)));
+    triggerScreenBob(150);
   };
 
   const removeTask = (id: number, taskId: number) => {
-    const taskList = allTasks[id];
-    taskList.tasks.splice(1, taskId);
-    setAllTasks((prevTasks) => prevTasks.map(taskData => taskData.id !== id ? taskData : taskList));
+    const listIndex = getTaskListIndexById(id);
+    const newTaskList = { ...allTasks[listIndex] };
+
+    newTaskList.tasks = newTaskList.tasks.filter(t => t.id !== taskId);
+    setAllTasks(prev =>
+      prev.map(t => (t.id === id ? newTaskList : t))
+    );
   };
 
-  const editTaskTitle = (id: number, newValue: string) => { };
-  const submitTaskTitle = (id: number) => { };
+  const editTaskTitle = (id: number, newValue: string) => {
+    const newTasks = [...allTasks];
+    newTasks[getTaskListIndexById(id)].title = newValue;
+    setAllTasks(newTasks);
+  };
+
+  const submitTaskTitle = () => { 
+    triggerScreenBob(200);
+  };
   return (
     <Masonry
       breakpointCols={breakpointColumnsObj}
