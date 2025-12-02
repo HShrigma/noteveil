@@ -2,6 +2,7 @@ import { useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Task, { type TaskItem } from "./Task";
 import TaskAdder from "./TaskAdder";
+import { triggerScreenBob } from "../utils/screenShake";
 
 export interface TaskListData{
     id: number;

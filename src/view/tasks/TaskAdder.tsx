@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Plus, Check, X } from "lucide-react";
+import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
 
 interface TaskAdderProps {
   onTaskAdded: (label: string) => void;
@@ -8,8 +9,11 @@ interface TaskAdderProps {
 export const TaskAdder = ({ onTaskAdded }: TaskAdderProps) => {
   const [txt, setTxt] = useState("");
   const [active, setActive] = useState(false);
-
+  useEffect(() => {
+    if (active) triggerScreenBob(150);
+  }, [active]);
   const discardInput = () => {
+    triggerScreenShake(150);
     setActive(false);
     setTxt("");
   };
@@ -19,6 +23,7 @@ export const TaskAdder = ({ onTaskAdded }: TaskAdderProps) => {
       onTaskAdded?.(txt);
       setTxt("");
       setActive(false);
+      triggerScreenBob(200);
     }
   };
 
@@ -69,4 +74,3 @@ export const TaskAdder = ({ onTaskAdded }: TaskAdderProps) => {
 };
 
 export default TaskAdder;
-

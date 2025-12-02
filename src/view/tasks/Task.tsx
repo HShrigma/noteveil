@@ -1,4 +1,6 @@
 import { Trash2, Check, RotateCw } from "lucide-react";
+import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
+import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 
 export interface TaskItem {
     id: number;
@@ -14,6 +16,7 @@ interface TaskProps {
 
 export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
     const handleDoneClick = () => {
+        triggerScreenBob(150);
         onStatusChange?.(task.id, task.label, !task.done);
     };
 
@@ -22,6 +25,7 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
     };
 
     const handleDeleteClick = () => {
+        triggerScreenShake();
         onDelete?.(task.id);
     };
 
@@ -32,13 +36,11 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
                   ${task.done ? "opacity-70" : "opacity-100 hover:shadow-[0_0_8px_#9d7cd8]"}`}
         >
             {/* Delete Button */}
-            <button
-                onClick={handleDeleteClick}
+            <ConfirmDeleteButton 
+                onConfirm={handleDeleteClick}
+                confirmLabel="Confirm"
                 className="p-1 rounded-sm border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150"
-            >
-                <Trash2 size={16} />
-            </button>
-
+            />
             {/* Label Input */}
             <input
                 placeholder="Task..."
