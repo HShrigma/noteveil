@@ -1,6 +1,8 @@
 import { Trash2, Check, RotateCw } from "lucide-react";
 import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
+import ErrorHint from "../shared/ErrorHint";
+import { useState } from "react";
 
 export interface TaskItem {
     id: number;
@@ -15,13 +17,24 @@ interface TaskProps {
 }
 
 export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
+    const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
     const handleDoneClick = () => {
         triggerScreenBob(150);
         onStatusChange?.(task.id, task.label, !task.done);
     };
 
+    const submit = () =>{
+        if(task.label.trim() === '') {
+            setTriggerErrorCheck(true);
+            console.log("empty");
+        }
+    }
+    const handleKey = (event: React.KeyboardEvent) => {
+        if(event.key = "Enter") submit();
+    };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         onStatusChange?.(task.id, event.target.value, task.done);
+        setTriggerErrorCheck(false);
     };
 
     const handleDeleteClick = () => {
@@ -30,6 +43,8 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
     };
 
     return (
+
+    <div className="flex flex-col gap-1">
         <div
             className={`flex items-center gap-3 px-4 py-2 rounded-md bg-[#1f2335] border border-[#2a2f47] 
                   shadow-sm transition-all duration-150
@@ -45,6 +60,7 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
             <input
                 placeholder="Task..."
                 onChange={handleInputChange}
+                onKeyDown={handleKey}
                 value={task.label}
                 className={`flex-1 bg-transparent border-b-2 outline-none font-mono font-semibold text-base tracking-wide px-1
                     transition-all duration-150
@@ -64,6 +80,9 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
             >
                 {task.done ? <RotateCw size={16} strokeWidth={3}/> : <Check size={16} strokeWidth={4} />}
             </button>
+ 
+    </div>
+           <ErrorHint message={"Cannot submit empty task"} toValidate={task.label} triggerCheck={triggerErrorCheck} />
         </div>
     );
 };

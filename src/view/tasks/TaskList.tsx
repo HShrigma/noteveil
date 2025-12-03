@@ -1,7 +1,7 @@
 import { useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Task, { type TaskItem } from "./Task";
-import TaskAdder from "./TaskAdder";
+import TaskBottomBar from "./TaskBottomBar";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 
 export interface TaskListData{
@@ -60,13 +60,7 @@ export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTi
                     onDelete={removeTask}
                 />))}
             </div>
-            <div className="flex justify-between mt-4 gap-2">
-                    <ConfirmDeleteButton 
-                        onConfirm={onDelete}
-                        label="Delete"
-                    />
-                    <TaskAdder onTaskAdded={addNewTask} />
-            </div>
+            <TaskBottomBar onAdded={addNewTask} onDelete={onDelete}/>
         </>
     );
 };
