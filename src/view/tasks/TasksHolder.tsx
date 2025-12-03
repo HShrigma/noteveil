@@ -85,7 +85,7 @@ export const TasksHolder = () => {
       >
         {allTasks.map(task =>
           <section
-            className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]"
+            className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47] fade-in"
             key={task.id}
           >
             <TaskList

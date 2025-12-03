@@ -94,7 +94,7 @@ export const NotesHolder = () => {
             >
                 {/* Notes List */}
                 {notes.map((note, index) => (
-                    <div key={index} className="break-inside-avoid mb-4">
+                    <div key={index} className="break-inside-avoid mb-4 fade-in">
                         <Note
                             key={index}
                             id={index}
