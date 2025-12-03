@@ -4,12 +4,12 @@ import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import ErrorHint from "../shared/ErrorHint";
 
-interface TaskAdderProps {
+interface TaskBottomBarProps {
   onAdded: (label: string) => void;
   onDelete: () => void;
 }
 
-export const TaskBottomBar = ({ onAdded: onTaskAdded, onDelete }: TaskAdderProps) => {
+export const TaskBottomBar = ({ onAdded: onTaskAdded, onDelete }: TaskBottomBarProps) => {
   const [txt, setTxt] = useState("");
   const [active, setActive] = useState(false);
   const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);

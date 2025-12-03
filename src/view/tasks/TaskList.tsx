@@ -2,7 +2,6 @@ import { useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Task, { type TaskItem } from "./Task";
 import TaskBottomBar from "./TaskBottomBar";
-import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 
 export interface TaskListData{
     id: number;

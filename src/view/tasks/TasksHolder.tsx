@@ -2,6 +2,7 @@ import { useState } from "react";
 import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
+import TaskListAdder from "./TaskListAdder";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -67,16 +68,16 @@ export const TasksHolder = () => {
     triggerScreenBob(200);
   };
 
-  const addTaskList = () =>{
+  const addTaskList = (title:string) =>{
     const newTasks = [...allTasks];
-    newTasks.push({id:maxId, title: "tasks "+maxId, tasks: [...sampleTasks]});
+    newTasks.push({ id: maxId, title, tasks:[]}); 
     setMaxId(n => n + 1);
     setAllTasks(newTasks);
     triggerScreenBob();
   }
   return (
     <div>
-      <button onClick={addTaskList}> Add List </button>
+      <TaskListAdder onTaskListAdded={addTaskList}/>
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="flex gap-4"
