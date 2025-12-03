@@ -16,8 +16,8 @@ export const TasksHolder = () => {
     { id: 2, label: "complete Thing", done: false },
   ];
   const [allTasks, setAllTasks] = useState<TaskListData[]>([
-    { id: 0, title: "tasks 1", tasks: [...sampleTasks] },
-    { id: 1, title: "tasks 2", tasks: [...sampleTasks] }
+    { id: 1, title: "tasks 1", tasks: [...sampleTasks] },
+    { id: 2, title: "tasks 2", tasks: [...sampleTasks] }
   ]);
 
   const getTaskListIndexById = (id:number) => {
@@ -50,6 +50,11 @@ export const TasksHolder = () => {
     );
   };
 
+  const removeList = (id: number) => {
+    const newTasks = [...allTasks];
+    setAllTasks(newTasks.filter(task => task.id != id));
+  }
+
   const editTaskTitle = (id: number, newValue: string) => {
     const newTasks = [...allTasks];
     newTasks[getTaskListIndexById(id)].title = newValue;
@@ -66,7 +71,10 @@ export const TasksHolder = () => {
       columnClassName="flex flex-col gap-4"
     >
       {allTasks.map(task =>
-        <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]">
+        <section 
+          className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]"
+          key={task.id}
+        >
           <TaskList
             data={task}
             onTaskChanged={handleTaskChanged}
@@ -74,6 +82,7 @@ export const TasksHolder = () => {
             onTaskRemoved={removeTask}
             onTitleEdited={editTaskTitle}
             onTitleSubmitted={submitTaskTitle}
+            onDeleted={removeList}
           />
         </section>
       )}

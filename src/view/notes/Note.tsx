@@ -134,7 +134,7 @@ export const Note = ({
                     <div className="flex justify-between mt-2">
                         <ConfirmDeleteButton
                             onConfirm={() => onNoteDelete?.(id)}
-                            label="delete"
+                            label="Delete"
                         />
                         <button
                             onClick={signalInactive}

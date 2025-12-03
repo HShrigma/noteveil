@@ -35,8 +35,8 @@ export const ConfirmDeleteButton = ({
         if (confirming) {
             const timeout = setTimeout(() => {
                 setConfirming(false);
-                setShaking(true);
-            }, 3000);
+                setShaking(false);
+            }, 1000);
             return () => clearTimeout(timeout);
         }
     }, [confirming]);

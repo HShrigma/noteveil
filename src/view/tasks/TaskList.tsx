@@ -2,7 +2,7 @@ import { useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Task, { type TaskItem } from "./Task";
 import TaskAdder from "./TaskAdder";
-import { triggerScreenBob } from "../utils/screenShake";
+import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 
 export interface TaskListData{
     id: number;
@@ -17,9 +17,10 @@ interface TaskListProps {
     onTaskRemoved?: (id: number, taskId: number) => void;
     onTitleEdited?: (id: number, label: string) => void;
     onTitleSubmitted?: (id:number) => void;
+    onDeleted?: (id:number) => void;
 };
 
-export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted}: TaskListProps) => {
+export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted}: TaskListProps) => {
     const [maxId, setMaxId] = useState(data.tasks.length);
     const handleStatusChange = (id: number, label: string, completed: boolean) => {
         onTaskChanged?.(data.id, id, label, completed);
@@ -40,6 +41,9 @@ export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTi
         onTitleSubmitted?.(index);
     };
 
+    const onDelete = () => {
+        onDeleted?.(data.id) ;
+    };
     return (
         <>
             <EditableTitle 
@@ -56,8 +60,12 @@ export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTi
                     onDelete={removeTask}
                 />))}
             </div>
-            <div className="mt-4">
-                <TaskAdder onTaskAdded={addNewTask} />
+            <div className="flex justify-between mt-4 gap-2">
+                    <ConfirmDeleteButton 
+                        onConfirm={onDelete}
+                        label="Delete"
+                    />
+                    <TaskAdder onTaskAdded={addNewTask} />
             </div>
         </>
     );
