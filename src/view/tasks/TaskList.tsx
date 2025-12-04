@@ -1,4 +1,3 @@
-import { useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Task, { type TaskItem } from "./Task";
 import TaskBottomBar from "./TaskBottomBar";
@@ -11,25 +10,28 @@ export interface TaskListData{
 }
 interface TaskListProps {
     data: TaskListData;
-    onTaskChanged?: (id: number, taskId: number, label: string, completed: boolean) => void;
-    onTaskAdded?: (id: number, newTaskId: number, label: string) => void;
+    onTaskLabelChanged?: (id: number, taskId: number, label: string) => void;
+    onTaskDoneChanged?: (id: number, taskId: number, done: boolean) => void;
+    onTaskAdded?: (id: number, label: string) => void;
     onTaskRemoved?: (id: number, taskId: number) => void;
     onTitleEdited?: (id: number, label: string) => void;
     onTitleSubmitted?: (id:number) => void;
     onDeleted?: (id:number) => void;
+    onGoesTo?: (id:number) => void;
 };
 
-export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted}: TaskListProps) => {
-    const [maxId, setMaxId] = useState(data.tasks.length);
-    const handleStatusChange = (id: number, label: string, completed: boolean) => {
-        onTaskChanged?.(data.id, id, label, completed);
+export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
+    const handleDoneChange = (id: number, done:boolean) => {
+        onTaskDoneChanged?.(data.id, id, done);
+    };
+    const handleLabelChange = (id: number, label: string ) => {
+        onTaskLabelChanged?.(data.id, id, label);
     };
     const removeTask = (taskId: number) => {
         onTaskRemoved?.(data.id, taskId);
     };
     const addNewTask = (label: string) => {
-        onTaskAdded?.(data.id, maxId, label);
-        setMaxId(prev => prev + 1);
+        onTaskAdded?.(data.id, label);
     };
 
     const onTitleEdit = (index: number, newValue: string) => {
@@ -43,6 +45,11 @@ export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTi
     const onDelete = () => {
         onDeleted?.(data.id) ;
     };
+
+    const handleGoesTo = () => {
+        console.log("clicked");
+        onGoesTo?.(data.id);
+    }
     return (
         <>
             <EditableTitle 
@@ -50,12 +57,19 @@ export const TaskList = ({ data, onTaskChanged, onTaskAdded, onTaskRemoved, onTi
                 onEdit={onTitleEdit}
                 onSubmit={onTitleSubmit}
             />
+            <button 
+                className="flex items-center gap-2 px-2 rounded-2xl border-2 border-purple-500 bg-purple-500 
+                     text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150"
+                onClick={handleGoesTo}>
+                Goes To
+            </button>
             <div className="flex flex-col gap-2 mt-2">
             {data.tasks && (data.tasks.map(task =>
                 <Task
                     key={task.id}
                     task={task}
-                    onStatusChange={handleStatusChange}
+                    onLabelChange={handleLabelChange}
+                    onDoneChange={handleDoneChange}
                     onDelete={removeTask}
                 />))}
             </div>

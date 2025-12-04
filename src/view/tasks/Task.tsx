@@ -12,15 +12,16 @@ export interface TaskItem {
 
 interface TaskProps {
     task: TaskItem;
-    onStatusChange?: (id: number, label: string, done: boolean) => void;
+    onLabelChange?: (id: number, label: string) => void;
+    onDoneChange?: (id: number, done: boolean) => void;
     onDelete: (id: number) => void;
 }
 
-export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
+export const Task = ({ task, onLabelChange, onDoneChange, onDelete }: TaskProps) => {
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
     const handleDoneClick = () => {
         triggerScreenBob(150);
-        onStatusChange?.(task.id, task.label, !task.done);
+        onDoneChange?.(task.id, !task.done);
     };
 
     const submit = () =>{
@@ -33,7 +34,7 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
         if(event.key = "Enter") submit();
     };
     const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        onStatusChange?.(task.id, event.target.value, task.done);
+        onLabelChange?.(task.id, event.target.value);
         setTriggerErrorCheck(false);
     };
 
@@ -88,4 +89,3 @@ export const Task = ({ task, onStatusChange, onDelete }: TaskProps) => {
 };
 
 export default Task;
-

@@ -16,40 +16,63 @@ export const TasksHolder = () => {
     { id: 1, label: "do Thing", done: false },
     { id: 2, label: "complete Thing", done: false },
   ];
+  const sampleTasksAlt = [
+    { id: 3, label: "sample Task", done: false },
+    { id: 4, label: "do Thing", done: false },
+    { id: 5, label: "complete Thing", done: false },
+  ];
   const [allTasks, setAllTasks] = useState<TaskListData[]>([
     { id: 1, title: "tasks 1", tasks: [...sampleTasks] },
-    { id: 2, title: "tasks 2", tasks: [...sampleTasks] }
+    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt] }
   ]);
   const [maxId,setMaxId] = useState(3);
 
-  const getTaskListIndexById = (id: number) => {
-    return allTasks.findIndex(t => t.id === id);
-  }
-  const handleTaskChanged = (id: number, taskId: number, label: string, completed: boolean) => {
-    const listIndex = getTaskListIndexById(id);
-    const newTaskList = { ...allTasks[listIndex] };
-    newTaskList.tasks[newTaskList.tasks.findIndex(t => t.id === taskId)] = { id: taskId, label, done: completed };
+  const [maxTaskId, setMaxTaskId] = useState(1000);
 
-    setAllTasks(prev => prev.map(t => (t.id === id ? newTaskList : t)));
+  const setNewList = (newTaskList: TaskListData) => setAllTasks(prev => prev.map(t => (t.id === newTaskList.id ? newTaskList : t)));
+  const getTaskListIndexById = (id: number) => {return allTasks.findIndex(t => t.id === id);}
+  const getTaskListById = (id: number) => { return { ...allTasks[getTaskListIndexById(id)] };} 
+    
+  const handleTaskDoneChanged = (id: number, taskId: number, done: boolean) => {
+    const newTaskList = getTaskListById(id);
+    const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
+    let newTask = newTaskList.tasks[taskIndex];
+
+    if(newTaskList.nextId){
+      addNewTask(newTaskList.nextId, newTask.label);
+      removeTask(newTaskList.id, taskId);
+      return;
+    }
+
+    newTask.done = done; 
+    newTaskList.tasks[taskIndex] = newTask;
+    setNewList(newTaskList);
+
+  };
+  const handleTaskLabelChanged = (id: number, taskId: number, label: string) => {
+    const newTaskList = getTaskListById(id);
+    const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
+    const newTask = newTaskList.tasks[taskIndex];
+
+    if (newTask.label === label) return;
+
+    newTask.label = label; 
+    newTaskList.tasks[taskIndex] = newTask;
+    setNewList(newTaskList);
   };
 
-  const addNewTask = (id: number, newTaskId: number, label: string) => {
-    const listIndex = getTaskListIndexById(id);
-    const newTaskList = { ...allTasks[listIndex] };
-
-    newTaskList.tasks.push({ id: newTaskId, label, done: false });
-    setAllTasks(prev => prev.map(t => (t.id === id ? newTaskList : t)));
+  const addNewTask = (id: number, label: string) => {
+    const newTaskList = getTaskListById(id);
+    newTaskList.tasks.push({ id: maxTaskId, label, done: false });
+    setNewList(newTaskList);
+    setMaxTaskId(n => n + 1 );
     triggerScreenBob(150);
   };
 
   const removeTask = (id: number, taskId: number) => {
-    const listIndex = getTaskListIndexById(id);
-    const newTaskList = { ...allTasks[listIndex] };
-
+    const newTaskList = getTaskListById(id);
     newTaskList.tasks = newTaskList.tasks.filter(t => t.id !== taskId);
-    setAllTasks(prev =>
-      prev.map(t => (t.id === id ? newTaskList : t))
-    );
+    setNewList(newTaskList);
   };
 
   const editTaskTitle = (id: number, newValue: string) => {
@@ -74,7 +97,18 @@ export const TasksHolder = () => {
     setMaxId(n => n + 1);
     setAllTasks(newTasks);
     triggerScreenBob();
-  }
+  };
+
+  const editGoesTo = (id: number) => {
+    // PlaceHolder
+    const newGoesTo = id === allTasks[allTasks.length-1].id ? null : allTasks[getTaskListIndexById(id)+ 1];
+    if(!newGoesTo) return;
+
+    const newTaskList = getTaskListById(id);
+    newTaskList.nextId = newGoesTo.id;
+
+    setNewList(newTaskList);
+  };
   return (
     <div>
       <TaskListAdder onTaskListAdded={addTaskList}/>
@@ -90,12 +124,14 @@ export const TasksHolder = () => {
           >
             <TaskList
               data={task}
-              onTaskChanged={handleTaskChanged}
+              onTaskLabelChanged={handleTaskLabelChanged}
+              onTaskDoneChanged={handleTaskDoneChanged}
               onTaskAdded={addNewTask}
               onTaskRemoved={removeTask}
               onTitleEdited={editTaskTitle}
               onTitleSubmitted={submitTaskTitle}
               onDeleted={removeList}
+              onGoesTo={editGoesTo}
             />
           </section>
         )}
