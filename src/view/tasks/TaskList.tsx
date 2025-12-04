@@ -8,6 +8,7 @@ export interface TaskListData{
     title: string;
     tasks: TaskItem[];
     nextId?: number;
+    goToLabel?: string;
 }
 interface TaskListProps {
     allTasks: TaskListData[];
@@ -59,6 +60,7 @@ export const TaskList = ({ allTasks, data, onTaskLabelChanged, onTaskDoneChanged
                 onSubmit={onTitleSubmit}
             />
             <GoesToButton 
+                label={data.goToLabel ?? "None"}
                 ownId={data.id}
                 items={allTasks}
                 onGoesTo={handleOnGoesTo}
