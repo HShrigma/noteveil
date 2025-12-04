@@ -1,4 +1,5 @@
 import EditableTitle from "../shared/EditableTitle";
+import GoesToButton from "./GoesToButton";
 import Task, { type TaskItem } from "./Task";
 import TaskBottomBar from "./TaskBottomBar";
 
@@ -46,7 +47,7 @@ export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAd
         onDeleted?.(data.id) ;
     };
 
-    const handleGoesTo = () => {
+    const handleOnGoesTo = () => {
         console.log("clicked");
         onGoesTo?.(data.id);
     }
@@ -57,12 +58,7 @@ export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAd
                 onEdit={onTitleEdit}
                 onSubmit={onTitleSubmit}
             />
-            <button 
-                className="flex items-center gap-2 px-2 rounded-2xl border-2 border-purple-500 bg-purple-500 
-                     text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150"
-                onClick={handleGoesTo}>
-                Goes To
-            </button>
+            <GoesToButton onGoesTo={handleOnGoesTo}/>
             <div className="flex flex-col gap-2 mt-2">
             {data.tasks && (data.tasks.map(task =>
                 <Task
