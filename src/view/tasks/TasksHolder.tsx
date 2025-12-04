@@ -36,9 +36,9 @@ export const TasksHolder = () => {
   const handleTaskDoneChanged = (id: number, taskId: number, done: boolean) => {
     const newTaskList = getTaskListById(id);
     const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
-    let newTask = newTaskList.tasks[taskIndex];
+    const newTask = newTaskList.tasks[taskIndex];
 
-    if(newTaskList.nextId){
+    if(newTaskList.nextId && done){
       addNewTask(newTaskList.nextId, newTask.label);
       removeTask(newTaskList.id, taskId);
       return;
@@ -99,14 +99,9 @@ export const TasksHolder = () => {
     triggerScreenBob();
   };
 
-  const editGoesTo = (id: number) => {
-    // PlaceHolder
-    const newGoesTo = id === allTasks[allTasks.length-1].id ? null : allTasks[getTaskListIndexById(id)+ 1];
-    if(!newGoesTo) return;
-
+  const editGoesTo = (id: number, nextId: number) => {
     const newTaskList = getTaskListById(id);
-    newTaskList.nextId = newGoesTo.id;
-
+    newTaskList.nextId = nextId === -1 ? undefined : nextId;
     setNewList(newTaskList);
   };
   return (
@@ -123,6 +118,7 @@ export const TasksHolder = () => {
             key={task.id}
           >
             <TaskList
+              allTasks={allTasks}
               data={task}
               onTaskLabelChanged={handleTaskLabelChanged}
               onTaskDoneChanged={handleTaskDoneChanged}

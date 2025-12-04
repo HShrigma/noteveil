@@ -10,6 +10,7 @@ export interface TaskListData{
     nextId?: number;
 }
 interface TaskListProps {
+    allTasks: TaskListData[];
     data: TaskListData;
     onTaskLabelChanged?: (id: number, taskId: number, label: string) => void;
     onTaskDoneChanged?: (id: number, taskId: number, done: boolean) => void;
@@ -18,10 +19,10 @@ interface TaskListProps {
     onTitleEdited?: (id: number, label: string) => void;
     onTitleSubmitted?: (id:number) => void;
     onDeleted?: (id:number) => void;
-    onGoesTo?: (id:number) => void;
+    onGoesTo?: (id:number, nextId:number) => void;
 };
 
-export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
+export const TaskList = ({ allTasks, data, onTaskLabelChanged, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
     const handleDoneChange = (id: number, done:boolean) => {
         onTaskDoneChanged?.(data.id, id, done);
     };
@@ -47,9 +48,8 @@ export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAd
         onDeleted?.(data.id) ;
     };
 
-    const handleOnGoesTo = () => {
-        console.log("clicked");
-        onGoesTo?.(data.id);
+    const handleOnGoesTo = (nextId: number) => {
+        onGoesTo?.(data.id, nextId);
     }
     return (
         <>
@@ -58,7 +58,11 @@ export const TaskList = ({ data, onTaskLabelChanged, onTaskDoneChanged, onTaskAd
                 onEdit={onTitleEdit}
                 onSubmit={onTitleSubmit}
             />
-            <GoesToButton onGoesTo={handleOnGoesTo}/>
+            <GoesToButton 
+                ownId={data.id}
+                items={allTasks}
+                onGoesTo={handleOnGoesTo}
+            />
             <div className="flex flex-col gap-2 mt-2">
             {data.tasks && (data.tasks.map(task =>
                 <Task
