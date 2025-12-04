@@ -28,7 +28,7 @@ export const NotesHolder = () => {
     const updateActiveNote = (activity: NoteActivity) => {
         activity.index %= notes.length;
         setActiveNote(activity);
-        setFocusTarget('content');
+        setFocusTarget((prev) => prev ?? 'content');
     };
 
     const onTitleChangeHandler = (index: number, title: string) => {
@@ -68,10 +68,10 @@ export const NotesHolder = () => {
     const onAddNote = () => {
         if (notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
-        newNotes.unshift({ title: '', content: '' })
+        newNotes.push({ title: '', content: '' })
         setNotes(newNotes);
         setFocusTarget('title');
-        setActiveNote({ index: 0, active: true });
+        setActiveNote({ index: newNotes.length - 1, active: true });
         triggerScreenBob();
     };
 

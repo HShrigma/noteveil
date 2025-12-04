@@ -1,4 +1,4 @@
-import { Trash2, Check, RotateCw } from "lucide-react";
+import { Check, RotateCw } from "lucide-react";
 import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import ErrorHint from "../shared/ErrorHint";
