@@ -4,7 +4,7 @@ import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
-import { deleteNote, fetchNotes } from '../../api/notesApi';
+import { addNote, deleteNote, fetchNotes } from '../../api/notesApi';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -71,7 +71,7 @@ export const NotesHolder = () => {
         triggerScreenShake(250);
     }
 
-    const onAddNote = () => {
+    async function onAddNote() {
         if (notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
         newNotes.push({ id: maxId,title: '', content: '' })
@@ -80,6 +80,8 @@ export const NotesHolder = () => {
         setActiveNote({ id: maxId, active: true });
         setMaxId(prev => prev + 1);
         triggerScreenBob();
+
+        await addNote(maxId);
     };
 
     return (
