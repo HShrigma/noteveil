@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import Note from './Note';
-import type { NoteActivity } from '../utils/registries';
+import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
-import { triggerScreenShake, triggerScreenBob } from "../utils/screenShake";
+import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {

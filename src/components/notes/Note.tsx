@@ -1,10 +1,10 @@
 import { useRef, useEffect, useState } from "react";
 import EditableTitle from "../shared/EditableTitle";
 import Markdown from "react-markdown";
-import type { NoteActivity } from "../utils/registries";
+import type { NoteActivity } from "../../utils/registries";
 import { Check, Edit} from "lucide-react";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
-import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
+import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import ErrorHint from "../shared/ErrorHint";
 
 interface NoteProps {

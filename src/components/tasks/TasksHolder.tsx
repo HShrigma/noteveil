@@ -1,7 +1,7 @@
 import { useState } from "react";
 import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
-import { triggerScreenBob, triggerScreenShake } from "../utils/screenShake";
+import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./TaskListAdder";
 
 export const TasksHolder = () => {

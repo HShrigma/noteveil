@@ -1,6 +1,6 @@
 import NotesHolder from "./notes/NotesHolder";
 import TasksHolder from "./tasks/TasksHolder";
-import { MAIN_STATES, type MainState } from './utils/registries'
+import { MAIN_STATES, type MainState } from '../utils/registries'
 
 interface MainSreenProps {
     state: MainState

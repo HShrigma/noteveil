@@ -1,4 +1,4 @@
-import { MAIN_STATES, type MainState } from './utils/registries';
+import { MAIN_STATES, type MainState } from '../utils/registries';
 interface DefaultHeaderProps {
   onScreenChange: (value: MainState) => void;
   currentState: MainState; // new prop to track active screen

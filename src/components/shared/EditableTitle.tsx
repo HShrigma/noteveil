@@ -1,7 +1,7 @@
 import { Check, Edit } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ErrorHint from "./ErrorHint";
-import { triggerScreenShake } from "../utils/screenShake";
+import { triggerScreenShake } from "../../utils/screenShake";
 
 interface EditableTitleProps {
     id: number;
