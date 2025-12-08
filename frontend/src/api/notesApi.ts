@@ -11,7 +11,7 @@ export async function deleteNote(id:number) {
     method:"DELETE"
   });
 
-  if (!res.ok) throw new Error("Falied to delete note");
+  if (!res.ok) throw new Error("Failed to delete note");
   return await res.json();
 }
 
@@ -22,6 +22,6 @@ export async function addNote(id:number) {
     body: JSON.stringify({id:id})
   });
   
-  if (!res.ok) throw new Error("Falied to add note");
+  if (!res.ok) throw new Error("Failed to add note");
   return await res.json();
 }

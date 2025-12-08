@@ -21,7 +21,7 @@ router.delete("/:id", (req, res) => {
 
 // Add note
 router.post("/", (req, res) => {
-    const id = req.body;
+    const {id} = req.body;
     notes.push({ id: id, title: '', content: '' })
 
     res.json({success:true, newId: id});
