@@ -23,12 +23,22 @@ router.delete("/:id/:taskId", (req, res) => {
     const taskId = Number(req.params.taskId);
     
    const index = tasks.findIndex(t => t.id === listId);
-  if (index === -1) {
-    return res.status(404).json({ success: false, error: "TaskList not found" });
+    if (index === -1) {
+        return res.status(404).json({ success: false, error: "TaskList not found" });
   }
 
-  tasks[index].tasks = tasks[index].tasks.filter(t => t.id !== taskId);
+    tasks[index].tasks = tasks[index].tasks.filter(t => t.id !== taskId);
     res.json({success:true, deletedId: listId, deletedTaskId: taskId});
+});
+
+// Add list
+router.post("/:id", (req, res) => {
+    const listId = Number(req.params.id);
+    const {title} = req.body;
+
+    tasks.push({ id: listId, title, tasks:[]}); 
+
+    res.json({success:true, listId, title});
 });
 
 export default router;

@@ -3,7 +3,7 @@ import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./TaskListAdder";
-import { deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
+import { addList, deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -86,12 +86,14 @@ export const TasksHolder = () => {
     triggerScreenBob(200);
   };
 
-  const addTaskList = (title:string) =>{
+  async function addTaskList(title: string) {
     const newTasks = [...allTasks];
     newTasks.push({ id: maxId, title, tasks:[]}); 
     setMaxId(n => n + 1);
     setAllTasks(newTasks);
     triggerScreenBob();
+
+    await addList(maxId, title);
   };
 
   const editGoesTo = (id: number, nextId: number) => {

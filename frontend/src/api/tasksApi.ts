@@ -6,21 +6,34 @@ export const fetchTasks = async () => {
 };
 
 export async function deleteTaskList(id: number) {
-  const res = await fetch(`${BASE_URL}/${id}`,{
-    method:"DELETE"
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: "DELETE"
   });
 
-  if (!res.ok) throw new Error("Falied to delete taskList");
+  if (!res.ok) throw new Error("Failed to delete taskList");
 
   return await res.json();
 }
 
 export async function deleteTask(id: number, taskId: number) {
-  const res = await fetch(`${BASE_URL}/${id}/${taskId}`,{
-    method:"DELETE"
+  const res = await fetch(`${BASE_URL}/${id}/${taskId}`, {
+    method: "DELETE"
   });
 
-  if (!res.ok) throw new Error("Falied to delete task");
+  if (!res.ok) throw new Error("Failed to delete task");
+
+  return await res.json();
+}
+
+
+export async function addList(id: number, title: string) {
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: "POST",
+    headers: {"Content-Type": "application/json"},
+    body: JSON.stringify({ title: title })
+  })
+
+  if (!res.ok) throw new Error("Failed to add new taskList");
 
   return await res.json();
 }
