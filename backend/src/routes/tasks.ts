@@ -25,20 +25,33 @@ router.delete("/:id/:taskId", (req, res) => {
    const index = tasks.findIndex(t => t.id === listId);
     if (index === -1) {
         return res.status(404).json({ success: false, error: "TaskList not found" });
-  }
+    }
 
     tasks[index].tasks = tasks[index].tasks.filter(t => t.id !== taskId);
     res.json({success:true, deletedId: listId, deletedTaskId: taskId});
 });
 
 // Add list
-router.post("/:id", (req, res) => {
-    const listId = Number(req.params.id);
-    const {title} = req.body;
+router.post("/list", (req, res) => {
+    const {listId, title} = req.body;
 
     tasks.push({ id: listId, title, tasks:[]}); 
 
     res.json({success:true, listId, title});
+});
+
+// Add task
+router.post("/task", (req, res) => {
+    const {listId, taskId, label} = req.body;
+
+    const index = tasks.findIndex(t => t.id === listId);
+    if (index === -1) {
+        return res.status(404).json({ success: false, error: "TaskList not found" });
+    }
+
+    tasks[index].tasks.push({ id: taskId, label: label, done:false });
+
+    res.json({success:true, listId, label});
 });
 
 export default router;

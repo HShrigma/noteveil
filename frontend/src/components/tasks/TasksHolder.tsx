@@ -3,7 +3,7 @@ import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./TaskListAdder";
-import { addList, deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
+import { addList, addTask, deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -13,30 +13,46 @@ export const TasksHolder = () => {
     500: 1,
   };
   const [allTasks, setAllTasks] = useState<TaskListData[]>([]);
-  const [maxId,setMaxId] = useState(3);
 
-  const [maxTaskId, setMaxTaskId] = useState(1000);
+  const [maxId, setMaxId] = useState(0);
+  const [maxTaskId, setMaxTaskId] = useState(0);
 
   useEffect(() => {
-    fetchTasks().then(setAllTasks);
+    fetchTasks().then(data => {
+      setAllTasks(data);
+
+      // compute max list id
+      const highestListId = data.reduce((max: number, list: { id: number; }) => Math.max(max, list.id), 0);
+
+      // compute max task id from all tasks
+      const highestTaskId = data.reduce(
+        (max: number, list: { tasks: any[]; }) =>
+          Math.max(max, ...list.tasks.map(t => t.id)),
+        0
+      );
+
+      setMaxId(highestListId + 1);
+      setMaxTaskId(highestTaskId + 1);
+    });
   }, []);
 
+
   const setNewList = (newTaskList: TaskListData) => setAllTasks(prev => prev.map(t => (t.id === newTaskList.id ? newTaskList : t)));
-  const getTaskListIndexById = (id: number) => {return allTasks.findIndex(t => t.id === id);}
-  const getTaskListById = (id: number) => { return { ...allTasks[getTaskListIndexById(id)] };} 
-    
+  const getTaskListIndexById = (id: number) => { return allTasks.findIndex(t => t.id === id); }
+  const getTaskListById = (id: number) => { return { ...allTasks[getTaskListIndexById(id)] }; }
+
   const handleTaskDoneChanged = (id: number, taskId: number, done: boolean) => {
     const newTaskList = getTaskListById(id);
     const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
     const newTask = newTaskList.tasks[taskIndex];
 
-    if(newTaskList.nextId && done){
+    if (newTaskList.nextId && done) {
       addNewTask(newTaskList.nextId, newTask.label);
       removeTask(newTaskList.id, taskId);
       return;
     }
 
-    newTask.done = done; 
+    newTask.done = done;
     newTaskList.tasks[taskIndex] = newTask;
     setNewList(newTaskList);
 
@@ -48,17 +64,19 @@ export const TasksHolder = () => {
 
     if (newTask.label === label) return;
 
-    newTask.label = label; 
+    newTask.label = label;
     newTaskList.tasks[taskIndex] = newTask;
     setNewList(newTaskList);
   };
 
-  const addNewTask = (id: number, label: string) => {
+  async function addNewTask(id: number, label: string) {
     const newTaskList = getTaskListById(id);
     newTaskList.tasks.push({ id: maxTaskId, label, done: false });
     setNewList(newTaskList);
     setMaxTaskId(n => n + 1 );
     triggerScreenBob(150);
+
+    await addTask(id, maxTaskId, label);
   };
 
   async function removeTask(id: number, taskId: number) {
