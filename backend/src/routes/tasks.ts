@@ -12,7 +12,7 @@ router.get("/", (_req, res) => {
 router.delete("/:id", (req, res) => {
     const id = Number(req.params.id);
 
-    tasks = tasks.filter(task => task.id !== id);
+    tasks = tasks.filter(taskList => taskList.id !== id);
 
     res.json({success:true, deletedId: id});
 });
@@ -21,9 +21,8 @@ router.delete("/:id", (req, res) => {
 router.delete("/:id/:taskId", (req, res) => {
     const id = Number(req.params.id);
     const taskId = Number(req.params.taskId);
-
-    tasks = tasks.filter(task => task.id !== id);
-
+    
+    tasks[tasks.findIndex(t => t.id === id)].tasks = tasks[tasks.findIndex(t => t.id === id)].tasks.filter( task => task.id !== taskId);
     res.json({success:true, deletedId: id, deletedTaskId: taskId});
 });
 

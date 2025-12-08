@@ -16,3 +16,15 @@ export async function deleteTaskList(id: number) {
 
   return await res.json();
 }
+
+export async function deleteTask(id: number, taskId: number) {
+  const res = await fetch(`${BASE_URL}/${id}/${taskId}`,{
+    method:"DELETE"
+  });
+
+  if(!res.ok){
+    throw new Error("Falied to delete task");
+  }
+  
+  return await res.json();
+}
