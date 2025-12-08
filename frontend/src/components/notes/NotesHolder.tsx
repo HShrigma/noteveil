@@ -15,10 +15,14 @@ export const NotesHolder = () => {
     };
 
     const [notes, setNotes] = useState<NoteData[]>([]);
-    const [maxId, setMaxId] = useState(5);
+    const [maxId, setMaxId] = useState(0);
 
     useEffect(() => {
-        fetchNotes().then(setNotes);
+        fetchNotes().then(fetched => {
+            setNotes(fetched);
+            const maxExistingId = fetched.reduce((max: number, n: { id: number; }) => Math.max(max, n.id), 0);
+            setMaxId(maxExistingId + 1);
+        });
     }, []);
 
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
@@ -74,7 +78,7 @@ export const NotesHolder = () => {
     async function onAddNote() {
         if (notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
-        newNotes.push({ id: maxId,title: '', content: '' })
+        newNotes.push({ id: maxId, title: '', content: '' })
         setNotes(newNotes);
         setFocusTarget('title');
         setActiveNote({ id: maxId, active: true });
