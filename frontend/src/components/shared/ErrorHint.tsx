@@ -11,7 +11,6 @@ export const ErrorHint = ({ message, toValidate, triggerCheck, className = "" }:
     const [isValid,setIsValid] = useState(true);
 
     useEffect(() => {
-        console.log("running FX");
         if(triggerCheck){
             setIsValid(toValidate.trim() !== '');
         }

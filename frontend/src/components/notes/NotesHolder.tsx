@@ -4,7 +4,7 @@ import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
-import { fetchNotes } from '../../api/notesApi';
+import { deleteNote, fetchNotes } from '../../api/notesApi';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -54,19 +54,20 @@ export const NotesHolder = () => {
         triggerScreenBob(200);
     };
 
-    const deleteNote = (index: number) => {
-        if (!notes[index]) return;
+    async function removeNote(id: number) {
+        const index = getNoteIndexById(id);
+        if (index === -1) return;
 
         const newNotes = [...notes];
-        newNotes.splice(index, 1);
-
-        setNotes(newNotes);
+        setNotes((prev) => prev.filter(t => t.id !== id));
         setActiveNote({ id: 0, active: false });
         setFocusTarget(null);
+
+        await deleteNote(id);
     }
 
-    const onNoteDelete = (index: number) => {
-        deleteNote(index);
+    const onNoteDelete = (id: number) => {
+        removeNote(id);
         triggerScreenShake(250);
     }
 

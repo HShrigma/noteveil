@@ -8,7 +8,7 @@ router.get("/", (_req, res) => {
     res.json(tasks);
 });
 
-// delete tasklist
+// Delete tasklist
 router.delete("/:id", (req, res) => {
     const id = Number(req.params.id);
 
@@ -17,13 +17,18 @@ router.delete("/:id", (req, res) => {
     res.json({success:true, deletedId: id});
 });
 
-// delete task
+// Delete task
 router.delete("/:id/:taskId", (req, res) => {
-    const id = Number(req.params.id);
+    const listId = Number(req.params.id);
     const taskId = Number(req.params.taskId);
     
-    tasks[tasks.findIndex(t => t.id === id)].tasks = tasks[tasks.findIndex(t => t.id === id)].tasks.filter( task => task.id !== taskId);
-    res.json({success:true, deletedId: id, deletedTaskId: taskId});
+   const index = tasks.findIndex(t => t.id === listId);
+  if (index === -1) {
+    return res.status(404).json({ success: false, error: "TaskList not found" });
+  }
+
+  tasks[index].tasks = tasks[index].tasks.filter(t => t.id !== taskId);
+    res.json({success:true, deletedId: listId, deletedTaskId: taskId});
 });
 
 export default router;

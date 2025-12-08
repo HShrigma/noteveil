@@ -10,9 +10,7 @@ export async function deleteTaskList(id: number) {
     method:"DELETE"
   });
 
-  if(!res.ok){
-    throw new Error("Falied to delete taskList");
-  }
+  if (!res.ok) throw new Error("Falied to delete taskList");
 
   return await res.json();
 }
@@ -22,9 +20,7 @@ export async function deleteTask(id: number, taskId: number) {
     method:"DELETE"
   });
 
-  if(!res.ok){
-    throw new Error("Falied to delete task");
-  }
-  
+  if (!res.ok) throw new Error("Falied to delete task");
+
   return await res.json();
 }
