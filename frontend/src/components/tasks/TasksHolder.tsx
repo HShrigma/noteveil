@@ -1,8 +1,9 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import TaskList, { type TaskListData } from "./TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./TaskListAdder";
+import { fetchTasks } from "../../api/tasksApi";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -11,23 +12,14 @@ export const TasksHolder = () => {
     768: 2,
     500: 1,
   };
-  const sampleTasks = [
-    { id: 0, label: "sample Task", done: false },
-    { id: 1, label: "do Thing", done: false },
-    { id: 2, label: "complete Thing", done: false },
-  ];
-  const sampleTasksAlt = [
-    { id: 3, label: "sample Task", done: false },
-    { id: 4, label: "do Thing", done: false },
-    { id: 5, label: "complete Thing", done: false },
-  ];
-  const [allTasks, setAllTasks] = useState<TaskListData[]>([
-    { id: 1, title: "tasks 1", tasks: [...sampleTasks] },
-    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt] }
-  ]);
+  const [allTasks, setAllTasks] = useState<TaskListData[]>([]);
   const [maxId,setMaxId] = useState(3);
 
   const [maxTaskId, setMaxTaskId] = useState(1000);
+
+  useEffect(() => {
+    fetchTasks().then(setAllTasks);
+  }, []);
 
   const setNewList = (newTaskList: TaskListData) => setAllTasks(prev => prev.map(t => (t.id === newTaskList.id ? newTaskList : t)));
   const getTaskListIndexById = (id: number) => {return allTasks.findIndex(t => t.id === id);}

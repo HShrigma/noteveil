@@ -1,9 +1,10 @@
-import { useState } from 'react';
-import Note from './Note';
+import { useEffect, useState } from 'react';
+import Note, { NoteData } from './Note';
 import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
+import { fetchNotes } from '../../api/notesApi';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -13,39 +14,43 @@ export const NotesHolder = () => {
         500: 1,
     };
 
-    // Temp notes
-    const tempNotes = [
-        { title: 'MD Header Note', content: '# H1\n## H2\n### H3' },
-        { title: 'MD Stylized', content: 'none\n*italics*\n**bold**\n***bolditalics***' },
-        { title: 'MD Specials', content: '### ---\n---\n### *empty*\n' },
-        { title: 'MD ulist Note', content: '- l1 \n  - l2' },
-    ];
-    const [notes, setNotes] = useState(tempNotes);
+    const [notes, setNotes] = useState<NoteData[]>([]);
+    const [maxId, setMaxId] = useState(5);
 
-    const [ActiveNote, setActiveNote] = useState<NoteActivity>({ index: 0, active: false });
+    useEffect(() => {
+        fetchNotes().then(setNotes);
+    }, []);
+
+    const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
     const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
 
+    const getNoteIndexById = (id: number) => {
+        return notes.findIndex(t => t.id === id);
+    }
+    const getNoteById = (id: number) => {
+        return notes[getNoteIndexById(id)];
+    }
     const updateActiveNote = (activity: NoteActivity) => {
-        activity.index %= notes.length;
+        activity.id = getNoteIndexById(activity.id) ? activity.id : notes[0].id;
         setActiveNote(activity);
         setFocusTarget((prev) => prev ?? 'content');
     };
 
-    const onTitleChangeHandler = (index: number, title: string) => {
+    const onTitleChangeHandler = (id: number, title: string) => {
         const newNotes = [...notes];
-        newNotes[index].title = title;
+        newNotes[getNoteIndexById(id)].title = title;
         setNotes(newNotes);
     };
 
-    const onContentChangeHandler = (index: number, content: string) => {
+    const onContentChangeHandler = (id: number, content: string) => {
         const newNotes = [...notes];
-        newNotes[index].content = content;
+        newNotes[getNoteIndexById(id)].content = content;
         setNotes(newNotes);
     };
 
-    const onTitleSubmit = (index: number) => {
+    const onTitleSubmit = (id: number) => {
         setFocusTarget('content');
-        setActiveNote({ index, active: true });
+        setActiveNote({ id, active: true });
         triggerScreenBob(200);
     };
 
@@ -56,7 +61,7 @@ export const NotesHolder = () => {
         newNotes.splice(index, 1);
 
         setNotes(newNotes);
-        setActiveNote({ index: 0, active: false });
+        setActiveNote({ id: 0, active: false });
         setFocusTarget(null);
     }
 
@@ -68,10 +73,11 @@ export const NotesHolder = () => {
     const onAddNote = () => {
         if (notes.some((note) => note.title === '' || note.content === '')) return;
         const newNotes = [...notes];
-        newNotes.push({ title: '', content: '' })
+        newNotes.push({ id: maxId,title: '', content: '' })
         setNotes(newNotes);
         setFocusTarget('title');
-        setActiveNote({ index: newNotes.length - 1, active: true });
+        setActiveNote({ id: maxId, active: true });
+        setMaxId(prev => prev + 1);
         triggerScreenBob();
     };
 
@@ -96,12 +102,10 @@ export const NotesHolder = () => {
                 {notes.map((note, index) => (
                     <div key={index} className="break-inside-avoid mb-4 fade-in">
                         <Note
-                            key={index}
-                            id={index}
-                            title={note.title}
-                            content={note.content}
-                            isActive={index === ActiveNote.index ? ActiveNote.active : false}
-                            focusTarget={index === ActiveNote.index ? focusTarget : null}
+                            key={note.id}
+                            data={note}
+                            isActive={note.id === ActiveNote.id ? ActiveNote.active : false}
+                            focusTarget={note.id === ActiveNote.id ? focusTarget : null}
                             onNoteFocus={updateActiveNote}
                             onNoteDelete={onNoteDelete}
                             onContentChange={onContentChangeHandler}

@@ -4,7 +4,7 @@ export const MAIN_STATES = {
 } as const;
 
 export type NoteActivity = {
-    index: number,
+    id: number,
     active: boolean
 };
 

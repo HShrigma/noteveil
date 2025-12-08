@@ -7,10 +7,13 @@ import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import ErrorHint from "../shared/ErrorHint";
 
-interface NoteProps {
+export interface NoteData {
     id: number;
     title: string;
     content: string;
+}
+interface NoteProps {
+    data: NoteData
     isActive: boolean;
     focusTarget: 'title' | 'content' | null;
     onNoteFocus: (value: NoteActivity) => void;
@@ -22,9 +25,7 @@ interface NoteProps {
 };
 
 export const Note = ({
-    id,
-    title,
-    content,
+    data,
     isActive,
     focusTarget,
     onNoteFocus,
@@ -48,15 +49,15 @@ export const Note = ({
             target.style.height = "auto";
             target.style.height = target.scrollHeight + "px";
         }
-    }, [content, isActive]);
+    }, [data.content, isActive]);
 
     const emitFocusSignal = (isActive: boolean) => {
-        onNoteFocus?.({ index: id, active: isActive });
+        onNoteFocus?.({ id: data.id, active: isActive });
     };
 
     const signalActive = () => { emitFocusSignal(true); };
     const signalInactive = () => {
-        if (content.trim() === '') {
+        if (data.content.trim() === '') {
             setTriggerErrorCheck(true);
             triggerScreenShake();
             return;
@@ -73,7 +74,7 @@ export const Note = ({
             case "Tab":
                 input.preventDefault();
                 if (input.shiftKey) {
-                    onNoteFocus?.({ index: id + 1, active: true });
+                    onNoteFocus?.({ id: data.id + 1, active: true });
                 }
                 else {
                     const target = input.currentTarget as HTMLTextAreaElement;
@@ -82,10 +83,10 @@ export const Note = ({
 
                     // Insert two spaces at cursor position
                     const newValue =
-                        content.substring(0, start) + "  " + content.substring(end);
+                        data.content.substring(0, start) + "  " + data.content.substring(end);
 
                     // Update the content
-                    onContentChange?.(id, newValue);
+                    onContentChange?.(data.id, newValue);
 
                     // Move cursor after inserted spaces (handled in next tick)
                     requestAnimationFrame(() => {
@@ -105,8 +106,8 @@ export const Note = ({
         >
             {/* Editable Title */}
             <EditableTitle
-                id={id}
-                title={title}
+                id={data.id}
+                title={data.title}
                 onEdit={onTitleChange}
                 onSubmit={onTitleSubmit}
                 autoFocus={focusTarget === 'title'}
@@ -119,9 +120,9 @@ export const Note = ({
                         ref={textareaRef}
                         name="noteBody"
                         placeholder="Add note here..."
-                        value={content}
+                        value={data.content}
                         autoFocus={focusTarget === 'content'}
-                        onChange={(e) => {onContentChange?.(id, e.target.value); setTriggerErrorCheck(false);}}
+                        onChange={(e) => {onContentChange?.(data.id, e.target.value); setTriggerErrorCheck(false);}}
                         onInput={(e) => {
                             const target = e.currentTarget;
                             target.style.height = "auto"; // reset
@@ -130,10 +131,10 @@ export const Note = ({
                         onKeyDown={onKeyDownHandler}
                         className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
                     />
-                    <ErrorHint triggerCheck={triggerErrorCheck} toValidate={content} message="Cannot submit an empty note" />
+                    <ErrorHint triggerCheck={triggerErrorCheck} toValidate={data.content} message="Cannot submit an empty note" />
                     <div className="flex justify-between mt-2">
                         <ConfirmDeleteButton
-                            onConfirm={() => onNoteDelete?.(id)}
+                            onConfirm={() => onNoteDelete?.(data.id)}
                             label="Delete"
                         />
                         <button
@@ -156,7 +157,7 @@ export const Note = ({
                         className=" markdown-body"
                     >
                         <Markdown>
-                            {content}
+                            {data.content}
                         </Markdown>
                     </div>
                     <button
