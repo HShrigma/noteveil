@@ -2,14 +2,14 @@ import { useState } from "react";
 import type { TaskListData } from "./TaskList";
 
 interface GoesToButtonProps {
-    label: string,
     ownId: number;
     items: TaskListData[];
     onGoesTo?: (id: number) => void;
 };
 
-export const GoesToButton = ({ label, ownId, items, onGoesTo }: GoesToButtonProps) => {
+export const GoesToButton = ({ ownId, items, onGoesTo }: GoesToButtonProps) => {
     const [active, setActive] = useState(false);
+    const [label, setLabel] = useState("None");
     const [shaking, setShaking] = useState(false);
 
     const triggerShake = () => {
@@ -20,6 +20,9 @@ export const GoesToButton = ({ label, ownId, items, onGoesTo }: GoesToButtonProp
     const selectNext = (id: number) => {
         onGoesTo?.(id);
         setActive(false);
+
+        const item = items.find(i => i.id === id);
+        setLabel(item ? item.title : "None");
 
         triggerShake();
     };

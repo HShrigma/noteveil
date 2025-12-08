@@ -25,26 +25,26 @@ export const TasksHolder = () => {
     { id: 1, title: "tasks 1", tasks: [...sampleTasks] },
     { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt] }
   ]);
-  const [maxId, setMaxId] = useState(3);
+  const [maxId,setMaxId] = useState(3);
 
   const [maxTaskId, setMaxTaskId] = useState(1000);
 
   const setNewList = (newTaskList: TaskListData) => setAllTasks(prev => prev.map(t => (t.id === newTaskList.id ? newTaskList : t)));
-  const getTaskListIndexById = (id: number) => { return allTasks.findIndex(t => t.id === id); }
-  const getTaskListById = (id: number) => { return { ...allTasks[getTaskListIndexById(id)] }; }
-
+  const getTaskListIndexById = (id: number) => {return allTasks.findIndex(t => t.id === id);}
+  const getTaskListById = (id: number) => { return { ...allTasks[getTaskListIndexById(id)] };} 
+    
   const handleTaskDoneChanged = (id: number, taskId: number, done: boolean) => {
     const newTaskList = getTaskListById(id);
     const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
     const newTask = newTaskList.tasks[taskIndex];
 
-    if (newTaskList.nextId && done) {
+    if(newTaskList.nextId && done){
       addNewTask(newTaskList.nextId, newTask.label);
       removeTask(newTaskList.id, taskId);
       return;
     }
 
-    newTask.done = done;
+    newTask.done = done; 
     newTaskList.tasks[taskIndex] = newTask;
     setNewList(newTaskList);
 
@@ -56,7 +56,7 @@ export const TasksHolder = () => {
 
     if (newTask.label === label) return;
 
-    newTask.label = label;
+    newTask.label = label; 
     newTaskList.tasks[taskIndex] = newTask;
     setNewList(newTaskList);
   };
@@ -65,7 +65,7 @@ export const TasksHolder = () => {
     const newTaskList = getTaskListById(id);
     newTaskList.tasks.push({ id: maxTaskId, label, done: false });
     setNewList(newTaskList);
-    setMaxTaskId(n => n + 1);
+    setMaxTaskId(n => n + 1 );
     triggerScreenBob(150);
   };
 
@@ -78,46 +78,22 @@ export const TasksHolder = () => {
   const editTaskTitle = (id: number, newValue: string) => {
     const newTasks = [...allTasks];
     newTasks[getTaskListIndexById(id)].title = newValue;
-    
-    const connected = newTasks.map( list => {
-      if(list.nextId === id){
-        return {
-          ...list,
-          goToLabel:newValue
-        }
-      }
-      return list;
-    });
-
-    setAllTasks(connected);
+    setAllTasks(newTasks);
   };
 
   const removeList = (id: number) => {
-    const remaining = allTasks.filter(task => task.id !== id);
-
-    const cleaned = remaining.map(list => {
-      if (list.nextId === id) {
-        return {
-          ...list,
-          nextId: undefined,
-          goToLabel: undefined
-        };
-      }
-      return list;
-    });
-
-    setAllTasks(cleaned);
+    const newTasks = [...allTasks];
+    setAllTasks(newTasks.filter(task => task.id != id));
     triggerScreenShake();
-  };
-
+  }
 
   const submitTaskTitle = () => {
     triggerScreenBob(200);
   };
 
-  const addTaskList = (title: string) => {
+  const addTaskList = (title:string) =>{
     const newTasks = [...allTasks];
-    newTasks.push({ id: maxId, title, tasks: [] });
+    newTasks.push({ id: maxId, title, tasks:[]}); 
     setMaxId(n => n + 1);
     setAllTasks(newTasks);
     triggerScreenBob();
@@ -126,12 +102,11 @@ export const TasksHolder = () => {
   const editGoesTo = (id: number, nextId: number) => {
     const newTaskList = getTaskListById(id);
     newTaskList.nextId = nextId === -1 ? undefined : nextId;
-    newTaskList.goToLabel = nextId === -1 ? undefined : getTaskListById(nextId).title;
     setNewList(newTaskList);
   };
   return (
     <div>
-      <TaskListAdder onTaskListAdded={addTaskList} />
+      <TaskListAdder onTaskListAdded={addTaskList}/>
       <Masonry
         breakpointCols={breakpointColumnsObj}
         className="flex gap-4"
