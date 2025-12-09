@@ -49,6 +49,7 @@ export const Note = ({
             {isActive ? (
                 <ActiveNote
                     data={data}
+                    focusTarget={focusTarget}
                     onNoteFocus={onNoteFocus}
                     onNoteDelete={onNoteDelete}
                     onSubmit={onNoteSubmit}

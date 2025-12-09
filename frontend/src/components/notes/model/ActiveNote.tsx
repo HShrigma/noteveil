@@ -8,24 +8,26 @@ import { NoteData } from "../../../utils/types";
 
 interface ActiveNoteProps {
     data: NoteData;
+    focusTarget: "title" | "content" | null;
     onNoteFocus: (activity: NoteActivity) => void;
     onNoteDelete: (id: number) => void;
     onSubmit: (id: number, content: string) => void;
     onInactive: () => void;
 }
 
-export const ActiveNote = ({ data, onNoteFocus, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
+export const ActiveNote = ({ data, focusTarget, onNoteFocus, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(data.content);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
     useEffect(() => {
-        if (textareaRef.current) {
+        if (textareaRef.current && focusTarget === "content") {
             textareaRef.current.style.height = "auto";
             textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
             textareaRef.current.focus();
         }
-    }, []);
+    }, [focusTarget]);
+
 
     const revertToSnapshot = () => {
         setValue(data.content);
