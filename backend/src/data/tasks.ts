@@ -9,6 +9,6 @@ export const sampleTasksAlt = [
     { id: 5, label: "complete Thing", done: false },
 ];
 export const tempTasks = [
-    { id: 1, title: "tasks from API", tasks: [...sampleTasks] },
-    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt] }
+    { id: 1, title: "tasks from API", tasks: [...sampleTasks], nextId: undefined },
+    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt], nextId: undefined }
 ];

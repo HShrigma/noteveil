@@ -34,7 +34,7 @@ export const TaskList = ({
                 title={data.title}
                 onSubmit={(id, value) => onTitleSubmitted?.(id,value)}
             />
-            <GoesToButton ownId={data.id} items={allTasks} onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} />
+            <GoesToButton nextId={data.nextId} ownId={data.id} items={allTasks} onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} />
             <div className="flex flex-col gap-2 mt-2">
                 {data.tasks &&
                     data.tasks.map((task) => (

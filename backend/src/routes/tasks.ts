@@ -32,26 +32,42 @@ router.delete("/:id/:taskId", (req, res) => {
 });
 
 // Add list
-router.post("/list", (req, res) => {
-    const {listId, title} = req.body;
+router.post("/list/:id", (req, res) => {
+    const listId = Number(req.params.id);
+    const {title} = req.body;
 
-    tasks.push({ id: listId, title, tasks:[]}); 
+    tasks.push({ id: listId, title, tasks:[], nextId:undefined}); 
 
     res.json({success:true, listId, title});
 });
 
 // Add task
-router.post("/task", (req, res) => {
-    const {listId, taskId, label} = req.body;
-
+router.post("/task/:id", (req, res) => {
+    const listId = Number(req.params.id);
     const index = tasks.findIndex(t => t.id === listId);
-    if (index === -1) {
-        return res.status(404).json({ success: false, error: "TaskList not found" });
-    }
 
+    if (index === -1) return res.status(404).json({ success: false, error: "TaskList not found" });
+
+    const {taskId, label} = req.body;
     tasks[index].tasks.push({ id: taskId, label: label, done:false });
 
     res.json({success:true, listId, label});
+});
+
+// Update nextId
+router.patch("/list/:id/next", (req,res) => {
+    const listId = Number(req.params.id);
+    const index = tasks.findIndex(t => t.id === listId);
+
+    if (index === -1) return res.status(404).json({ success: false, error: "TaskList not found" });
+    
+    const {nextId} = req.body;
+
+    if (nextId && !tasks.some(list => list.id === nextId)) return res.status(404).json({ success: false, error: `No id to reference found for id:${nextId}` });
+
+    tasks[index].nextId = nextId;
+
+    res.json({success:true, listId, nextId});
 });
 
 export default router;

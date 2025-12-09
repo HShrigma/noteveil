@@ -3,13 +3,14 @@ import { TaskListData } from "../../../../utils/types";
 
 interface GoesToButtonProps {
     ownId: number;
+    nextId: number | undefined;
     items: TaskListData[];
     onGoesTo?: (id: number) => void;
 };
 
-export const GoesToButton = ({ ownId, items, onGoesTo }: GoesToButtonProps) => {
+export const GoesToButton = ({ ownId, nextId, items, onGoesTo }: GoesToButtonProps) => {
     const [active, setActive] = useState(false);
-    const [label, setLabel] = useState("None");
+    const [label, setLabel] = useState(nextId ?  items.find(list => list.id === nextId)?.title : "None");
     const [shaking, setShaking] = useState(false);
 
     const triggerShake = () => {
