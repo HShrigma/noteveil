@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { TaskListData } from "../TaskList";
+import { TaskListData } from "../../../../utils/types";
 
 interface GoesToButtonProps {
     ownId: number;

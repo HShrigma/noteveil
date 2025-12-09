@@ -30,7 +30,6 @@ export const NotesHolder = () => {
     const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
 
     const getNoteIndexById = (id: number) => notes.findIndex(t => t.id === id);
-    const getNoteById = (id: number) => notes[getNoteIndexById(id)];
 
     const updateActiveNote = (activity: NoteActivity) => {
         activity.id = getNoteIndexById(activity.id) ? activity.id : notes[0]?.id;
@@ -55,6 +54,7 @@ export const NotesHolder = () => {
     };
 
     async function removeNote(id: number) {
+        triggerScreenShake(250);
         const index = getNoteIndexById(id);
         if (index === -1) return;
 
@@ -64,11 +64,6 @@ export const NotesHolder = () => {
 
         await deleteNote(id);
     }
-
-    const onNoteDelete = (id: number) => {
-        removeNote(id);
-        triggerScreenShake(250);
-    };
 
     async function onAddNote() {
         if (notes.some(n => n.title === '' || n.content === '')) return;
@@ -109,10 +104,9 @@ export const NotesHolder = () => {
                             isActive={note.id === ActiveNote.id ? ActiveNote.active : false}
                             focusTarget={note.id === ActiveNote.id ? focusTarget : null}
                             onNoteFocus={updateActiveNote}
-                            onNoteDelete={onNoteDelete}
-                            onContentChange={onContentChangeHandler}
+                            onNoteDelete={removeNote}
                             onTitleSubmit={onTitleSubmit}
-                            clearFocusTarget={() => setFocusTarget(null)}
+                            onNoteSubmit={onContentChangeHandler}
                         />
                     </div>
                 ))}

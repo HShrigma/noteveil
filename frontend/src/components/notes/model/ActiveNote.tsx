@@ -1,78 +1,115 @@
+import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../shared/ErrorHint";
+import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
+import { NoteActivity } from "../../../utils/registries";
+import { NoteData } from "../../../utils/types";
 
-export interface ActiveNoteProps {
-  id: number;
-  content: string;
-  focusTarget: 'content' | null;
-  onContentChange: (id: number, content: string) => void;
-  onDelete: (id: number) => void;
-  onSubmit: () => void;
-  onKeyDown: (e: React.KeyboardEvent<HTMLTextAreaElement>) => void;
-  triggerErrorCheck: boolean;
-  setTriggerErrorCheck: (value: boolean) => void;
+interface ActiveNoteProps {
+    data: NoteData;
+    onNoteFocus: (activity: NoteActivity) => void;
+    onNoteDelete: (id: number) => void;
+    onSubmit: (id: number, content: string) => void;
+    onInactive: () => void;
 }
 
-const ActiveNote = ({
-  id,
-  content,
-  focusTarget,
-  onContentChange,
-  onDelete,
-  onSubmit,
-  onKeyDown,
-  triggerErrorCheck,
-  setTriggerErrorCheck
-}: ActiveNoteProps) => {
-  return (
-    <div className="flex flex-col gap-2">
-      <textarea
-        name="noteBody"
-        placeholder="Add note here..."
-        value={content}
-        autoFocus={focusTarget === "content"}
-        onChange={(e) => {
-          onContentChange(id, e.target.value);
-          setTriggerErrorCheck(false);
-        }}
-        onInput={(e) => {
-          const t = e.currentTarget;
-          t.style.height = "auto";
-          t.style.height = t.scrollHeight + "px";
-        }}
-        onKeyDown={onKeyDown}
-        className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold
-                   focus:font-normal focus:font-firabase text-[#c0caf5]
-                   px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
-      />
+export const ActiveNote = ({ data, onNoteFocus, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
+    const [value, setValue] = useState(data.content);
+    const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
-      <ErrorHint
-        triggerCheck={triggerErrorCheck}
-        toValidate={content}
-        message="Cannot submit an empty note"
-      />
+    useEffect(() => {
+        if (textareaRef.current) {
+            textareaRef.current.style.height = "auto";
+            textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
+            textareaRef.current.focus();
+        }
+    }, []);
 
-      <div className="flex justify-between mt-2">
-        <ConfirmDeleteButton onConfirm={() => onDelete(id)} label="Delete" />
-        <button
-          onClick={onSubmit}
-          className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500
-                     text-[#f6faff] hover:bg-[#9ece6a]
-                     hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
-        >
-          <Check size={18} strokeWidth={3} />
-          Submit
-        </button>
-      </div>
+    const revertToSnapshot = () => {
+        setValue(data.content);
+        setTriggerErrorCheck(false);
+    };
 
-      <div className="flex justify-between text-xs text-[#565f89] mt-1 px-2">
-        <span>Shift+Tab – next note</span>
-        <span>Ctrl+Enter – submit</span>
-        <span>Esc – discard</span>
-      </div>
-    </div>
-  );
+    const signalInactive = () => {
+        if (value.trim() === "") {
+            setTriggerErrorCheck(true);
+            triggerScreenShake();
+            return;
+        }
+        onSubmit(data.id, value);
+        onInactive();
+        triggerScreenBob(150);
+    };
+
+    const onKeyDownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        switch (e.key) {
+            case "Escape":
+                revertToSnapshot();
+                onInactive();
+                return;
+            case "Enter":
+                if (e.ctrlKey) signalInactive();
+                return;
+            case "Tab":
+                e.preventDefault();
+                if (e.shiftKey) {
+                    const leave = value.trim() === data.content.trim() || confirm("Discard changes to this note?");
+                    if (!leave) return;
+                    revertToSnapshot();
+                    onNoteFocus?.({ id: data.id + 1, active: true });
+                    return;
+                }
+                const t = e.currentTarget;
+                const start = t.selectionStart;
+                const end = t.selectionEnd;
+                const newValue = value.substring(0, start) + "  " + value.substring(end);
+                setValue(newValue);
+                requestAnimationFrame(() => {
+                    t.selectionStart = t.selectionEnd = start + 2;
+                });
+                return;
+        }
+    };
+
+    return (
+        <div className="flex flex-col gap-2">
+            <textarea
+                ref={textareaRef}
+                placeholder="Add note here..."
+                value={value}
+                onChange={(e) => setValue(e.target.value)}
+                onInput={(e) => {
+                    const t = e.currentTarget;
+                    t.style.height = "auto";
+                    t.style.height = t.scrollHeight + "px";
+                }}
+                onKeyDown={onKeyDownHandler}
+                className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold
+                   focus:font-normal text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
+            />
+
+            <ErrorHint triggerCheck={triggerErrorCheck} toValidate={value} message="Cannot submit an empty note" />
+
+            <div className="flex justify-between mt-2">
+                <ConfirmDeleteButton onConfirm={() => onNoteDelete?.(data.id)} label="Delete" />
+                <button
+                    onClick={signalInactive}
+                    className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
+                >
+                    <Check size={18} strokeWidth={3} />
+                    Submit
+                </button>
+            </div>
+
+            <div className="flex justify-between text-xs text-[#565f89] mt-1 px-2">
+                <span>Shift+Tab – next note</span>
+                <span>Ctrl+Enter – submit</span>
+                <span>Esc – discard</span>
+            </div>
+        </div>
+    );
 };
 
 export default ActiveNote;
