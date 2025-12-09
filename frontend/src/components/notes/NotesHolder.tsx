@@ -4,7 +4,7 @@ import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
-import { addNote, deleteNote, fetchNotes } from '../../api/notesApi';
+import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from '../../api/notesApi';
 import { NoteData } from '../../utils/types';
 
 export const NotesHolder = () => {
@@ -37,7 +37,7 @@ export const NotesHolder = () => {
         setFocusTarget(prev => prev ?? 'content');
     };
 
-    const onTitleSubmit = (id: number, title: string) => {
+    async function onTitleSubmit  (id: number, title: string)  {
         const newNotes = [...notes];
         newNotes[getNoteIndexById(id)].title = title;
         setNotes(newNotes);
@@ -45,12 +45,16 @@ export const NotesHolder = () => {
         setFocusTarget('content');
         setActiveNote({ id, active: true });
         triggerScreenBob(200);
+
+        await patchNoteTitle(id, title);
     };
 
-    const onContentChangeHandler = (id: number, content: string) => {
+    async function onNoteSubmitHandler(id: number, content: string) {
         const newNotes = [...notes];
         newNotes[getNoteIndexById(id)].content = content;
         setNotes(newNotes);
+
+        await patchNoteContent(id, content);
     };
 
     async function removeNote(id: number) {
@@ -106,7 +110,7 @@ export const NotesHolder = () => {
                             onNoteFocus={updateActiveNote}
                             onNoteDelete={removeNote}
                             onTitleSubmit={onTitleSubmit}
-                            onNoteSubmit={onContentChangeHandler}
+                            onNoteSubmit={onNoteSubmitHandler}
                         />
                     </div>
                 ))}

@@ -20,10 +20,40 @@ router.delete("/:id", (req, res) => {
 });
 
 // Add note
-router.post("/", (req, res) => {
-    const {id} = req.body;
+router.post("/:id", (req, res) => {
+
+    const id = Number(req.params.id);
     notes.push({ id: id, title: '', content: '' })
 
     res.json({success:true, newId: id});
 });
+
+// Update note title
+router.patch("/:id/title", (req,res) => {
+    const id = Number(req.params.id);
+    const index = notes.findIndex(t => t.id === id);
+    if (index === -1) return res.status(404).json({ success: false, error: "TaskList not found" });
+
+    const {title} = req.body;
+    if (!title) return res.status(404).json({ success: false, error: "Cannot set empty title" });
+
+    notes[index].title = title;
+
+    res.json({success:true, id, title});
+});
+
+// Update note content
+router.patch("/:id/content", (req,res) => {
+    const id = Number(req.params.id);
+    const index = notes.findIndex(t => t.id === id);
+    if (index === -1) return res.status(404).json({ success: false, error: "TaskList not found" });
+
+    const {content} = req.body;
+    if (!content) return res.status(404).json({ success: false, error: "Cannot set empty content" });
+
+    notes[index].content = content;
+
+    res.json({success:true, id, title: content});
+});
+
 export default router; 
