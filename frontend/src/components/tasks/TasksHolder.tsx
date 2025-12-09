@@ -138,6 +138,7 @@ export const TasksHolder = () => {
                     <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47] fade-in" key={task.id}>
                         <TaskList
                             allTasks={allTasks}
+                            goesToLabel={getTaskListById(task.nextId ?? -1).title}
                             data={task}
                             onTaskSubmit={handleTaskSubmit}
                             onTaskDoneChanged={handleTaskDoneChanged}

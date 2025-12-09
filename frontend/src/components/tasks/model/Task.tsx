@@ -20,7 +20,6 @@ const Task = ({ task, startEditing = false, onSubmit, onDoneChange, onDelete }: 
       initialValue={task.label}
       done={task.done}
       onSubmit={(id, label) => { onSubmit?.(id, label); setEditing(false); }}
-      onDoneChange={onDoneChange}
       onCancel={() => setEditing(false)}
     />
   ) : (

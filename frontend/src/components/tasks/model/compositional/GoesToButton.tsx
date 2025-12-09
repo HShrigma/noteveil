@@ -3,14 +3,13 @@ import { TaskListData } from "../../../../utils/types";
 
 interface GoesToButtonProps {
     ownId: number;
-    nextId: number | undefined;
+    label: string;
     items: TaskListData[];
     onGoesTo?: (id: number) => void;
 };
 
-export const GoesToButton = ({ ownId, nextId, items, onGoesTo }: GoesToButtonProps) => {
+export const GoesToButton = ({ ownId, label, items, onGoesTo }: GoesToButtonProps) => {
     const [active, setActive] = useState(false);
-    const [label, setLabel] = useState(nextId ?  items.find(list => list.id === nextId)?.title : "None");
     const [shaking, setShaking] = useState(false);
 
     const triggerShake = () => {
@@ -22,9 +21,6 @@ export const GoesToButton = ({ ownId, nextId, items, onGoesTo }: GoesToButtonPro
         onGoesTo?.(id);
         setActive(false);
 
-        const item = items.find(i => i.id === id);
-        setLabel(item ? item.title : "None");
-
         triggerShake();
     };
 
@@ -33,14 +29,14 @@ export const GoesToButton = ({ ownId, nextId, items, onGoesTo }: GoesToButtonPro
             <button
                 className={`
                     flex items-center gap-2 px-3 py-1 rounded-2xl border-2 
-                    border-purple-500 ${label === "None" ? "bg-purple-800" : "bg-purple-500"}
+                    border-purple-500 ${label ? "bg-purple-500" : "bg-purple-800"}
                     text-[#f6faff] transition-all duration-150
                     hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7]
                     ${shaking ? "shake-subtle" : ""}
                 `}
                 onClick={() => setActive(n => !n)}
             >
-                Goes To: {label}
+                Goes To: {label ?? "None"}
             </button>
 
             {active && (
@@ -70,4 +66,3 @@ export const GoesToButton = ({ ownId, nextId, items, onGoesTo }: GoesToButtonPro
 };
 
 export default GoesToButton;
-
