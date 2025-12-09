@@ -3,7 +3,7 @@ import TaskList from "./model/TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./model/compositional/TaskListAdder";
-import { addList, addTask, deleteTask, deleteTaskList, fetchTasks, patchNextId } from "../../api/tasksApi";
+import { addList, addTask, deleteTask, deleteTaskList, fetchTasks, patchListTitle as patchTitle, patchNextId, patchTaskDone, patchTaskLabel } from "../../api/tasksApi";
 import { TaskListData } from "../../utils/types";
 
 export const TasksHolder = () => {
@@ -34,6 +34,7 @@ export const TasksHolder = () => {
     }, []);
 
     const setNewList = (newTaskList: TaskListData) => setAllTasks((prev) => prev.map((t) => (t.id === newTaskList.id ? newTaskList : t)));
+    const findTaskIndexByTaskId = (list: TaskListData, taskId: number) => { return list.tasks.findIndex((t) => t.id === taskId); }
     const getTaskListIndexById = (id: number) => {
         return allTasks.findIndex((t) => t.id === id);
     };
@@ -41,32 +42,37 @@ export const TasksHolder = () => {
         return { ...allTasks[getTaskListIndexById(id)] };
     };
 
-    const handleTaskDoneChanged = (id: number, taskId: number, done: boolean) => {
+    async function handleTaskDoneChanged(id: number, taskId: number, done: boolean) {
         const newTaskList = getTaskListById(id);
-        const taskIndex = newTaskList.tasks.findIndex((t) => t.id === taskId);
+        const taskIndex = findTaskIndexByTaskId(newTaskList, taskId);
+
         if (taskIndex === -1) return;
         const newTask = { ...newTaskList.tasks[taskIndex], done };
         newTaskList.tasks[taskIndex] = newTask;
 
         // move to next list if nextId set
         if (newTaskList.nextId && done) {
-            addNewTask(newTaskList.nextId, newTask.label);
-            removeTask(newTaskList.id, taskId);
+            await addNewTask(newTaskList.nextId, newTask.label);
+            await removeTask(newTaskList.id, taskId);
             return;
         }
 
         setNewList(newTaskList);
+        await patchTaskDone(id, taskId, done);
     };
 
-    const handleTaskSubmit = (id: number, taskId: number, label: string) => {
+    async function handleTaskSubmit(id: number, taskId: number, label: string) {
         const newTaskList = getTaskListById(id);
-        const taskIndex = newTaskList.tasks.findIndex((t) => t.id === taskId);
+        const taskIndex = findTaskIndexByTaskId(newTaskList, taskId);
+
         if (taskIndex === -1) return;
 
         const newTask = { ...newTaskList.tasks[taskIndex], label };
         newTaskList.tasks[taskIndex] = newTask;
 
         setNewList(newTaskList);
+
+        await patchTaskLabel(id, taskId, label);
     };
 
     async function addNewTask(id: number, label: string) {
@@ -92,15 +98,18 @@ export const TasksHolder = () => {
         const newTasks = [...allTasks];
         setAllTasks(newTasks.filter((task) => task.id != id));
         triggerScreenShake();
+
         await deleteTaskList(id);
     }
 
-    const submitTaskTitle = (id: number, value: string) => {
+    async function submitTaskTitle(id: number, value: string) {
         triggerScreenBob(200);
         const newTaskList = getTaskListById(id);
         newTaskList.title = value;
 
         setNewList(newTaskList);
+
+        await patchTitle(id, value);
     };
 
     async function addTaskList(title: string) {

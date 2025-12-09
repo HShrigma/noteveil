@@ -39,11 +39,10 @@ export async function addList(id: number, title: string) {
 }
 
 export async function addTask(id: number, taskId: number, label: string) {
-    const res = await fetch(`${BASE_URL}/task/${id}`, {
+    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            taskId: taskId,
             label: label
         })
     })
@@ -63,6 +62,51 @@ export async function patchNextId(id:number, nextId: number | undefined){
     })
 
     if (!res.ok) throw new Error("Couldn't patch next Id");
+
+    return await res.json();
+
+}
+
+export async function patchTaskDone(id: number, taskId: number, done: boolean) {
+    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}/done`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            done: done
+        })
+    })
+
+    if (!res.ok) throw new Error("Couldn't patch task done");
+
+    return await res.json();
+
+}
+
+export async function patchTaskLabel(id: number, taskId: number, label: string) {
+    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}/label`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            label: label
+        })
+    })
+
+    if (!res.ok) throw new Error("Couldn't patch task label");
+
+    return await res.json();
+
+}
+
+export async function patchListTitle(id: number, title: string) {
+    const res = await fetch(`${BASE_URL}/list/${id}/title`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+            title: title
+        })
+    })
+
+    if (!res.ok) throw new Error("Couldn't patch list title");
 
     return await res.json();
 
