@@ -1,3 +1,4 @@
+import { TaskActivity } from "../../utils/registries";
 import EditableTitle from "../shared/EditableTitle";
 import GoesToButton from "./GoesToButton";
 import Task, { type TaskItem } from "./Task";
@@ -10,9 +11,13 @@ export interface TaskListData{
     nextId?: number;
 }
 interface TaskListProps {
-    allTasks: TaskListData[];
+    activeTask: TaskActivity;
+    allTasks: TaskListData[]
+    focusTargetTask: "label" | null;
+    onTaskFocus: (listId: number, taskId: number, active: boolean) => void;
+    clearTaskFocus: () => void;
     data: TaskListData;
-    onTaskLabelChanged?: (id: number, taskId: number, label: string) => void;
+    onTaskSubmit?: (id: number, taskId: number, label: string) => void;
     onTaskDoneChanged?: (id: number, taskId: number, done: boolean) => void;
     onTaskAdded?: (id: number, label: string) => void;
     onTaskRemoved?: (id: number, taskId: number) => void;
@@ -22,12 +27,17 @@ interface TaskListProps {
     onGoesTo?: (id:number, nextId:number) => void;
 };
 
-export const TaskList = ({ allTasks, data, onTaskLabelChanged, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
-    const handleDoneChange = (id: number, done:boolean) => {
+export const TaskList = ({ activeTask, allTasks, focusTargetTask, clearTaskFocus, onTaskFocus, data, onTaskSubmit, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
+    const handleDoneChanged = (id: number, done:boolean) => {
         onTaskDoneChanged?.(data.id, id, done);
     };
-    const handleLabelChange = (id: number, label: string ) => {
-        onTaskLabelChanged?.(data.id, id, label);
+    const isTaskActive = (taskId: number) => activeTask.listId === data.id && activeTask.taskId === taskId && activeTask.active;
+    const onFocusChanged = (id:number, active: boolean) => {
+        onTaskFocus(data.id, id, active);
+        if(!active) clearTaskFocus();
+    }
+    const handleSubmit = (id: number, label: string ) => {
+        onTaskSubmit?.(data.id, id, label);
     };
     const removeTask = (taskId: number) => {
         onTaskRemoved?.(data.id, taskId);
@@ -67,9 +77,12 @@ export const TaskList = ({ allTasks, data, onTaskLabelChanged, onTaskDoneChanged
             {data.tasks && (data.tasks.map(task =>
                 <Task
                     key={task.id}
+                    isActive={isTaskActive(task.id)}
+                    focusTarget={isTaskActive(task.id) ? focusTargetTask : null}
+                    onFocusChange={(active) => onFocusChanged(task.id,active)}
                     task={task}
-                    onLabelChange={handleLabelChange}
-                    onDoneChange={handleDoneChange}
+                    onSubmit={handleSubmit}
+                    onDoneChange={handleDoneChanged}
                     onDelete={removeTask}
                 />))}
             </div>

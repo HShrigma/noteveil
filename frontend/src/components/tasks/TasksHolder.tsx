@@ -4,6 +4,7 @@ import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
 import TaskListAdder from "./TaskListAdder";
 import { addList, addTask, deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
+import { TaskActivity } from "../../utils/registries";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -16,6 +17,14 @@ export const TasksHolder = () => {
 
   const [maxId, setMaxId] = useState(0);
   const [maxTaskId, setMaxTaskId] = useState(0);
+
+  const [activeTask, setActiveTask] = useState<TaskActivity>({
+    listId: 0,
+    taskId: 0,
+    active: false
+  });
+
+  const [focusTargetTask, setFocusTargetTask] = useState<"label" | null>(null);
 
   useEffect(() => {
     fetchTasks().then(data => {
@@ -57,21 +66,24 @@ export const TasksHolder = () => {
     setNewList(newTaskList);
 
   };
-  const handleTaskLabelChanged = (id: number, taskId: number, label: string) => {
+  const handleTaskSubmit = (id: number, taskId: number, label: string) => {
     const newTaskList = getTaskListById(id);
     const taskIndex = newTaskList.tasks.findIndex(t => t.id === taskId);
     const newTask = newTaskList.tasks[taskIndex];
 
-    if (newTask.label === label) return;
-
     newTask.label = label;
     newTaskList.tasks[taskIndex] = newTask;
+
     setNewList(newTaskList);
+  };
+  const updateActiveTask = (listId: number, taskId: number, active: boolean) => {
+    setActiveTask({ listId, taskId, active });
+    if (active) setFocusTargetTask("label");
   };
 
   async function addNewTask(id: number, label: string) {
     const newTaskList = getTaskListById(id);
-    newTaskList.tasks.push({ id: maxTaskId, label, done: false });
+    newTaskList.tasks.push({ id: maxTaskId, label, done: false});
     setNewList(newTaskList);
     setMaxTaskId(n => n + 1 );
     triggerScreenBob(150);
@@ -133,9 +145,13 @@ export const TasksHolder = () => {
             key={task.id}
           >
             <TaskList
+              activeTask={activeTask}
+              focusTargetTask={focusTargetTask}
+              onTaskFocus={updateActiveTask}
+              clearTaskFocus={() => setFocusTargetTask(null)}
               allTasks={allTasks}
               data={task}
-              onTaskLabelChanged={handleTaskLabelChanged}
+              onTaskSubmit={handleTaskSubmit}
               onTaskDoneChanged={handleTaskDoneChanged}
               onTaskAdded={addNewTask}
               onTaskRemoved={removeTask}
