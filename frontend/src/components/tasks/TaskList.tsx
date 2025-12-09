@@ -28,50 +28,23 @@ interface TaskListProps {
 };
 
 export const TaskList = ({ activeTask, allTasks, focusTargetTask, clearTaskFocus, onTaskFocus, data, onTaskSubmit, onTaskDoneChanged, onTaskAdded, onTaskRemoved, onTitleEdited, onTitleSubmitted, onDeleted, onGoesTo }: TaskListProps) => {
-    const handleDoneChanged = (id: number, done:boolean) => {
-        onTaskDoneChanged?.(data.id, id, done);
-    };
     const isTaskActive = (taskId: number) => activeTask.listId === data.id && activeTask.taskId === taskId && activeTask.active;
     const onFocusChanged = (id:number, active: boolean) => {
         onTaskFocus(data.id, id, active);
         if(!active) clearTaskFocus();
     }
-    const handleSubmit = (id: number, label: string ) => {
-        onTaskSubmit?.(data.id, id, label);
-    };
-    const removeTask = (taskId: number) => {
-        onTaskRemoved?.(data.id, taskId);
-    };
-    const addNewTask = (label: string) => {
-        onTaskAdded?.(data.id, label);
-    };
 
-    const onTitleEdit = (index: number, newValue: string) => {
-        onTitleEdited?.(index, newValue);
-    };
-
-    const onTitleSubmit = (index: number) => {
-        onTitleSubmitted?.(index);
-    };
-
-    const onDelete = () => {
-        onDeleted?.(data.id) ;
-    };
-
-    const handleOnGoesTo = (nextId: number) => {
-        onGoesTo?.(data.id, nextId);
-    }
     return (
         <>
             <EditableTitle 
                 id={data.id} title={data.title} 
-                onEdit={onTitleEdit}
-                onSubmit={onTitleSubmit}
+                onEdit={(index,newValue) => onTitleEdited?.(index, newValue)}
+                onSubmit={(index) => onTitleSubmitted?.(index)}
             />
             <GoesToButton 
                 ownId={data.id}
                 items={allTasks}
-                onGoesTo={handleOnGoesTo}
+                onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)}
             />
             <div className="flex flex-col gap-2 mt-2">
             {data.tasks && (data.tasks.map(task =>
@@ -81,12 +54,14 @@ export const TaskList = ({ activeTask, allTasks, focusTargetTask, clearTaskFocus
                     focusTarget={isTaskActive(task.id) ? focusTargetTask : null}
                     onFocusChange={(active) => onFocusChanged(task.id,active)}
                     task={task}
-                    onSubmit={handleSubmit}
-                    onDoneChange={handleDoneChanged}
-                    onDelete={removeTask}
+                    onSubmit={(id, label) => onTaskSubmit?.(data.id, id, label)}
+                    onDoneChange={(id, done) => onTaskDoneChanged?.(data.id, id, done)}
+                    onDelete={(id) => onTaskRemoved?.(data.id, id)}
                 />))}
             </div>
-            <TaskBottomBar onAdded={addNewTask} onDelete={onDelete}/>
+            <TaskBottomBar 
+                onAdded={(label) => onTaskAdded?.(data.id, label)} 
+                onDelete={() => onDeleted?.(data.id)} />
         </>
     );
 };
