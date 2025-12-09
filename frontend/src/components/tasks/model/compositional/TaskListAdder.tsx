@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Check, X } from "lucide-react";
-import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
-import ErrorHint from "../shared/ErrorHint";
+import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake";
+import ErrorHint from "../../../shared/ErrorHint";
 
 interface TaskListAdderProps {
   onTaskListAdded?: (title: string) => void;

@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { Plus, Check, X } from "lucide-react";
-import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
-import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
-import ErrorHint from "../shared/ErrorHint";
+import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake"
+import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
+import ErrorHint from "../../../shared/ErrorHint";
 
 interface TaskBottomBarProps {
   onAdded: (label: string) => void;

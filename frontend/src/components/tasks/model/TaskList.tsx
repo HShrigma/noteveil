@@ -1,14 +1,8 @@
-import EditableTitle from "../shared/EditableTitle";
-import GoesToButton from "./GoesToButton";
-import Task, { type TaskItem } from "./Task";
-import TaskBottomBar from "./TaskBottomBar";
-
-export interface TaskListData {
-    id: number;
-    title: string;
-    tasks: TaskItem[];
-    nextId?: number;
-}
+import EditableTitle from "../../shared/EditableTitle";
+import GoesToButton from "./compositional/GoesToButton";
+import Task  from "./Task";
+import TaskBottomBar from "./compositional/TaskBottomBar";
+import { TaskItem, TaskListData } from "../../../utils/types";
 
 interface TaskListProps {
     allTasks: TaskListData[];
@@ -17,8 +11,7 @@ interface TaskListProps {
     onTaskDoneChanged?: (listId: number, taskId: number, done: boolean) => void;
     onTaskAdded?: (listId: number, label: string) => void;
     onTaskRemoved?: (listId: number, taskId: number) => void;
-    onTitleEdited?: (id: number, label: string) => void;
-    onTitleSubmitted?: (id: number) => void;
+    onTitleSubmitted?: (id: number, title: string) => void;
     onDeleted?: (id: number) => void;
     onGoesTo?: (id: number, nextId: number) => void;
 }
@@ -30,7 +23,6 @@ export const TaskList = ({
     onTaskDoneChanged,
     onTaskAdded,
     onTaskRemoved,
-    onTitleEdited,
     onTitleSubmitted,
     onDeleted,
     onGoesTo,
@@ -40,8 +32,7 @@ export const TaskList = ({
             <EditableTitle
                 id={data.id}
                 title={data.title}
-                onEdit={(index, newValue) => onTitleEdited?.(index, newValue)}
-                onSubmit={(index) => onTitleSubmitted?.(index)}
+                onSubmit={(id, value) => onTitleSubmitted?.(id,value)}
             />
             <GoesToButton ownId={data.id} items={allTasks} onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} />
             <div className="flex flex-col gap-2 mt-2">

@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
-import TaskList, { type TaskListData } from "./TaskList";
+import TaskList from "./model/TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
-import TaskListAdder from "./TaskListAdder";
+import TaskListAdder from "./model/compositional/TaskListAdder";
 import { addList, addTask, deleteTask, deleteTaskList, fetchTasks } from "../../api/tasksApi";
+import { TaskListData } from "../../utils/types";
 
 export const TasksHolder = () => {
   const breakpointColumnsObj = {
@@ -87,12 +88,6 @@ export const TasksHolder = () => {
     await deleteTask(id, taskId);
   }
 
-  const editTaskTitle = (id: number, newValue: string) => {
-    const newTasks = [...allTasks];
-    newTasks[getTaskListIndexById(id)].title = newValue;
-    setAllTasks(newTasks);
-  };
-
   async function removeList(id: number) {
     const newTasks = [...allTasks];
     setAllTasks(newTasks.filter((task) => task.id != id));
@@ -100,8 +95,12 @@ export const TasksHolder = () => {
     await deleteTaskList(id);
   }
 
-  const submitTaskTitle = () => {
+  const submitTaskTitle = (id: number, value: string) => {
     triggerScreenBob(200);
+    const newTaskList = getTaskListById(id);
+    newTaskList.title = value;
+
+    setNewList(newTaskList);
   };
 
   async function addTaskList(title: string) {
@@ -133,7 +132,6 @@ export const TasksHolder = () => {
               onTaskDoneChanged={handleTaskDoneChanged}
               onTaskAdded={addNewTask}
               onTaskRemoved={removeTask}
-              onTitleEdited={editTaskTitle}
               onTitleSubmitted={submitTaskTitle}
               onDeleted={removeList}
               onGoesTo={editGoesTo}

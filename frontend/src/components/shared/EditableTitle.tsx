@@ -1,97 +1,96 @@
-import { Check, Edit } from "lucide-react";
+import { Check, Edit, X } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
 import ErrorHint from "./ErrorHint";
-import { triggerScreenShake } from "../../utils/screenShake";
+import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
 
 interface EditableTitleProps {
-    id: number;
-    title: string;
-    onEdit: (index: number, newValue: string) => void;
-    onSubmit: (index: number) => void;
-    autoFocus?: boolean;
+  id: number;
+  title: string;
+  onSubmit: (id: number, newValue: string) => void;
+  autoFocus?: boolean;
 }
 
-export const EditableTitle = ({ id, title = '', onEdit, onSubmit, autoFocus = false }: EditableTitleProps) => {
-    const [active, setActive] = useState(title === '');
-    const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
+export const EditableTitle = ({ id, title = '', onSubmit, autoFocus = false }: EditableTitleProps) => {
+  const [active, setActive] = useState(title === '');
+  const [value, setValue] = useState(title);
+  const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
-    const inputRef = useRef<HTMLInputElement>(null);
+  useEffect(() => {
+    if (active && inputRef.current && autoFocus) {
+      inputRef.current.focus();
+    }
+  }, [active, autoFocus]);
 
-    useEffect(() => {
-        if (active && inputRef.current && autoFocus) {
-            inputRef.current.focus();
-        }
-    }, [active, autoFocus]);
+  const handleSubmit = () => {
+    if (value.trim() === '') {
+      setTriggerErrorCheck(true);
+      triggerScreenShake();
+      return;
+    }
 
-    const handleSubmit = () => {
-        if (title.trim() === '') {
-            setTriggerErrorCheck(true);
-            triggerScreenShake();
-            return;
-        }
+    onSubmit?.(id, value.trim());
+    setActive(false);
+    triggerScreenBob(150);
+  };
 
-        setActive(false);
-        onSubmit?.(id);
-    };
+  const handleDiscard = () => {
+    setValue(title); // revert
+    setActive(false);
+  };
 
-    const handleKeyDown = (e: React.KeyboardEvent) => {
-        if (e.key === 'Enter') handleSubmit();
-    };
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === 'Enter') handleSubmit();
+    if (e.key === 'Escape') handleDiscard();
+  };
 
-    let clickCount = 0;
-    const clickTimeout = 400;
-
-    const checkDoubleClick = () => {
-        clickCount++;
-        if (clickCount >= 2) {
-            setActive(true);
-            clickCount = 0;
-        }
-        setTimeout(() => clickCount = 0, clickTimeout);
-    };
-
-    return (
-        <>
-            {active ? (
-                <div className="flex flex-col gap-1">
-                    <div className="flex items-center gap-2">
-
-                        <input
-                            ref={inputRef}
-                            onChange={(e) => {onEdit?.(id, e.target.value); setTriggerErrorCheck(false);}}
-                            onKeyDown={handleKeyDown}
-                            value={title}
-                            placeholder="Enter Title..."
-                            className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal focus:font-firabase text-[#c0caf5] px-2 py-1 transition-all duration-150"
-                        />
-                        <button
-                            onClick={handleSubmit}
-                            className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
-                        >
-                            <Check size={18} strokeWidth={3} />
-                        </button>
-                    </div>
-                    <ErrorHint triggerCheck={triggerErrorCheck} toValidate={title} message="Cannot submit empty title" />
-
-                </div>
-            ) : (
-                <div className="flex items-center gap-2">
-                    <h3
-                        onClick={checkDoubleClick}
-                        className="flex-1 text-purple-400 font-bold tracking-wide cursor-pointer"
-                    >
-                        {title}
-                    </h3>
-                    <button
-                        className="p-2 rounded-sm bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
-                        onClick={() => setActive(true)}
-                    >
-                        <Edit size={18} strokeWidth={3} />
-                    </button>
-                </div>
-            )}
-        </>
-    );
+  return (
+    <>
+      {active ? (
+        <div className="flex flex-col gap-1">
+          <div className="flex items-center gap-2">
+             <button
+              onClick={handleDiscard}
+              className="p-2 rounded-full bg-transparent border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#f7768e] transition-all duration-150"
+            >
+              <X size={18} strokeWidth={3} />
+            </button>
+           <input
+              ref={inputRef}
+              value={value}
+              onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); }}
+              onKeyDown={handleKeyDown}
+              placeholder="Enter Title..."
+              className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal text-[#c0caf5] px-2 py-1 transition-all duration-150"
+            />
+            <button
+              onClick={handleSubmit}
+              className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+            >
+              <Check size={18} strokeWidth={3} />
+            </button>
+          </div>
+          <ErrorHint triggerCheck={triggerErrorCheck} toValidate={value} message="Cannot submit empty title" />
+        </div>
+      ) : (
+        <div className="flex items-center gap-2">
+          <h3
+            onClick={() => setActive(true)}
+            className="flex-1 text-purple-400 font-bold tracking-wide cursor-pointer"
+          >
+            {title}
+          </h3>
+          <button
+            className="p-2 rounded-sm bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+            onClick={() => setActive(true)}
+          >
+            <Edit size={18} strokeWidth={3} />
+          </button>
+        </div>
+      )}
+    </>
+  );
 };
 
 export default EditableTitle;
+

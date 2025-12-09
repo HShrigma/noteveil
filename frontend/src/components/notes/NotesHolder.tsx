@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import Note, { NoteData } from './Note';
+import Note  from './model/Note';
 import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
 import { addNote, deleteNote, fetchNotes } from '../../api/notesApi';
+import { NoteData } from '../../utils/types';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -28,22 +29,23 @@ export const NotesHolder = () => {
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
     const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
 
-    const getNoteIndexById = (id: number) => {
-        return notes.findIndex(t => t.id === id);
-    }
-    const getNoteById = (id: number) => {
-        return notes[getNoteIndexById(id)];
-    }
+    const getNoteIndexById = (id: number) => notes.findIndex(t => t.id === id);
+    const getNoteById = (id: number) => notes[getNoteIndexById(id)];
+
     const updateActiveNote = (activity: NoteActivity) => {
-        activity.id = getNoteIndexById(activity.id) ? activity.id : notes[0].id;
+        activity.id = getNoteIndexById(activity.id) ? activity.id : notes[0]?.id;
         setActiveNote(activity);
-        setFocusTarget((prev) => prev ?? 'content');
+        setFocusTarget(prev => prev ?? 'content');
     };
 
-    const onTitleChangeHandler = (id: number, title: string) => {
+    const onTitleSubmit = (id: number, title: string) => {
         const newNotes = [...notes];
         newNotes[getNoteIndexById(id)].title = title;
         setNotes(newNotes);
+
+        setFocusTarget('content');
+        setActiveNote({ id, active: true });
+        triggerScreenBob(200);
     };
 
     const onContentChangeHandler = (id: number, content: string) => {
@@ -52,18 +54,11 @@ export const NotesHolder = () => {
         setNotes(newNotes);
     };
 
-    const onTitleSubmit = (id: number) => {
-        setFocusTarget('content');
-        setActiveNote({ id, active: true });
-        triggerScreenBob(200);
-    };
-
     async function removeNote(id: number) {
         const index = getNoteIndexById(id);
         if (index === -1) return;
 
-        const newNotes = [...notes];
-        setNotes((prev) => prev.filter(t => t.id !== id));
+        setNotes(prev => prev.filter(t => t.id !== id));
         setActiveNote({ id: 0, active: false });
         setFocusTarget(null);
 
@@ -73,39 +68,39 @@ export const NotesHolder = () => {
     const onNoteDelete = (id: number) => {
         removeNote(id);
         triggerScreenShake(250);
-    }
+    };
 
     async function onAddNote() {
-        if (notes.some((note) => note.title === '' || note.content === '')) return;
-        const newNotes = [...notes];
-        newNotes.push({ id: maxId, title: '', content: '' })
+        if (notes.some(n => n.title === '' || n.content === '')) return;
+
+        const newNotes = [...notes, { id: maxId, title: '', content: '' }];
         setNotes(newNotes);
+
         setFocusTarget('title');
         setActiveNote({ id: maxId, active: true });
         setMaxId(prev => prev + 1);
         triggerScreenBob();
 
         await addNote(maxId);
-    };
+    }
 
     return (
         <div className="mt-2">
-            {/* Add Note Button */}
             <div className="flex justify-start mb-4">
                 <button
                     onClick={onAddNote}
-                    className="flex items-center gap-2 px-3 py-1 rounded-full border-2 border-green-500 bg-green-500 text-[#f6faff] 
+                    className="flex items-center gap-2 px-3 py-1 rounded-full border-2 border-green-500 bg-green-500 text-[#f6faff]
                  hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
                 >
                     <Plus size={18} strokeWidth={3} /> Add Note
                 </button>
             </div>
+
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="flex gap-4"
                 columnClassName="flex flex-col gap-4"
             >
-                {/* Notes List */}
                 {notes.map((note, index) => (
                     <div key={index} className="break-inside-avoid mb-4 fade-in">
                         <Note
@@ -116,7 +111,6 @@ export const NotesHolder = () => {
                             onNoteFocus={updateActiveNote}
                             onNoteDelete={onNoteDelete}
                             onContentChange={onContentChangeHandler}
-                            onTitleChange={onTitleChangeHandler}
                             onTitleSubmit={onTitleSubmit}
                             clearFocusTarget={() => setFocusTarget(null)}
                         />
