@@ -1,6 +1,7 @@
 import { tempTasks } from "../model/tasks";
 import { Request, Response } from "express";
 import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
+import { validateResourceAndProperty } from "../utils/controllerHelpers";
 
 export class TaskController {
     taskLists = tempTasks;
@@ -20,7 +21,6 @@ export class TaskController {
     public deleteTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
-
         const index = this.taskLists.findIndex(t => t.id === listId);
         if (index === -1) return sendNotFoundError(res, "TaskList");
 
@@ -105,16 +105,12 @@ export class TaskController {
 
     public updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = this.taskLists.findIndex(t => t.id === listId);
+        const { index, item, error } = validateResourceAndProperty(req, res, listId, this.taskLists, "TaskList", "title");
+        if(error !== undefined) return error;
 
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        this.taskLists[index].title = item;
 
-        const { title } = req.body;
-        if (!title) return sendEmptyError(res, "Title");
-
-        this.taskLists[index].title = title;
-
-        res.json(sendSuccess({ id: listId, title: title }));
+        res.json(sendSuccess({ id: listId, title: item }));
     }
 
 };
