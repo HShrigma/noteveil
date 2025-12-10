@@ -1,49 +1,43 @@
-import { tempNotes } from "../model/notes";
 import { Request, Response } from "express";
-import { sendSuccess } from "../utils/messages";
-import { findById } from "../utils/validationHelper";
+import { sendNotFoundError, sendSuccess } from "../utils/messages";
+import { NoteService } from "../services/noteService";
+import NoteServiceInstance from "../services/noteService";
 
 export class NoteController {
-    notes = tempNotes;
+    private service = NoteServiceInstance;
 
     public getNotes = (req:Request, res:Response) => {
-        res.json(this.notes);
+        res.json((this.service.getAllNotes()));
     }
 
     public deleteNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        this.notes = this.notes.filter(note => note.id !== id);
-        res.json(sendSuccess({ id: id }));
+        res.json(sendSuccess(this.service.deleteNote(id)));
     }
 
     public addNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        this.notes.push({ id: id, title: '', content: '' })
-
-        res.json(sendSuccess({ id: id }));
+        res.json(sendSuccess(this.service.addNote(id)));
     }
 
     public updateNoteTitle = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const index = findById(res, id, "Note", this.notes);
-        if (index === undefined) return;
+        const {title} = req.body;
+        
+        const result = this.service.updateNoteTitle(id,title);
+        if (result === null) return sendNotFoundError(res, "Note");
 
-        const { title } = req.body;
-        this.notes[index].title = title;
-
-        res.json(sendSuccess({ id: id, title: title }));
+        res.json(sendSuccess(result));
     }
 
     public updateNoteContent = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const index = findById(res, id, "Note", this.notes);
-        if (index === undefined) return;
-
-        
         const { content } = req.body;
-        this.notes[index].content = content;
 
-        res.json(sendSuccess({ id: id, content: content }));
+        const result = this.service.updateNoteContent(id,content);
+        if (result === null) return sendNotFoundError(res, "Note");
+
+        res.json(sendSuccess(result));
     }
 };
 
