@@ -1,8 +1,6 @@
 import { tempNotes } from "../model/notes";
 import { Request, Response } from "express";
 import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
-import { validateResourceAndProperty } from "../utils/controllerHelpers";
-import { title } from "process";
 
 export class NoteController {
     notes = tempNotes;
@@ -26,23 +24,24 @@ export class NoteController {
 
     public updateNoteTitle = (req:Request, res:Response) => {
         const id = Number(req.params.id);
+        const index = this.notes.findIndex(t => t.id === id);
+        if (index === -1) return sendNotFoundError(res, "Note");
 
-        const { index, item, error } = validateResourceAndProperty(req, res, id, this.notes, "Note", "title");
-        if(error !== undefined) return error;
+        const { title } = req.body;
+        this.notes[index].title = title;
 
-        this.notes[index].title = item;
-
-        res.json(sendSuccess({ id: id, title: item }));
+        res.json(sendSuccess({ id: id, title: title }));
     }
 
     public updateNoteContent = (req:Request, res:Response) => {
         const id = Number(req.params.id);
+        const index = this.notes.findIndex(t => t.id === id);
+        if (index === -1) return sendNotFoundError(res, "Note");
+        
+        const { content } = req.body;
+        this.notes[index].content = content;
 
-        const { index, item, error } = validateResourceAndProperty(req, res, id, this.notes, "Note", "content");
-        if (error !== undefined) return error;
-
-        this.notes[index].content = item;
-        res.json(sendSuccess({ id: id, content: item }));
+        res.json(sendSuccess({ id: id, content: content }));
     }
 };
 

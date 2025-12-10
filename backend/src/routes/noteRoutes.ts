@@ -1,5 +1,6 @@
 import { Router } from "express";
 import NoteController from "../controllers/noteController";
+import { requireBodyFields } from "../utils/middleware";
 
 const router = Router();
 const controller = new NoteController();
@@ -14,9 +15,9 @@ router.delete("/:id", (req, res) => controller.deleteNote(req, res));
 router.post("/:id", (req, res) => controller.addNote(req, res));
 
 // Update note title
-router.patch("/:id/title", (req, res) => controller.updateNoteTitle(req, res));
+router.patch("/:id/title", requireBodyFields(["title"]), (req, res) => controller.updateNoteTitle(req, res));
 
 // Update note content
-router.patch("/:id/content", (req, res) => controller.updateNoteContent(req, res));
+router.patch("/:id/content", requireBodyFields(["content"]), (req, res) => controller.updateNoteContent(req, res));
 
 export default router;

@@ -1,7 +1,7 @@
 import { tempTasks } from "../model/tasks";
 import { Request, Response } from "express";
 import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
-import { validateResourceAndProperty } from "../utils/controllerHelpers";
+import { findById } from "../utils/validationHelper";
 
 export class TaskController {
     taskLists = tempTasks;
@@ -14,16 +14,15 @@ export class TaskController {
         const listId = Number(req.params.id);
 
         this.taskLists = this.taskLists.filter(list => list.id !== listId);
-
         res.json(sendSuccess({ deletedId: listId }));
     };
 
     public deleteTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-        const taskId = Number(req.params.taskId);
-        const index = this.taskLists.findIndex(t => t.id === listId);
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
+        const taskId = Number(req.params.taskId);
         this.taskLists[index].tasks = this.taskLists[index].tasks.filter(t => t.id !== taskId);
         res.json(sendSuccess({ deletedId: listId, deletedTaskId: taskId }));
     }
@@ -39,9 +38,9 @@ export class TaskController {
 
     public addTask = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = this.taskLists.findIndex(t => t.id === listId);
 
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
         const taskId = Number(req.params.taskId);
 
@@ -55,12 +54,11 @@ export class TaskController {
 
     public updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-        const index = this.taskLists.findIndex(t => t.id === listId);
 
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
         const { nextId } = req.body;
-
         if (nextId !== undefined && !this.taskLists.some(list => list.id === nextId)) return sendNotFoundError(res, "nextId");
 
         this.taskLists[index].nextId = nextId;
@@ -70,9 +68,9 @@ export class TaskController {
 
     public updateTaskDone = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = this.taskLists.findIndex(t => t.id === listId);
 
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
         const taskId = Number(req.params.taskId);
         const taskIndex = this.taskLists[index].tasks.findIndex(t => t.id === taskId);
@@ -86,9 +84,8 @@ export class TaskController {
 
     public updateTaskLabel = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = this.taskLists.findIndex(t => t.id === listId);
-
-        if (index === -1) return sendNotFoundError(res, "TaskList");
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
         const taskId = Number(req.params.taskId);
         const taskIndex = this.taskLists[index].tasks.findIndex(t => t.id === taskId);
@@ -96,7 +93,6 @@ export class TaskController {
         if (taskIndex === -1) return sendNotFoundError(res, "Task");
 
         const { label } = req.body;
-        if (!label) return sendEmptyError(res, "Label");
 
         this.taskLists[index].tasks[taskIndex].label = label;
 
@@ -105,14 +101,15 @@ export class TaskController {
 
     public updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const { index, item, error } = validateResourceAndProperty(req, res, listId, this.taskLists, "TaskList", "title");
-        if(error !== undefined) return error;
 
-        this.taskLists[index].title = item;
+        const index = findById(res, listId, "TaskList", this.taskLists);
+        if (index === undefined) return;
 
-        res.json(sendSuccess({ id: listId, title: item }));
+        const { title } = req.body;
+        this.taskLists[index].title = title;
+
+        res.json(sendSuccess({ id: listId, title: title }));
     }
-
 };
 
 export default TaskController;
