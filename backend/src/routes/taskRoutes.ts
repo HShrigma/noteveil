@@ -19,15 +19,15 @@ router.post("/list/:id", (req, res) => controller.addTaskList(req,res));
 router.post("/list/:listId/task/:taskId", (req, res) => controller.addTask(req,res));
 
 // Update nextId
-router.patch("/list/:id/next", (req,res) => controller.UpdateNextId(req,res));
+router.patch("/list/:id/next", (req,res) => controller.updateNextId(req,res));
 
 // Update task done
-router.patch("/list/:listId/task/:taskId/done", (req, res) => controller.UpdateTaskDone(req, res));
+router.patch("/list/:listId/task/:taskId/done", (req, res) => controller.updateTaskDone(req, res));
 
 // Update task label
-router.patch("/list/:listId/task/:taskId/label", (req, res) => controller.UpdateTaskLabel(req, res));
+router.patch("/list/:listId/task/:taskId/label", (req, res) => controller.updateTaskLabel(req, res));
 
 // Update list title
-router.patch("/list/:listId/title", (req, res) => controller.UpdateListTitle(req, res));
+router.patch("/list/:listId/title", (req, res) => controller.updateListTitle(req, res));
 
 export default router;

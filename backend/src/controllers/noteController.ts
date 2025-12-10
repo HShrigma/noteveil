@@ -12,14 +12,14 @@ export class NoteController {
     public deleteNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
         this.notes = this.notes.filter(note => note.id !== id);
-        res.json(sendSuccess({ id }));
+        res.json(sendSuccess({ id: id }));
     }
 
     public addNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
         this.notes.push({ id: id, title: '', content: '' })
 
-        res.json(sendSuccess({ id }));
+        res.json(sendSuccess({ id: id }));
     }
 
     public updateNoteTitle = (req:Request, res:Response) => {
@@ -32,7 +32,7 @@ export class NoteController {
 
         this.notes[index].title = title;
 
-        res.json(sendSuccess({ id: id, body: req.body }));
+        res.json(sendSuccess({ id: id, title: title }));
     }
 
     public updateNoteContent = (req:Request, res:Response) => {
@@ -44,7 +44,7 @@ export class NoteController {
         if (!content) return sendEmptyError(res, "Content");
 
         this.notes[index].content = content;
-        res.json(sendSuccess(req.body));
+        res.json(sendSuccess({ id: id, content: content }));
     }
 };
 

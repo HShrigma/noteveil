@@ -10,7 +10,6 @@ export class TaskController {
     };
 
     public deleteTaskList = (req: Request, res: Response) => {
-
         const listId = Number(req.params.id);
 
         this.taskLists = this.taskLists.filter(list => list.id !== listId);
@@ -19,7 +18,6 @@ export class TaskController {
     };
 
     public deleteTask = (req: Request, res: Response) => {
-
         const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
 
@@ -31,7 +29,6 @@ export class TaskController {
     }
 
     public addTaskList = (req: Request, res: Response) => {
-
         const listId = Number(req.params.id);
         const { title } = req.body;
 
@@ -41,7 +38,6 @@ export class TaskController {
     }
 
     public addTask = (req: Request, res: Response) => {
-
         const listId = Number(req.params.listId);
         const index = this.taskLists.findIndex(t => t.id === listId);
 
@@ -57,8 +53,7 @@ export class TaskController {
         res.json(sendSuccess({ listId: listId, taskId: taskId, label: label }));
     }
 
-    public UpdateNextId = (req: Request, res: Response) => {
-
+    public updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const index = this.taskLists.findIndex(t => t.id === listId);
 
@@ -73,8 +68,7 @@ export class TaskController {
         res.json(sendSuccess({ listId: listId, nextId: nextId }));
     }
 
-    public UpdateTaskDone = (req: Request, res: Response) => {
-
+    public updateTaskDone = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
         const index = this.taskLists.findIndex(t => t.id === listId);
 
@@ -90,8 +84,7 @@ export class TaskController {
         res.json(sendSuccess({ id: listId }));
     }
 
-    public UpdateTaskLabel = (req: Request, res: Response) => {
-
+    public updateTaskLabel = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
         const index = this.taskLists.findIndex(t => t.id === listId);
 
@@ -110,8 +103,7 @@ export class TaskController {
         res.json(sendSuccess({ id: listId, label: label }));
     }
 
-    public UpdateListTitle = (req: Request, res: Response) => {
-
+    public updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
         const index = this.taskLists.findIndex(t => t.id === listId);
 
