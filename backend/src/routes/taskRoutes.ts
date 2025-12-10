@@ -1,8 +1,8 @@
 import { Router } from "express";
-import { taskController } from "../controllers/taskController";
+import { TaskController } from "../controllers/taskController";
 
 const router = Router();
-const controller = new taskController();
+const controller = new TaskController();
 
 router.get("/", (_req, res) => controller.getTasks(_req, res));
 

@@ -2,7 +2,7 @@ import { tempTasks } from "../model/tasks";
 import { Request, Response } from "express";
 import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
 
-export class taskController {
+export class TaskController {
     taskLists = tempTasks;
 
     public getTasks = (req: Request, res: Response) => {
@@ -127,4 +127,4 @@ export class taskController {
 
 };
 
-export default taskController;
+export default TaskController;
