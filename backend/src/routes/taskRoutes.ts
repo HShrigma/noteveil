@@ -17,7 +17,7 @@ router.delete("/:id/:taskId", (req, res) => controller.deleteTask(req, res));
 router.post("/list/:id", (req, res) => controller.addTaskList(req,res));
 
 // Add task
-router.post("/list/:listId/task/:taskId", (req, res) => controller.addTask(req,res));
+router.post("/list/:listId/task/:taskId", requireBodyFields(["label"]), (req, res) => controller.addTask(req, res));
 
 // Update nextId
 router.patch("/list/:id/next", (req,res) => {controller.updateNextId(req, res)

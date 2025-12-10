@@ -54,7 +54,6 @@ export class TaskController {
 
     public updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-
         const index = findById(res, listId, "TaskList", this.taskLists);
         if (index === undefined) return;
 
@@ -68,13 +67,13 @@ export class TaskController {
 
     public updateTaskDone = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-
         const index = findById(res, listId, "TaskList", this.taskLists);
         if (index === undefined) return;
 
         const taskId = Number(req.params.taskId);
-        const taskIndex = this.taskLists[index].tasks.findIndex(t => t.id === taskId);
-        if (taskIndex === -1) return res.status(404).json({ success: false, error: "Task not found" });
+        const taskIndex = findById(res, taskId, "Task", this.taskLists[index].tasks);
+        if (taskIndex === undefined) return;
+
 
         const { done } = req.body;
         this.taskLists[index].tasks[taskIndex].done = done;
@@ -88,9 +87,8 @@ export class TaskController {
         if (index === undefined) return;
 
         const taskId = Number(req.params.taskId);
-        const taskIndex = this.taskLists[index].tasks.findIndex(t => t.id === taskId);
-
-        if (taskIndex === -1) return sendNotFoundError(res, "Task");
+        const taskIndex = findById(res, taskId, "Task", this.taskLists[index].tasks);
+        if (taskIndex === undefined) return;
 
         const { label } = req.body;
 

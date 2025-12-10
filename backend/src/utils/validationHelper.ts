@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express";
-import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
+import { Response } from "express";
+import { sendNotFoundError } from "../utils/messages";
 
 export const findById = <T extends { id: number }>(
     res: Response,

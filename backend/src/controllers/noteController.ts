@@ -1,6 +1,7 @@
 import { tempNotes } from "../model/notes";
 import { Request, Response } from "express";
-import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
+import { sendSuccess } from "../utils/messages";
+import { findById } from "../utils/validationHelper";
 
 export class NoteController {
     notes = tempNotes;
@@ -24,8 +25,8 @@ export class NoteController {
 
     public updateNoteTitle = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const index = this.notes.findIndex(t => t.id === id);
-        if (index === -1) return sendNotFoundError(res, "Note");
+        const index = findById(res, id, "Note", this.notes);
+        if (index === undefined) return;
 
         const { title } = req.body;
         this.notes[index].title = title;
@@ -35,8 +36,9 @@ export class NoteController {
 
     public updateNoteContent = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const index = this.notes.findIndex(t => t.id === id);
-        if (index === -1) return sendNotFoundError(res, "Note");
+        const index = findById(res, id, "Note", this.notes);
+        if (index === undefined) return;
+
         
         const { content } = req.body;
         this.notes[index].content = content;
