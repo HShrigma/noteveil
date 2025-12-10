@@ -1,112 +1,104 @@
-import { tempTasks } from "../model/tasks";
 import { Request, Response } from "express";
-import { sendEmptyError, sendNotFoundError, sendSuccess } from "../utils/messages";
-import { findById } from "../utils/validationHelper";
+import { sendNotFoundError, sendSuccess } from "../utils/messages";
+import TaskService from "../services/taskService"; 
 
 export class TaskController {
-    taskLists = tempTasks;
-
-    public getTasks = (req: Request, res: Response) => {
-        res.json(this.taskLists);
+    public getTasks = (_req: Request, res: Response) => {
+        res.json(TaskService.getAllTasks());
     };
 
     public deleteTaskList = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-
-        this.taskLists = this.taskLists.filter(list => list.id !== listId);
-        res.json(sendSuccess({ deletedId: listId }));
+        const result = TaskService.deleteTaskList(listId);
+        res.json(sendSuccess(result));
     };
 
     public deleteTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const taskId = Number(req.params.taskId);
-        this.taskLists[index].tasks = this.taskLists[index].tasks.filter(t => t.id !== taskId);
-        res.json(sendSuccess({ deletedId: listId, deletedTaskId: taskId }));
+        const result = TaskService.deleteTask(listId, taskId);
+
+        if (result === null || result.error) {
+            return sendNotFoundError(res, result?.error === "Task not found" ? "Task" : "TaskList");
+        }
+        res.json(sendSuccess(result));
     }
 
     public addTaskList = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { title } = req.body;
+        const result = TaskService.addTaskList(listId, title);
 
-        this.taskLists.push({ id: listId, title, tasks: [], nextId: undefined });
-
-        res.json(sendSuccess({ listId: listId, title: title }));
+        res.json(sendSuccess(result));
     }
 
     public addTask = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const taskId = Number(req.params.taskId);
-
         const { label } = req.body;
-        if (!label) return sendEmptyError(res, "Label");
+        
+        const result = TaskService.addTask(listId, taskId, label);
 
-        this.taskLists[index].tasks.push({ id: taskId, label: label, done: false });
+        if (result === null) {
+            return sendNotFoundError(res, "TaskList");
+        }
 
-        res.json(sendSuccess({ listId: listId, taskId: taskId, label: label }));
+        res.json(sendSuccess(result));
     }
 
     public updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const { nextId } = req.body;
-        if (nextId !== undefined && !this.taskLists.some(list => list.id === nextId)) return sendNotFoundError(res, "nextId");
+        
+        const result = TaskService.updateNextId(listId, nextId);
 
-        this.taskLists[index].nextId = nextId;
+        if (result.error) {
+            // Handles both "TaskList not found" and "nextId not found"
+            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "nextId");
+        }
 
-        res.json(sendSuccess({ listId: listId, nextId: nextId }));
+        res.json(sendSuccess(result));
     }
 
     public updateTaskDone = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const taskId = Number(req.params.taskId);
-        const taskIndex = findById(res, taskId, "Task", this.taskLists[index].tasks);
-        if (taskIndex === undefined) return;
-
-
         const { done } = req.body;
-        this.taskLists[index].tasks[taskIndex].done = done;
 
-        res.json(sendSuccess({ id: listId }));
+        const result = TaskService.updateTaskDone(listId, taskId, done);
+        
+        if (result.error) {
+            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "Task");
+        }
+
+        res.json(sendSuccess(result));
     }
 
     public updateTaskLabel = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const taskId = Number(req.params.taskId);
-        const taskIndex = findById(res, taskId, "Task", this.taskLists[index].tasks);
-        if (taskIndex === undefined) return;
-
         const { label } = req.body;
 
-        this.taskLists[index].tasks[taskIndex].label = label;
+        const result = TaskService.updateTaskLabel(listId, taskId, label);
+        
+        if (result.error) {
+            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "Task");
+        }
 
-        res.json(sendSuccess({ id: listId, label: label }));
+        res.json(sendSuccess(result));
     }
 
     public updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.listId);
-
-        const index = findById(res, listId, "TaskList", this.taskLists);
-        if (index === undefined) return;
-
         const { title } = req.body;
-        this.taskLists[index].title = title;
+        
+        const result = TaskService.updateListTitle(listId, title);
 
-        res.json(sendSuccess({ id: listId, title: title }));
+        if (result === null) {
+            return sendNotFoundError(res, "TaskList");
+        }
+        
+        res.json(sendSuccess(result));
     }
 };
 
