@@ -3,7 +3,7 @@ import { Request, Response } from "express";
 const getNotFoundMsg = (item: string) => {return `${item} not found`;}
 const getEmptyBodyItemMsg = (item: string) => {return `${item} cannot be empty`;}
 
-const sendError = (res: Response, code:number, msg: string) => {
+export const sendError = (res: Response, code:number, msg: string) => {
     return res.status(code).json({ success: false, error: msg });
 }
 

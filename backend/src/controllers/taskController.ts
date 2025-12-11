@@ -33,7 +33,7 @@ export class TaskController {
     }
 
     public addTask = (req: Request, res: Response) => {
-        const listId = Number(req.params.listId);
+        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
         const { label } = req.body;
         
@@ -61,7 +61,7 @@ export class TaskController {
     }
 
     public updateTaskDone = (req: Request, res: Response) => {
-        const listId = Number(req.params.listId);
+        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
         const { done } = req.body;
 
@@ -75,7 +75,7 @@ export class TaskController {
     }
 
     public updateTaskLabel = (req: Request, res: Response) => {
-        const listId = Number(req.params.listId);
+        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
         const { label } = req.body;
 
@@ -89,7 +89,7 @@ export class TaskController {
     }
 
     public updateListTitle = (req: Request, res: Response) => {
-        const listId = Number(req.params.listId);
+        const listId = Number(req.params.id);
         const { title } = req.body;
         
         const result = TaskService.updateListTitle(listId, title);
