@@ -3,6 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { sendEmptyError, sendError } from "../utils/messages";
 import sanitizeHtml from 'sanitize-html';
 
+export interface MiddlewareParams {
+    validateId?: boolean;
+    hasTaskId?: boolean;
+    bodyFields?: string[];
+}
+
 const isIdInvalid = (id: number) => { return isNaN(id) || id <= 0; }
 
 export const requireBodyFields = (fields: string[]) => {
@@ -42,5 +48,40 @@ export const validateIdParam = (hasTaskId = false) => {
             if (isIdInvalid(taskId)) return sendError(res, 400, "Invalid Task ID Parameter");
         }
         next();
+    };
+};
+
+
+export const runMiddleware = (params: MiddlewareParams) => {
+    const middlewares: ((req: Request, res: Response, next: NextFunction) => void)[] = [];
+
+    middlewares.push(sanitizeInput());
+
+    // Validate body fields if required
+    if (params.bodyFields && params.bodyFields.length > 0) {
+        middlewares.push(requireBodyFields(params.bodyFields));
+    }
+
+    // Validate ID parameters
+    if (params.validateId !== undefined) {
+        const hasTaskId = params.hasTaskId === undefined ? false : params.hasTaskId;
+        middlewares.push(validateIdParam(params.hasTaskId));
+    }
+
+    // Return a single middleware that runs all selected middlewares in sequence
+    return (req: Request, res: Response, next: NextFunction) => {
+        let index = 0;
+
+        const runNext = (err?: any) => {
+            if (err) return next(err);
+            const middleware = middlewares[index++];
+            if (middleware) {
+                middleware(req, res, runNext);
+            } else {
+                next();
+            }
+        };
+
+        runNext();
     };
 };
