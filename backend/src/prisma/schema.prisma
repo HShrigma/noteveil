@@ -3,10 +3,9 @@
 
 // Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
     provider = "prisma-client"
-    output   = "../src/generated/prisma"
+    output   = "../generated/prisma"
 }
 
 datasource db {
@@ -30,7 +29,6 @@ model Task {
     id         Int      @id @default(autoincrement())
     label      String
     done       Boolean  @default(false)
-    taskList   TaskList @relation(fields: [taskId], references: [id])
-    taskListId Int?
-    taskId     Int
+    taskList   TaskList @relation(fields: [taskListId], references: [id])
+    taskListId Int
 }

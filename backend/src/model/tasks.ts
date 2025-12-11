@@ -22,7 +22,7 @@ export const sampleTasksAlt: Task[] = [
     { id: 6, label: "complete Thing", done: false },
 ];
 export const tempTasks: TaskList[] = [
-    { id: 2, title: "tasks from API", tasks: [...sampleTasks], nextId: undefined },
-    { id: 3, title: "tasks 2", tasks: [...sampleTasksAlt], nextId: undefined }
+    { id: 1, title: "tasks from API", tasks: [...sampleTasks], nextId: undefined },
+    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt], nextId: undefined }
 ];
 
