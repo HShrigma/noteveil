@@ -27,7 +27,7 @@ export async function deleteTask(id: number, taskId: number) {
 
 
 export async function addList(id: number, title: string) {
-    const res = await fetch(`${BASE_URL}/list/${id}`, {
+    const res = await fetch(`${BASE_URL}/${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
@@ -39,7 +39,7 @@ export async function addList(id: number, title: string) {
 }
 
 export async function addTask(id: number, taskId: number, label: string) {
-    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}`, {
+    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -53,7 +53,7 @@ export async function addTask(id: number, taskId: number, label: string) {
 }
 
 export async function patchNextId(id:number, nextId: number | undefined){
-    const res = await fetch(`${BASE_URL}/list/${id}/next`, {
+    const res = await fetch(`${BASE_URL}/${id}/next`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -68,7 +68,7 @@ export async function patchNextId(id:number, nextId: number | undefined){
 }
 
 export async function patchTaskDone(id: number, taskId: number, done: boolean) {
-    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}/done`, {
+    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}/done`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -83,7 +83,7 @@ export async function patchTaskDone(id: number, taskId: number, done: boolean) {
 }
 
 export async function patchTaskLabel(id: number, taskId: number, label: string) {
-    const res = await fetch(`${BASE_URL}/list/${id}/task/${taskId}/label`, {
+    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}/label`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -98,7 +98,7 @@ export async function patchTaskLabel(id: number, taskId: number, label: string) 
 }
 
 export async function patchListTitle(id: number, title: string) {
-    const res = await fetch(`${BASE_URL}/list/${id}/title`, {
+    const res = await fetch(`${BASE_URL}/${id}/title`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

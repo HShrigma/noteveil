@@ -17,48 +17,48 @@ router.delete(
 // Delete task
 router.delete(
     "/:id/:taskId",
-    runMiddleware({validateId: true,hasTaskId: true}),
+    runMiddleware({ validateId: true, hasTaskId: true }),
     (req, res) => controller.deleteTask(req, res)
 );
 
 // Add list
 router.post(
-    "/list/:id",
+    "/:id",
     runMiddleware({ validateId: true, bodyFields: ["title"] }),
     (req, res) => controller.addTaskList(req, res)
 );
 
 // Add task
 router.post(
-    "/list/:id/task/:taskId",
+    "/:id/task/:taskId",
     runMiddleware({ validateId: true, hasTaskId: true, bodyFields: ["label"] }),
     (req, res) => controller.addTask(req, res)
 );
 
 // Update nextId
 router.patch(
-    "/list/:id/next",
+    "/:id/next",
     runMiddleware({ validateId: true}),
     (req, res) => controller.updateNextId(req, res)
 );
 
 // Update task done
 router.patch(
-    "/list/:id/task/:taskId/done",
+    "/:id/task/:taskId/done",
     runMiddleware({ validateId: true,hasTaskId: true }),
     (req, res) => controller.updateTaskDone(req, res)
 );
 
 // Update task label
 router.patch(
-    "/list/:id/task/:taskId/label",
+    "/:id/task/:taskId/label",
     runMiddleware({validateId: true, hasTaskId: true, bodyFields:["label"]}),
     (req, res) => controller.updateTaskLabel(req, res)
 );
 
 // Update list title
 router.patch(
-    "/list/:id/title",
+    "/:id/title",
     runMiddleware({ validateId: true, bodyFields:["title"]}),
     (req, res) => controller.updateListTitle(req, res)
 );
