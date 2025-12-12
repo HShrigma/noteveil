@@ -5,8 +5,7 @@ import TaskService from "../services/taskService";
 export class TaskController {
     public getTasks = (_req: Request, res: Response) => {
         const result = TaskService.getAllTasks();
-
-        
+        if (result === null) return sendError(res, 500, "Could not fetch tasks");
 
         res.json(result);
     };
