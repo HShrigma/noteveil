@@ -11,7 +11,7 @@ class TaskService {
                        t.id AS task_id, t.label AS task_label, t.done AS task_done
                 FROM task_lists l
                 LEFT JOIN tasks t ON l.id = t.task_list_id
-                ORDER BY l.created_at, t.created_at`);
+                ORDER BY l.created_at, t.created_at, t.id`);
             const rows = stmt.all() as RawJoinTaskList[];
             const taskListMap = new Map<number, TaskList>();
             rows.forEach(row => {
@@ -24,7 +24,7 @@ class TaskService {
                         nextId: row.next_id || undefined
                     });
                 }
-                if (row.task_id !== null) {
+                if (row.task_id !== null && row.task_label !== null) {
                     const taskList = taskListMap.get(listId)!;
                     taskList.tasks.push({
                         id: row.task_id,
@@ -102,7 +102,7 @@ class TaskService {
     updateTaskDone(taskId: number, done: boolean) {
         try {
             const stmt = this.db.prepare(`UPDATE tasks SET done = ? WHERE id = ?`);
-            const result = stmt.run(done ? "TRUE" : "FALSE", taskId);
+            const result = stmt.run(done ? 1 : 0, taskId);
 
             return { updated: result.changes > 0, taskId: taskId, done: done };
 

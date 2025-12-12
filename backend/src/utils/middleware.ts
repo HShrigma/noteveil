@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response } from "express";
 import { sendEmptyError, sendError } from "../utils/messages";
 import sanitizeHtml from 'sanitize-html';

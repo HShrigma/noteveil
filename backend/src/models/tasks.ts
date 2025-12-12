@@ -7,10 +7,10 @@ export interface Task{
 export interface RawJoinTaskList{
     list_id: number;
     list_title: string;
-    next_id: number;
-    task_id: number;
-    task_label: string;
-    task_done: boolean;
+    next_id: number | null;
+    task_id: number | null;
+    task_label: string | null;
+    task_done: number | null;
 }
 export interface TaskList{
     id: number,

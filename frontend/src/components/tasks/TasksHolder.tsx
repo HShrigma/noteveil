@@ -14,23 +14,8 @@ export const TasksHolder = () => {
         500: 1,
     };
     const [allTasks, setAllTasks] = useState<TaskListData[]>([]);
-
-    const [maxId, setMaxId] = useState(0);
-    const [maxTaskId, setMaxTaskId] = useState(0);
-
     useEffect(() => {
-        fetchTasks().then((data) => {
-            setAllTasks(data);
-
-            // compute max list id
-            const highestListId = data.reduce((max: number, list: { id: number }) => Math.max(max, list.id), 0);
-
-            // compute max task id from all tasks
-            const highestTaskId = data.reduce((max: number, list: { tasks: any[] }) => Math.max(max, ...list.tasks.map((t) => t.id)), 0);
-
-            setMaxId(highestListId + 1);
-            setMaxTaskId(highestTaskId + 1);
-        });
+        fetchTasks().then((data) => setAllTasks(data));
     }, []);
 
     const setNewList = (newTaskList: TaskListData) => setAllTasks((prev) => prev.map((t) => (t.id === newTaskList.id ? newTaskList : t)));
@@ -39,11 +24,14 @@ export const TasksHolder = () => {
         return allTasks.findIndex((t) => t.id === id);
     };
     const getTaskListById = (id: number) => {
-        return { ...allTasks[getTaskListIndexById(id)] };
+        const index = getTaskListIndexById(id);
+        return index !== -1 ? { ...allTasks[getTaskListIndexById(id)] } : null;
     };
 
     async function handleTaskDoneChanged(id: number, taskId: number, done: boolean) {
         const newTaskList = getTaskListById(id);
+        if(!newTaskList) return;
+
         const taskIndex = findTaskIndexByTaskId(newTaskList, taskId);
 
         if (taskIndex === -1) return;
@@ -63,6 +51,7 @@ export const TasksHolder = () => {
 
     async function handleTaskSubmit(id: number, taskId: number, label: string) {
         const newTaskList = getTaskListById(id);
+        if(!newTaskList) return;
         const taskIndex = findTaskIndexByTaskId(newTaskList, taskId);
 
         if (taskIndex === -1) return;
@@ -76,18 +65,23 @@ export const TasksHolder = () => {
     };
 
     async function addNewTask(id: number, label: string) {
+        const res = await addTask(id,label);
+        if (!res.success) return;
+
         const newTaskList = getTaskListById(id);
-        // create new task locally (label may be empty, starts in editing mode)
-        newTaskList.tasks.push({ id: maxTaskId, label, done: false });
+        if(!newTaskList) return;
+
+        const newId = Number(res.body.id);
+        newTaskList.tasks.push({ id: newId, label, done: false });
         setNewList(newTaskList);
-        setMaxTaskId((n) => n + 1);
         triggerScreenBob(150);
 
-        await addTask(id,label);
     }
 
     async function removeTask(id: number, taskId: number) {
         const newTaskList = getTaskListById(id);
+        if(!newTaskList) return;
+
         newTaskList.tasks = newTaskList.tasks.filter((t) => t.id !== taskId);
         setNewList(newTaskList);
 
@@ -105,6 +99,8 @@ export const TasksHolder = () => {
     async function submitTaskTitle(id: number, value: string) {
         triggerScreenBob(200);
         const newTaskList = getTaskListById(id);
+        if(!newTaskList) return;
+
         newTaskList.title = value;
 
         setNewList(newTaskList);
@@ -114,22 +110,30 @@ export const TasksHolder = () => {
 
     async function addTaskList(title: string) {
         const newTasks = [...allTasks];
-        newTasks.push({ id: maxId, title, tasks: [] });
-        setMaxId((n) => n + 1);
+        const res = await addList(title);
+
+        if (!res.success) return;
+        const newId = Number(res.body.id);
+
+        newTasks.push({ id: newId, title, tasks: [] });
         setAllTasks(newTasks);
         triggerScreenBob();
-
-        await addList(title);
     }
 
     async function editGoesTo(id: number, nextId: number) {
         const newTaskList = getTaskListById(id);
+        if(!newTaskList) return;
+
         newTaskList.nextId = nextId === -1 ? undefined : nextId;
         setNewList(newTaskList);
 
         await patchNextId(id, newTaskList.nextId);
     };
-
+    const getGoesTo = (id: number | undefined) => {
+        const taskList = getTaskListById(id ?? -1);
+        if(!taskList) return '';
+        return taskList.title;
+    };
     return (
         <div>
             <TaskListAdder onTaskListAdded={addTaskList} />
@@ -138,7 +142,7 @@ export const TasksHolder = () => {
                     <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47] fade-in" key={task.id}>
                         <TaskList
                             allTasks={allTasks}
-                            goesToLabel={getTaskListById(task.nextId ?? -1).title}
+                            goesToLabel={getGoesTo(task.nextId)}
                             data={task}
                             onTaskSubmit={handleTaskSubmit}
                             onTaskDoneChanged={handleTaskDoneChanged}

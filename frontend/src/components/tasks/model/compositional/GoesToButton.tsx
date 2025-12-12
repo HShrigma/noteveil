@@ -36,7 +36,7 @@ export const GoesToButton = ({ ownId, label, items, onGoesTo }: GoesToButtonProp
                 `}
                 onClick={() => setActive(n => !n)}
             >
-                Goes To: {label ?? "None"}
+                Goes To: {!label ? "None": label}
             </button>
 
             {active && (

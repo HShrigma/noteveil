@@ -6,7 +6,7 @@ export class TaskController {
     public getTasks = (_req: Request, res: Response) => {
         const result = TaskService.getAllTasks();
 
-        if (result === null) return sendError(res, 500, "Could not get all Tasks");
+        
 
         res.json(result);
     };
@@ -14,8 +14,10 @@ export class TaskController {
     public deleteTaskList = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const result = TaskService.deleteTaskList(listId);
+
         if (result === null) return sendError(res, 500, "Could not delete TaskList");
-        if (!result.deleted) return sendNotFoundError(res, "TaskList")
+        if (!result.deleted) return sendNotFoundError(res, "TaskList");
+
         res.json(sendSuccess(result));
     };
 
