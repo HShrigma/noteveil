@@ -1,9 +1,9 @@
 import Database from "better-sqlite3";
 import { error } from "console";
 
-const TASKS: string = "TASKS";
-const NOTES: string = "NOTES";
-const TASK_LISTS: string = "TASK_LISTS";
+const TASKS: string = "tasks";
+const NOTES: string = "notes";
+const TASK_LISTS: string = "task_lists";
 
 export const tableType = {
     notes: NOTES,

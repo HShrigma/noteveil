@@ -1,5 +1,7 @@
 import DB from "../config/db";
+import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
+import { deleteWithId, updateSingularById } from "../utils/repository";
 
 class TaskRepository {
     db = DB.getInstance().getConnection();
@@ -37,19 +39,8 @@ class TaskRepository {
         return Array.from(taskListMap.values());
     }
 
-    deleteTaskList(listId: number) {
-        const stmt = this.db.prepare(`DELETE FROM task_lists WHERE id = ?`);
-        const result = stmt.run(listId);
-
-        return result;
-    }
-
-    deleteTask(taskId: number) {
-        const stmt = this.db.prepare(`DELETE FROM tasks WHERE id = ?`);
-        const result = stmt.run(taskId);
-
-        return result;
-    }
+    deleteTaskList(listId: number) { return deleteWithId(this.db, listId, tableType.taskLists); }
+    deleteTask(taskId: number) { return deleteWithId(this.db, taskId, tableType.tasks); }
 
     addTaskList(title: string) {
         const stmt = this.db.prepare(`INSERT INTO task_lists (title) VALUES (?)`);
@@ -65,30 +56,19 @@ class TaskRepository {
     }
 
     updateNextId(listId: number, nextId: number | undefined) {
-        const stmt = this.db.prepare(`UPDATE task_lists SET next_id = ? WHERE id = ?`);
-        const result = stmt.run(nextId, listId);
-
-        return result;
+        return updateSingularById(this.db, tableType.taskLists, "next_id", nextId, "id", listId);
     }
 
     updateTaskDone(taskId: number, done: boolean) {
-        const stmt = this.db.prepare(`UPDATE tasks SET done = ? WHERE id = ?`);
-        const result = stmt.run(done ? 1 : 0, taskId);
-
-        return result;
+        return updateSingularById(this.db, tableType.tasks, "done", done ? 1 : 0, "id", taskId);
     }
 
     updateTaskLabel(taskId: number, label: string) {
-        const stmt = this.db.prepare(`UPDATE tasks SET label = ? WHERE id = ?`);
-        const result = stmt.run(label, taskId);
-        return result;
+        return updateSingularById(this.db, tableType.tasks, "label", label, "id", taskId);
     }
 
-
     updateListTitle(listId: number, title: string) {
-        const stmt = this.db.prepare(`UPDATE task_lists SET title = ? WHERE id = ?`);
-        const result = stmt.run(title, listId);
-        return result;
+        return updateSingularById(this.db, tableType.taskLists, "title", title, "id", listId);
     }
 }
 

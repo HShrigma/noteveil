@@ -1,5 +1,7 @@
 import DB from "../config/db";
+import { tableType } from "../config/schema";
 import { Note } from "../models/notes";
+import { deleteWithId, updateSingularById } from "../utils/repository";
 
 class NoteRepository {
     db = DB.getInstance().getConnection();
@@ -15,21 +17,13 @@ class NoteRepository {
         const result = stmt.run(title, "");
         return result;
     }
-    deleteNote(id: number) {
-        const stmt = this.db.prepare(`DELETE FROM notes WHERE id = ?`);
-        const result = stmt.run(id);
-        return result;
-    }
+    deleteNote(id: number) { return deleteWithId(this.db, id, tableType.notes); }
     updateNoteTitle(id: number, title: string) {
-        const stmt = this.db.prepare(`UPDATE notes SET title = ? WHERE id = ?`);
-        const result = stmt.run(title, id);
-        return result;
+        return updateSingularById(this.db, tableType.notes, "title", title, "id", id);
     }
 
     updateNoteContent(id: number, content: string) {
-        const stmt = this.db.prepare(`UPDATE notes SET content = ? WHERE id = ?`);
-        const result = stmt.run(content, id);
-        return result;
+        return updateSingularById(this.db, tableType.notes, "content", content, "id", id);
     }
 }
 
