@@ -1,55 +1,33 @@
 import NoteRepository from "../repository/noteRepository";
+import { runService } from "../utils/service";
 
 export class NoteService {
     repo = new NoteRepository();
 
     public getAllNotes() {
-        try {
-            return this.repo.getNotes();
-        } catch (error) {
-            console.error('Error fetching notes:', error);
-            return null;
-        }
+        return runService(() => this.repo.getNotes(),'Error fetching notes:');
     }
 
     addNote() {
-        try {
-            const res = this.repo.addNote();
-            return { id: res.lastInsertRowid as number };
-        } catch (error) {
-            console.error('Error adding note:', error);
-            return null;
-        }
+        const res = runService(() => this.repo.addNote(),'Error adding note:');
+        return res ? {id: res.lastInsertRowid as number} : null;
     }
 
     deleteNote(id: number) {
-        try {
-            const res = this.repo.deleteNote(id);
-            return { deleted: res.changes > 0, id: id };
-        } catch (error) {
-            console.error('Error deleting note:', error);
-            return null;
-        }
+        const res = runService(() => this.repo.deleteNote(id),'Error deleting note:');
+        return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
     updateNoteTitle(id: number, title: string) {
-        try {
-            const res = this.repo.updateNoteTitle(id, title);
-            return { updated: res.changes > 0, id: id, title: title };
-        } catch (error) {
-            console.error('Error updating note title:', error);
-            return null;
-        }
+        const res = runService(() => this.repo.updateNoteTitle(id, title),
+            'Error updating note title:');
+        return res ? { updated: res.changes > 0, id: id, title: title  } : null;
     }
 
     updateNoteContent(id: number, content: string) {
-        try {
-            const res = this.repo.updateNoteContent(id,content);
-            return { updated: res.changes > 0, id: id, content: content };
-        } catch (error) {
-            console.error('Error updating note content:', error);
-            return null;
-        }
+        const res = runService(() => this.repo.updateNoteContent(id,content),
+            'Error updating note content:');
+        return res ? { updated: res.changes > 0, id: id, content: content  } : null;
     }
 }
 
