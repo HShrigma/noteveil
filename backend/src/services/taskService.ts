@@ -1,4 +1,4 @@
-import { tempTasks } from "../model/tasks"; 
+import { tempTasks } from "../models/tasks"; 
 
 class TaskService {
     private taskLists = tempTasks;

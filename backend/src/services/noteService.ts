@@ -1,7 +1,5 @@
-import { tempNotes } from "../model/notes"; 
-
 export class NoteService {
-    notes = tempNotes;
+    notes = [{id:1, title:"", content: ""}];
 
     public getAllNotes() {
         return this.notes;
