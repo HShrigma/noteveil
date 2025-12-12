@@ -6,7 +6,7 @@ export class NoteService {
 
     public getAllNotes() {
         try {
-            const stmt = this.db.prepare(`SELECT * FROM notes ORDER BY created_at DESC`);
+            const stmt = this.db.prepare(`SELECT * FROM notes ORDER BY created_at`);
             const rows = stmt.all() as Note[];
             return rows;
         } catch (error) {

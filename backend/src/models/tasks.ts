@@ -4,25 +4,17 @@ export interface Task{
     done: boolean;
 }
 
+export interface RawJoinTaskList{
+    list_id: number;
+    list_title: string;
+    next_id: number;
+    task_id: number;
+    task_label: string;
+    task_done: boolean;
+}
 export interface TaskList{
     id: number,
     title: string,
     tasks: Task[],
     nextId: number | undefined
 }
-
-export const sampleTasks: Task[] = [
-    { id: 1, label: "sample Task", done: false },
-    { id: 2, label: "do Thing", done: false },
-    { id: 3, label: "complete Thing", done: false },
-];
-export const sampleTasksAlt: Task[] = [
-    { id: 4, label: "sample Task", done: false },
-    { id: 5, label: "do Thing", done: false },
-    { id: 6, label: "complete Thing", done: false },
-];
-export const tempTasks: TaskList[] = [
-    { id: 1, title: "tasks from API", tasks: [...sampleTasks], nextId: undefined },
-    { id: 2, title: "tasks 2", tasks: [...sampleTasksAlt], nextId: undefined }
-];
-

@@ -1,43 +1,50 @@
 import { Request, Response } from "express";
 import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
-import TaskService from "../services/taskService"; 
+import TaskService from "../services/taskService";
 
 export class TaskController {
     public getTasks = (_req: Request, res: Response) => {
-        res.json(TaskService.getAllTasks());
+        const result = TaskService.getAllTasks();
+
+        if (result === null) return sendError(res, 500, "Could not get all Tasks");
+
+        res.json(result);
     };
 
     public deleteTaskList = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const result = TaskService.deleteTaskList(listId);
+        if (result === null) return sendError(res, 500, "Could not delete TaskList");
+        if (!result.deleted) return sendNotFoundError(res, "TaskList")
         res.json(sendSuccess(result));
     };
 
     public deleteTask = (req: Request, res: Response) => {
-        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
-        const result = TaskService.deleteTask(listId, taskId);
+        const result = TaskService.deleteTask(taskId);
 
-        if (result === null || result.error) {
-            return sendNotFoundError(res, result?.error === "Task not found" ? "Task" : "TaskList");
-        }
+        if (result === null) return sendError(res, 500, "Could not delete Task");
+        if (!result.deleted) return sendNotFoundError(res, "Task")
+
         res.json(sendSuccess(result));
     }
 
     public addTaskList = (req: Request, res: Response) => {
         const { title } = req.body;
         const result = TaskService.addTaskList(title);
-        if(result === null) return sendError(res,500,"Could not add TaskList");
+
+        if (result === null) return sendError(res, 500, "Could not add TaskList");
+
         res.json(sendSuccess(result));
     }
 
     public addTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { label } = req.body;
-        
+
         const result = TaskService.addTask(listId, label);
 
-        if(result === null) return sendError(res,500,"Could not add Task");
+        if (result === null) return sendError(res, 500, "Could not add Task");
 
         res.json(sendSuccess(result));
     }
@@ -45,41 +52,35 @@ export class TaskController {
     public updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { nextId } = req.body;
-        
+
         const result = TaskService.updateNextId(listId, nextId);
 
-        if (result.error) {
-            // Handles both "TaskList not found" and "nextId not found"
-            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "nextId");
-        }
+        if (result === null) return sendError(res, 500, "Could not update TaskList next Id");
+        if (!result.updated) return sendNotFoundError(res, "TaskList");
 
         res.json(sendSuccess(result));
     }
 
     public updateTaskDone = (req: Request, res: Response) => {
-        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
         const { done } = req.body;
 
-        const result = TaskService.updateTaskDone(listId, taskId, done);
-        
-        if (result.error) {
-            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "Task");
-        }
+        const result = TaskService.updateTaskDone(taskId, done);
+
+        if (result === null) return sendError(res, 500, "Could not update Task done");
+        if (!result.updated) return sendNotFoundError(res, "Task");
 
         res.json(sendSuccess(result));
     }
 
     public updateTaskLabel = (req: Request, res: Response) => {
-        const listId = Number(req.params.id);
         const taskId = Number(req.params.taskId);
         const { label } = req.body;
 
-        const result = TaskService.updateTaskLabel(listId, taskId, label);
-        
-        if (result.error) {
-            return sendNotFoundError(res, result.error.includes("TaskList") ? "TaskList" : "Task");
-        }
+        const result = TaskService.updateTaskLabel(taskId, label);
+
+        if (result === null) return sendError(res, 500, "Could not update Task label");
+        if (!result.updated) return sendNotFoundError(res, "Task");
 
         res.json(sendSuccess(result));
     }
@@ -87,13 +88,12 @@ export class TaskController {
     public updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { title } = req.body;
-        
+
         const result = TaskService.updateListTitle(listId, title);
 
-        if (result === null) {
-            return sendNotFoundError(res, "TaskList");
-        }
-        
+        if (result === null) return sendError(res, 500, "Could not update TaskList title");
+        if (!result.updated) return sendNotFoundError(res, "TaskList");
+
         res.json(sendSuccess(result));
     }
 };

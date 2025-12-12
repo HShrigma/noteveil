@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { TaskController } from "../controllers/taskController";
-import { requireBodyFields, runMiddleware, sanitizeInput, validateIdParam as validateIdParams } from "../utils/middleware";
+import { runMiddleware } from "../utils/middleware";
 
 const router = Router();
 const controller = new TaskController();
@@ -10,56 +10,56 @@ router.get("/", runMiddleware({}), (_req, res) => controller.getTasks(_req, res)
 // Delete tasklist
 router.delete(
     "/:id",
-    runMiddleware({validateId:true}),
+    runMiddleware({idFields:["id"]}),
     (req, res) => controller.deleteTaskList(req, res)
 );
 
 // Delete task
 router.delete(
-    "/:id/:taskId",
-    runMiddleware({ validateId: true, hasTaskId: true }),
+    "/task/:taskId",
+    runMiddleware({ idFields: ["taskId"]}),
     (req, res) => controller.deleteTask(req, res)
 );
 
 // Add list
 router.post(
     "/",
-    runMiddleware({ validateId: true, bodyFields: ["title"] }),
+    runMiddleware({ bodyFields: ["title"] }),
     (req, res) => controller.addTaskList(req, res)
 );
 
 // Add task
 router.post(
     "/:id/task",
-    runMiddleware({ validateId: true, hasTaskId: true, bodyFields: ["label"] }),
+    runMiddleware({ idFields: ["id"], bodyFields: ["label"] }),
     (req, res) => controller.addTask(req, res)
 );
 
 // Update nextId
 router.patch(
     "/:id/next",
-    runMiddleware({ validateId: true}),
+    runMiddleware({ idFields: ["id"]}),
     (req, res) => controller.updateNextId(req, res)
 );
 
 // Update task done
 router.patch(
-    "/:id/task/:taskId/done",
-    runMiddleware({ validateId: true,hasTaskId: true }),
+    "/task/:taskId/done",
+    runMiddleware({ idFields: ["taskId"] }),
     (req, res) => controller.updateTaskDone(req, res)
 );
 
 // Update task label
 router.patch(
-    "/:id/task/:taskId/label",
-    runMiddleware({validateId: true, hasTaskId: true, bodyFields:["label"]}),
+    "/task/:taskId/label",
+    runMiddleware({idFields: ["taskId"], bodyFields:["label"]}),
     (req, res) => controller.updateTaskLabel(req, res)
 );
 
 // Update list title
 router.patch(
     "/:id/title",
-    runMiddleware({ validateId: true, bodyFields:["title"]}),
+    runMiddleware({ idFields: ["id"], bodyFields:["title"]}),
     (req, res) => controller.updateListTitle(req, res)
 );
 

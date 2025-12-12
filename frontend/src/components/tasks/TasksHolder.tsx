@@ -58,7 +58,7 @@ export const TasksHolder = () => {
         }
 
         setNewList(newTaskList);
-        await patchTaskDone(id, taskId, done);
+        await patchTaskDone(taskId, done);
     };
 
     async function handleTaskSubmit(id: number, taskId: number, label: string) {
@@ -72,7 +72,7 @@ export const TasksHolder = () => {
 
         setNewList(newTaskList);
 
-        await patchTaskLabel(id, taskId, label);
+        await patchTaskLabel(taskId, label);
     };
 
     async function addNewTask(id: number, label: string) {
@@ -91,7 +91,7 @@ export const TasksHolder = () => {
         newTaskList.tasks = newTaskList.tasks.filter((t) => t.id !== taskId);
         setNewList(newTaskList);
 
-        await deleteTask(id, taskId);
+        await deleteTask(taskId);
     }
 
     async function removeList(id: number) {

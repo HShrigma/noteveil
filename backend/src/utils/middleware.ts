@@ -4,14 +4,13 @@ import { sendEmptyError, sendError } from "../utils/messages";
 import sanitizeHtml from 'sanitize-html';
 
 export interface MiddlewareParams {
-    validateId?: boolean;
-    hasTaskId?: boolean;
+    idFields?: string[];
     bodyFields?: string[];
 }
 
 const isIdInvalid = (id: number) => { return isNaN(id) || id <= 0; }
 
-export const requireBodyFields = (fields: string[]) => {
+const requireBodyFields = (fields: string[]) => {
     return (req: Request, res: Response, next: NextFunction) => {
         for (const field of fields) {
             if (!req.body[field]) {
@@ -22,7 +21,19 @@ export const requireBodyFields = (fields: string[]) => {
     };
 };
 
-export const sanitizeInput = () => {
+const validateIds = (fields: string[]) => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        for (const field of fields) {
+            if (!req.params[field]) {
+                return sendEmptyError(res, field.charAt(0).toUpperCase() + field.slice(1)); // Capitalize for the message
+            }
+            const id = Number(req.params[field]);
+            if (isIdInvalid(id)) return sendError(res, 400, "Invalid ID Parameter");
+        }
+        next();
+    };
+}
+const sanitizeInput = () => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (req.body) {
             Object.keys(req.body).forEach(key => {
@@ -38,19 +49,6 @@ export const sanitizeInput = () => {
     };
 };
 
-export const validateIdParam = (hasTaskId = false) => {
-    return (req: Request, res: Response, next: NextFunction) => {
-        const id = Number(req.params.id);
-        if (isIdInvalid(id)) return sendError(res, 400, "Invalid ID Parameter");
-
-        if (hasTaskId) {
-            const taskId = Number(req.params.taskId);
-            if (isIdInvalid(taskId)) return sendError(res, 400, "Invalid Task ID Parameter");
-        }
-        next();
-    };
-};
-
 
 export const runMiddleware = (params: MiddlewareParams) => {
     const middlewares: ((req: Request, res: Response, next: NextFunction) => void)[] = [];
@@ -61,13 +59,9 @@ export const runMiddleware = (params: MiddlewareParams) => {
     if (params.bodyFields && params.bodyFields.length > 0) {
         middlewares.push(requireBodyFields(params.bodyFields));
     }
-
-    // Validate ID parameters
-    if (params.validateId !== undefined) {
-        const hasTaskId = params.hasTaskId === undefined ? false : params.hasTaskId;
-        middlewares.push(validateIdParam(params.hasTaskId));
+    if (params.idFields && params.idFields.length > 0){
+        middlewares.push(validateIds(params.idFields));
     }
-
     // Return a single middleware that runs all selected middlewares in sequence
     return (req: Request, res: Response, next: NextFunction) => {
         let index = 0;

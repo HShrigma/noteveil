@@ -1,88 +1,141 @@
-import { tempTasks } from "../models/tasks"; 
+import DB from "../config/db";
+import { RawJoinTaskList, Task, TaskList } from "../models/tasks";
 
 class TaskService {
-    private taskLists = tempTasks;
-
-    private findListIndex(listId: number) {
-        return this.taskLists.findIndex(t => t.id === listId);
-    }
+    db = DB.getInstance().getConnection();
 
     getAllTasks() {
-        return this.taskLists;
+        try {
+            const stmt = this.db.prepare(`
+                SELECT l.id AS list_id, l.title AS list_title, l.next_id AS next_id,
+                       t.id AS task_id, t.label AS task_label, t.done AS task_done
+                FROM task_lists l
+                LEFT JOIN tasks t ON l.id = t.task_list_id
+                ORDER BY l.created_at, t.created_at`);
+            const rows = stmt.all() as RawJoinTaskList[];
+            const taskListMap = new Map<number, TaskList>();
+            rows.forEach(row => {
+                const listId = row.list_id;
+                if (!taskListMap.has(listId)) {
+                    taskListMap.set(listId, {
+                        id: listId,
+                        title: row.list_title,
+                        tasks: [],
+                        nextId: row.next_id || undefined
+                    });
+                }
+                if (row.task_id !== null) {
+                    const taskList = taskListMap.get(listId)!;
+                    taskList.tasks.push({
+                        id: row.task_id,
+                        label: row.task_label,
+                        done: Boolean(row.task_done)
+                    });
+                }
+            });
+
+            console.log(taskListMap);
+            return Array.from(taskListMap.values());
+        } catch (error) {
+            console.error('Error fetching taskLists:', error);
+            return null;
+        }
     }
 
     deleteTaskList(listId: number) {
-        this.taskLists = this.taskLists.filter(list => list.id !== listId);
-        return { deletedId: listId };
+        try {
+            const stmt = this.db.prepare(`DELETE FROM task_lists WHERE id = ?`);
+            const result = stmt.run(listId);
+            return { deleted: result.changes > 0, listId: listId };
+        } catch (error) {
+            console.error('Error deleting TaskList:', error);
+            return null;
+        }
     }
 
-    deleteTask(listId: number, taskId: number) {
-        const index = this.findListIndex(listId);
-        if (index === -1) return null; // List not found
-
-        const initialLength = this.taskLists[index].tasks.length;
-        this.taskLists[index].tasks = this.taskLists[index].tasks.filter(t => t.id !== taskId);
-        
-        if (this.taskLists[index].tasks.length === initialLength) return { error: "Task not found" };
-
-        return { deletedId: listId, deletedTaskId: taskId };
+    deleteTask(taskId: number) {
+        try {
+            const stmt = this.db.prepare(`DELETE FROM tasks WHERE id = ?`);
+            const result = stmt.run(taskId);
+            return { deleted: result.changes > 0, taskId: taskId };
+        } catch (error) {
+            console.error('Error deleting Task:', error);
+            return null;
+        }
     }
 
     addTaskList(title: string) {
-        // this.taskLists.push({ id: listId, title, tasks: [], nextId: undefined });
-        // return { listId, title };
-        return null;
+        try {
+            const stmt = this.db.prepare(`INSERT INTO task_lists (title) VALUES (?)`);
+            const result = stmt.run(title);
+            return { id: result.lastInsertRowid as number };
+        } catch (error) {
+            console.error('Error adding TaskList:', error);
+            return null;
+        }
     }
 
     addTask(listId: number, label: string) {
-        // const index = this.findListIndex(listId);
-        // if (index === -1) return null; // List not found
-
-        // this.taskLists[index].tasks.push({ id: taskId, label: label, done: false });
-        // return { listId, taskId, label };
-        return null;
+        try {
+            const stmt = this.db.prepare(`INSERT INTO tasks (label, task_list_id) VALUES (?,?)`);
+            const result = stmt.run(label, listId);
+            return { id: result.lastInsertRowid as number };
+        } catch (error) {
+            console.error('Error adding Task:', error);
+            return null;
+        }
     }
 
     updateNextId(listId: number, nextId: number | undefined) {
-        const index = this.findListIndex(listId);
-        if (index === -1) return { error: "TaskList not found" };
+        try {
+            const stmt = this.db.prepare(`UPDATE task_lists SET next_id = ? WHERE id = ?`);
+            const result = stmt.run(nextId, listId);
 
-        if (nextId !== undefined && !this.taskLists.some(list => list.id === nextId)) {
-            return { error: "nextId not found" };
+            return { updated: result.changes > 0, listId: listId, nextId: nextId };
+
+        } catch (error) {
+            console.error('Error updating TaskList NextId:', error);
+            return null;
         }
-
-        this.taskLists[index].nextId = nextId;
-        return { listId, nextId };
     }
 
-    updateTaskDone(listId: number, taskId: number, done: boolean) {
-        const listIndex = this.findListIndex(listId);
-        if (listIndex === -1) return { error: "TaskList not found" };
+    updateTaskDone(taskId: number, done: boolean) {
+        try {
+            const stmt = this.db.prepare(`UPDATE tasks SET done = ? WHERE id = ?`);
+            const result = stmt.run(done ? "TRUE" : "FALSE", taskId);
 
-        const taskIndex = this.taskLists[listIndex].tasks.findIndex(t => t.id === taskId);
-        if (taskIndex === -1) return { error: "Task not found" };
+            return { updated: result.changes > 0, taskId: taskId, done: done };
 
-        this.taskLists[listIndex].tasks[taskIndex].done = done;
-        return { id: listId, taskId, done };
+        } catch (error) {
+            console.error('Error updating Task Done:', error);
+            return null;
+        }
     }
 
-    updateTaskLabel(listId: number, taskId: number, label: string) {
-        const listIndex = this.findListIndex(listId);
-        if (listIndex === -1) return { error: "TaskList not found" };
+    updateTaskLabel(taskId: number, label: string) {
+        try {
+            const stmt = this.db.prepare(`UPDATE tasks SET label = ? WHERE id = ?`);
+            const result = stmt.run(label, taskId);
 
-        const taskIndex = this.taskLists[listIndex].tasks.findIndex(t => t.id === taskId);
-        if (taskIndex === -1) return { error: "Task not found" };
+            return { updated: result.changes > 0, taskId: taskId, label: label };
 
-        this.taskLists[listIndex].tasks[taskIndex].label = label;
-        return { id: listId, label };
+        } catch (error) {
+            console.error('Error updating Task Label:', error);
+            return null;
+        }
     }
 
     updateListTitle(listId: number, title: string) {
-        const index = this.findListIndex(listId);
-        if (index === -1) return null;
+        try {
+            const stmt = this.db.prepare(`UPDATE task_lists SET title = ? WHERE id = ?`);
+            const result = stmt.run(title, listId);
 
-        this.taskLists[index].title = title;
-        return { id: listId, title };
+            return { updated: result.changes > 0, listId: listId, title: title };
+
+        } catch (error) {
+            console.error('Error updating TaskList Title:', error);
+            return null;
+        }
     }
 }
 

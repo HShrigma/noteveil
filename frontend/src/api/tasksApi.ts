@@ -15,8 +15,8 @@ export async function deleteTaskList(id: number) {
     return await res.json();
 }
 
-export async function deleteTask(id: number, taskId: number) {
-    const res = await fetch(`${BASE_URL}/${id}/${taskId}`, {
+export async function deleteTask(taskId: number) {
+    const res = await fetch(`${BASE_URL}/task/${taskId}`, {
         method: "DELETE"
     });
 
@@ -67,8 +67,8 @@ export async function patchNextId(id:number, nextId: number | undefined){
 
 }
 
-export async function patchTaskDone(id: number, taskId: number, done: boolean) {
-    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}/done`, {
+export async function patchTaskDone(taskId: number, done: boolean) {
+    const res = await fetch(`${BASE_URL}/task/${taskId}/done`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -82,8 +82,8 @@ export async function patchTaskDone(id: number, taskId: number, done: boolean) {
 
 }
 
-export async function patchTaskLabel(id: number, taskId: number, label: string) {
-    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}/label`, {
+export async function patchTaskLabel(taskId: number, label: string) {
+    const res = await fetch(`${BASE_URL}/task/${taskId}/label`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

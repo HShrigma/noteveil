@@ -60,7 +60,7 @@ export const ActiveNote = ({ data, focusTarget, onNoteFocus, onNoteDelete, onSub
                     const leave = value.trim() === data.content.trim() || confirm("Discard changes to this note?");
                     if (!leave) return;
                     revertToSnapshot();
-                    onNoteFocus?.({ id: data.id - 1, active: true });
+                    onNoteFocus?.({ id: data.id + 1, active: true });
                     return;
                 }
                 const t = e.currentTarget;
