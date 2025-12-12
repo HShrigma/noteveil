@@ -1,14 +1,11 @@
-import DB from "../config/db";
-import { Note } from "../models/notes";
+import NoteRepository from "../repository/noteRepository";
 
 export class NoteService {
-    db = DB.getInstance().getConnection();
+    repo = new NoteRepository();
 
     public getAllNotes() {
         try {
-            const stmt = this.db.prepare(`SELECT * FROM notes ORDER BY created_at`);
-            const rows = stmt.all() as Note[];
-            return rows;
+            return this.repo.getNotes();
         } catch (error) {
             console.error('Error fetching notes:', error);
             return null;
@@ -17,10 +14,8 @@ export class NoteService {
 
     addNote() {
         try {
-            const title = "New Note";
-            const stmt = this.db.prepare(`INSERT INTO notes (title, content) VALUES (?, ?)`);
-            const result = stmt.run(title, "");
-            return { id: result.lastInsertRowid as number };
+            const res = this.repo.addNote();
+            return { id: res.lastInsertRowid as number };
         } catch (error) {
             console.error('Error adding note:', error);
             return null;
@@ -29,9 +24,8 @@ export class NoteService {
 
     deleteNote(id: number) {
         try {
-            const stmt = this.db.prepare(`DELETE FROM notes WHERE id = ?`);
-            const result = stmt.run(id);
-            return { deleted: result.changes > 0, id: id };
+            const res = this.repo.deleteNote(id);
+            return { deleted: res.changes > 0, id: id };
         } catch (error) {
             console.error('Error deleting note:', error);
             return null;
@@ -40,9 +34,8 @@ export class NoteService {
 
     updateNoteTitle(id: number, title: string) {
         try {
-            const stmt = this.db.prepare(`UPDATE notes SET title = ? WHERE id = ?`);
-            const result = stmt.run(title, id);
-            return { updated: result.changes > 0, id: id, title: title };
+            const res = this.repo.updateNoteTitle(id, title);
+            return { updated: res.changes > 0, id: id, title: title };
         } catch (error) {
             console.error('Error updating note title:', error);
             return null;
@@ -51,9 +44,8 @@ export class NoteService {
 
     updateNoteContent(id: number, content: string) {
         try {
-            const stmt = this.db.prepare(`UPDATE notes SET content = ? WHERE id = ?`);
-            const result = stmt.run(content, id);
-            return { updated: result.changes > 0, id: id, content: content };
+            const res = this.repo.updateNoteContent(id,content);
+            return { updated: res.changes > 0, id: id, content: content };
         } catch (error) {
             console.error('Error updating note content:', error);
             return null;
