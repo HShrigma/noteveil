@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { sendNotFoundError, sendSuccess } from "../utils/messages";
+import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import TaskService from "../services/taskService"; 
 
 export class TaskController {
@@ -25,23 +25,19 @@ export class TaskController {
     }
 
     public addTaskList = (req: Request, res: Response) => {
-        const listId = Number(req.params.id);
         const { title } = req.body;
-        const result = TaskService.addTaskList(listId, title);
-
+        const result = TaskService.addTaskList(title);
+        if(result === null) return sendError(res,500,"Could not add TaskList");
         res.json(sendSuccess(result));
     }
 
     public addTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
-        const taskId = Number(req.params.taskId);
         const { label } = req.body;
         
-        const result = TaskService.addTask(listId, taskId, label);
+        const result = TaskService.addTask(listId, label);
 
-        if (result === null) {
-            return sendNotFoundError(res, "TaskList");
-        }
+        if(result === null) return sendError(res,500,"Could not add Task");
 
         res.json(sendSuccess(result));
     }

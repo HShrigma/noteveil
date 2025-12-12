@@ -26,8 +26,8 @@ export async function deleteTask(id: number, taskId: number) {
 }
 
 
-export async function addList(id: number, title: string) {
-    const res = await fetch(`${BASE_URL}/${id}`, {
+export async function addList(title: string) {
+    const res = await fetch(`${BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
@@ -38,8 +38,8 @@ export async function addList(id: number, title: string) {
     return await res.json();
 }
 
-export async function addTask(id: number, taskId: number, label: string) {
-    const res = await fetch(`${BASE_URL}/${id}/task/${taskId}`, {
+export async function addTask(id: number, label: string) {
+    const res = await fetch(`${BASE_URL}/${id}/task`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

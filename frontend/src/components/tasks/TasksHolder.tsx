@@ -83,7 +83,7 @@ export const TasksHolder = () => {
         setMaxTaskId((n) => n + 1);
         triggerScreenBob(150);
 
-        await addTask(id, maxTaskId, label);
+        await addTask(id,label);
     }
 
     async function removeTask(id: number, taskId: number) {
@@ -119,7 +119,7 @@ export const TasksHolder = () => {
         setAllTasks(newTasks);
         triggerScreenBob();
 
-        await addList(maxId, title);
+        await addList(title);
     }
 
     async function editGoesTo(id: number, nextId: number) {

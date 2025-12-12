@@ -28,17 +28,19 @@ class TaskService {
         return { deletedId: listId, deletedTaskId: taskId };
     }
 
-    addTaskList(listId: number, title: string) {
-        this.taskLists.push({ id: listId, title, tasks: [], nextId: undefined });
-        return { listId, title };
+    addTaskList(title: string) {
+        // this.taskLists.push({ id: listId, title, tasks: [], nextId: undefined });
+        // return { listId, title };
+        return null;
     }
 
-    addTask(listId: number, taskId: number, label: string) {
-        const index = this.findListIndex(listId);
-        if (index === -1) return null; // List not found
+    addTask(listId: number, label: string) {
+        // const index = this.findListIndex(listId);
+        // if (index === -1) return null; // List not found
 
-        this.taskLists[index].tasks.push({ id: taskId, label: label, done: false });
-        return { listId, taskId, label };
+        // this.taskLists[index].tasks.push({ id: taskId, label: label, done: false });
+        // return { listId, taskId, label };
+        return null;
     }
 
     updateNextId(listId: number, nextId: number | undefined) {

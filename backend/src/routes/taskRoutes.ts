@@ -23,14 +23,14 @@ router.delete(
 
 // Add list
 router.post(
-    "/:id",
+    "/",
     runMiddleware({ validateId: true, bodyFields: ["title"] }),
     (req, res) => controller.addTaskList(req, res)
 );
 
 // Add task
 router.post(
-    "/:id/task/:taskId",
+    "/:id/task",
     runMiddleware({ validateId: true, hasTaskId: true, bodyFields: ["label"] }),
     (req, res) => controller.addTask(req, res)
 );
