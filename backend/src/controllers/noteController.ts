@@ -13,7 +13,10 @@ export class NoteController {
     public deleteNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
         const result = NoteService.deleteNote(id);
+
         if (result === null) return sendError(res, 500, "Could not delete Note");
+        if (!result.deleted) return sendNotFoundError(res, "Note");
+
         res.json(sendSuccess(result));
     }
 
@@ -28,7 +31,9 @@ export class NoteController {
         const {title} = req.body;
         
         const result = NoteService.updateNoteTitle(id,title);
-        if (result === null) return sendNotFoundError(res, "Note");
+
+        if (!result?.updated) return sendNotFoundError(res, "Note");
+        if (result === null) return sendError(res, 500, "Could not update Note title");
 
         res.json(sendSuccess(result));
     }
@@ -38,7 +43,9 @@ export class NoteController {
         const { content } = req.body;
 
         const result = NoteService.updateNoteContent(id,content);
-        if (result === null) return sendNotFoundError(res, "Note");
+
+        if (!result?.updated) return sendNotFoundError(res, "Note");
+        if (result === null) return sendError(res, 500, "Could not update Note content");
 
         res.json(sendSuccess(result));
     }

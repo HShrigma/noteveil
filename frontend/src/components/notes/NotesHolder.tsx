@@ -80,7 +80,7 @@ export const NotesHolder = () => {
         setMaxId(prev => prev + 1);
         triggerScreenBob();
 
-        await addNote(maxId);
+        await addNote();
     }
 
     return (
