@@ -17,8 +17,8 @@ export async function deleteNote(id:number) {
 }
 
 // Add Note
-export async function addNote(id:number) {
-  const res = await fetch(`${BASE_URL}/${id}`, {
+export async function addNote() {
+  const res = await fetch(`${BASE_URL}`, {
     method:"POST",
     headers: {"Content-Type": "application/json"}
   });

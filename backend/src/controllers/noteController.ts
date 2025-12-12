@@ -1,21 +1,26 @@
 import { Request, Response } from "express";
-import { sendNotFoundError, sendSuccess } from "../utils/messages";
+import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import  NoteService  from "../services/noteService";
 
 export class NoteController {
 
     public getNotes = (req:Request, res:Response) => {
-        res.json((NoteService.getAllNotes()));
+        const result = NoteService.getAllNotes();
+        if (result === null) return sendError(res, 500, "Could not fetch Notes");
+        res.json(result);
     }
 
     public deleteNote = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        res.json(sendSuccess(NoteService.deleteNote(id)));
+        const result = NoteService.deleteNote(id);
+        if (result === null) return sendError(res, 500, "Could not delete Note");
+        res.json(sendSuccess(result));
     }
 
     public addNote = (req:Request, res:Response) => {
-        const id = Number(req.params.id);
-        res.json(sendSuccess(NoteService.addNote(id)));
+        const result = NoteService.addNote();
+        if (result === null) return sendError(res, 500, "Could not add Note");
+        res.json(sendSuccess(result));
     }
 
     public updateNoteTitle = (req:Request, res:Response) => {

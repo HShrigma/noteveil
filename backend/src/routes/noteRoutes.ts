@@ -12,7 +12,7 @@ router.get("/", (_req, res) => controller.getNotes(_req, res));
 router.delete("/:id", runMiddleware({ validateId: true }), (req, res) => controller.deleteNote(req, res));
 
 // Add note
-router.post("/:id", runMiddleware({ validateId: true }), (req, res) => controller.addNote(req, res));
+router.post("/", runMiddleware({}), (req, res) => controller.addNote(req, res));
 
 // Update note title
 router.patch(

@@ -1,37 +1,49 @@
+import DB from "../config/db";
+import { Note } from "../models/notes";
+
 export class NoteService {
     notes = [{id:1, title:"", content: ""}];
+    db = DB.getInstance().getConnection();
 
     public getAllNotes() {
-        return this.notes;
+        try{
+            const stmt = this.db.prepare(`SELECT * FROM Notes ORDER BY created_at DESC`);
+            const rows = stmt.all() as Note[];
+            return rows;
+        } catch (error) {return null}
     }
 
-    addNote(id: number) {
-        const newNote = { id: id, title: '', content: '' };
-        this.notes.push(newNote);
-        return { id: id };
+    addNote() {
+        try{
+            const title = "New Note";
+            const stmt = this.db.prepare(`INSERT INTO notes (title, content) VALUES (?, ?)`);
+            const result = stmt.run(title, "");
+            return {id: result.lastInsertRowid as number};
+        } catch(error) {return null}
     }
 
     deleteNote(id: number) {
-        const initialLength = this.notes.length;
-        this.notes = this.notes.filter(note => note.id !== id);
-        
-        return { deleted: this.notes.length < initialLength, id: id };
+        try{
+            const stmt = this.db.prepare(`DELETE FROM notes WHERE id = ?`);
+            const result = stmt.run(id);
+            return {id: result.lastInsertRowid as number};
+        } catch(error) {return null}
     }
 
     updateNoteTitle(id: number, title: string) {
-        const index = this.notes.findIndex(t => t.id === id);
-        if (index === -1) return null;
-
-        this.notes[index].title = title;
-        return { id, title };
+        try{
+            const stmt = this.db.prepare(`UPDATE notes SET title = ? WHERE id = ?`);
+            const result = stmt.run(title, id);
+            return {id: result.lastInsertRowid as number};
+        } catch(error) {return null}
     }
 
     updateNoteContent(id: number, content: string) {
-        const index = this.notes.findIndex(t => t.id === id);
-        if (index === -1) return null;
-
-        this.notes[index].content = content;
-        return { id, content };
+        try{
+            const stmt = this.db.prepare(`UPDATE notes SET content = ? WHERE id = ?`);
+            const result = stmt.run(content, id);
+            return {id: result.lastInsertRowid as number};
+        } catch(error) {return null}
     }
 }
 
