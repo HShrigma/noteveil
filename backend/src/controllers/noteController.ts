@@ -32,8 +32,8 @@ export class NoteController {
         
         const result = NoteService.updateNoteTitle(id,title);
 
-        if (!result?.updated) return sendNotFoundError(res, "Note");
         if (result === null) return sendError(res, 500, "Could not update Note title");
+        if (!result.updated) return sendNotFoundError(res, "Note");
 
         res.json(sendSuccess(result));
     }
@@ -44,8 +44,8 @@ export class NoteController {
 
         const result = NoteService.updateNoteContent(id,content);
 
-        if (!result?.updated) return sendNotFoundError(res, "Note");
         if (result === null) return sendError(res, 500, "Could not update Note content");
+        if (!result.updated) return sendNotFoundError(res, "Note");
 
         res.json(sendSuccess(result));
     }

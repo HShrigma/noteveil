@@ -6,7 +6,6 @@ export class NoteService {
 
     public getAllNotes() {
         try {
-            // Use lowercase 'notes' for consistency
             const stmt = this.db.prepare(`SELECT * FROM notes ORDER BY created_at DESC`);
             const rows = stmt.all() as Note[];
             return rows;
@@ -32,7 +31,6 @@ export class NoteService {
         try {
             const stmt = this.db.prepare(`DELETE FROM notes WHERE id = ?`);
             const result = stmt.run(id);
-            // DELETE returns changes, not lastInsertRowid
             return { deleted: result.changes > 0, id: id };
         } catch (error) {
             console.error('Error deleting note:', error);
@@ -44,7 +42,6 @@ export class NoteService {
         try {
             const stmt = this.db.prepare(`UPDATE notes SET title = ? WHERE id = ?`);
             const result = stmt.run(title, id);
-            // UPDATE returns changes, not lastInsertRowid
             return { updated: result.changes > 0, id: id, title: title };
         } catch (error) {
             console.error('Error updating note title:', error);
@@ -56,7 +53,6 @@ export class NoteService {
         try {
             const stmt = this.db.prepare(`UPDATE notes SET content = ? WHERE id = ?`);
             const result = stmt.run(content, id);
-            // UPDATE returns changes, not lastInsertRowid
             return { updated: result.changes > 0, id: id, content: content };
         } catch (error) {
             console.error('Error updating note content:', error);
