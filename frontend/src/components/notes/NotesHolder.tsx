@@ -16,13 +16,10 @@ export const NotesHolder = () => {
     };
 
     const [notes, setNotes] = useState<NoteData[]>([]);
-    const [maxId, setMaxId] = useState(0);
 
     useEffect(() => {
         fetchNotes().then(fetched => {
             setNotes(fetched);
-            const maxExistingId = fetched.reduce((max: number, n: { id: number; }) => Math.max(max, n.id), 0);
-            setMaxId(maxExistingId + 1);
         });
     }, []);
 
@@ -32,7 +29,7 @@ export const NotesHolder = () => {
     const getNoteIndexById = (id: number) => notes.findIndex(t => t.id === id);
 
     const updateActiveNote = (activity: NoteActivity) => {
-        activity.id = getNoteIndexById(activity.id) ? activity.id : notes[0]?.id;
+        activity.id = getNoteIndexById(activity.id) !== -1 ? activity.id : notes[0]?.id;
         setActiveNote(activity);
         setFocusTarget(prev => prev ?? 'content');
     };
@@ -72,15 +69,14 @@ export const NotesHolder = () => {
     async function onAddNote() {
         if (notes.some(n => n.title === '' || n.content === '')) return;
 
-        const newNotes = [...notes, { id: maxId, title: '', content: '' }];
+        const res = await addNote();
+        const newNoteId = Number(res.body.id);
+        const newNotes = [...notes, { id: newNoteId, title: "New Note", content: '' }];
         setNotes(newNotes);
 
         setFocusTarget('title');
-        setActiveNote({ id: maxId, active: true });
-        setMaxId(prev => prev + 1);
+        setActiveNote({ id: newNoteId, active: true });
         triggerScreenBob();
-
-        await addNote();
     }
 
     return (
