@@ -9,7 +9,7 @@ class TaskService {
     }
 
     deleteTaskList(listId: number) {
-        const res = runService(()=>this.repo.deleteTaskList(listId), 'Error deleting TaskList:');
+        const res = runService(() => this.repo.deleteTaskList(listId), 'Error deleting TaskList:');
         return res ? { deleted: res.changes > 0, listId: listId } : null;
     }
 
@@ -19,7 +19,7 @@ class TaskService {
     }
 
     addTaskList(title: string) {
-        const res = runService(()=> this.repo.addTaskList(title), 'Error adding TaskList:');
+        const res = runService(() => this.repo.addTaskList(title), 'Error adding TaskList:');
         return res ? { id: res.lastInsertRowid as number } : null;
     }
 

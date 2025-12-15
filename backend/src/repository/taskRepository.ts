@@ -1,7 +1,7 @@
 import DB from "../config/db";
 import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
-import { deleteWithId, updateSingularById } from "../utils/repository";
+import { deleteWithId, runTaskDoneUpdate, runTaskLabelUpdate, runTaskListNextIdUpdate, runTaskListTitleUpdate, updateSingularById } from "../utils/repository";
 
 class TaskRepository {
     db = DB.getInstance().getConnection();
@@ -35,7 +35,6 @@ class TaskRepository {
             }
         });
 
-        console.log(taskListMap);
         return Array.from(taskListMap.values());
     }
 
@@ -55,21 +54,12 @@ class TaskRepository {
         return result;
     }
 
-    updateNextId(listId: number, nextId: number | undefined) {
-        return updateSingularById(this.db, tableType.taskLists, "next_id", nextId, "id", listId);
-    }
+    updateNextId(listId: number, nextId: number | undefined) { return runTaskListNextIdUpdate(this.db, nextId, listId); }
+    updateListTitle(listId: number, title: string) { return runTaskListTitleUpdate(this.db, title, listId); }
 
-    updateTaskDone(taskId: number, done: boolean) {
-        return updateSingularById(this.db, tableType.tasks, "done", done ? 1 : 0, "id", taskId);
-    }
+    updateTaskDone(taskId: number, done: boolean) { return runTaskDoneUpdate(this.db, done, taskId); }
+    updateTaskLabel(taskId: number, label: string) {return runTaskLabelUpdate(this.db, label, taskId);}
 
-    updateTaskLabel(taskId: number, label: string) {
-        return updateSingularById(this.db, tableType.tasks, "label", label, "id", taskId);
-    }
-
-    updateListTitle(listId: number, title: string) {
-        return updateSingularById(this.db, tableType.taskLists, "title", title, "id", listId);
-    }
 }
 
 export default TaskRepository;
