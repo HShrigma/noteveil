@@ -1,11 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import Note  from './model/Note';
 import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
 import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
-import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from '../../api/notesApi';
-import { NoteData } from '../../utils/types';
+import { useNotes } from '../../utils/notes/useNote';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -15,65 +14,35 @@ export const NotesHolder = () => {
         500: 1,
     };
 
-    const [notes, setNotes] = useState<NoteData[]>([]);
-
-    useEffect(() => {
-        fetchNotes().then(fetched => {
-            setNotes(fetched);
-        });
-    }, []);
-
+    const { notes, createNote, updateTitle, updateContent, removeNote } = useNotes();
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
     const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
 
-    const getNoteIndexById = (id: number) => notes.findIndex(t => t.id === id);
 
     const updateActiveNote = (activity: NoteActivity) => {
-        activity.id = getNoteIndexById(activity.id) !== -1 ? activity.id : notes[0]?.id;
         setActiveNote(activity);
         setFocusTarget(prev => prev ?? 'content');
     };
 
     async function onTitleSubmit  (id: number, title: string)  {
-        const newNotes = [...notes];
-        newNotes[getNoteIndexById(id)].title = title;
-        setNotes(newNotes);
-
         setFocusTarget('content');
         setActiveNote({ id, active: true });
         triggerScreenBob(200);
-
-        await patchNoteTitle(id, title);
+        await updateTitle(id, title);
     };
 
-    async function onNoteSubmitHandler(id: number, content: string) {
-        const newNotes = [...notes];
-        newNotes[getNoteIndexById(id)].content = content;
-        setNotes(newNotes);
-
-        await patchNoteContent(id, content);
-    };
-
-    async function removeNote(id: number) {
+    async function onNoteRemove(id: number) {
         triggerScreenShake(250);
-        const index = getNoteIndexById(id);
-        if (index === -1) return;
-
-        setNotes(prev => prev.filter(t => t.id !== id));
         setActiveNote({ id: 0, active: false });
         setFocusTarget(null);
 
-        await deleteNote(id);
+        await removeNote(id);
     }
 
     async function onAddNote() {
         if (notes.some(n => n.title === '' || n.content === '')) return;
 
-        const res = await addNote();
-        const newNoteId = Number(res.body.id);
-        const newNotes = [...notes, { id: newNoteId, title: "New Note", content: '' }];
-        setNotes(newNotes);
-
+        const newNoteId = await createNote();
         setFocusTarget('title');
         setActiveNote({ id: newNoteId, active: true });
         triggerScreenBob();
@@ -104,9 +73,9 @@ export const NotesHolder = () => {
                             isActive={note.id === ActiveNote.id ? ActiveNote.active : false}
                             focusTarget={note.id === ActiveNote.id ? focusTarget : null}
                             onNoteFocus={updateActiveNote}
-                            onNoteDelete={removeNote}
+                            onNoteDelete={onNoteRemove}
                             onTitleSubmit={onTitleSubmit}
-                            onNoteSubmit={onNoteSubmitHandler}
+                            onNoteSubmit={updateContent}
                         />
                     </div>
                 ))}
