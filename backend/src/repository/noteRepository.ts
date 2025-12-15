@@ -1,8 +1,6 @@
 import DB from "../config/db";
-import { tableType } from "../config/schema";
 import { Note } from "../models/notes";
-import { runNoteContentUpdate, runNoteTitleUpdate } from "../utils/repo/noteRepoHelpers";
-import { deleteWithId } from "../utils/repo/repository";
+import { runNoteContentUpdate, runNoteDelete, runNoteTitleUpdate } from "../utils/repo/noteRepoHelpers";
 
 class NoteRepository {
     db = DB.getInstance().getConnection();
@@ -20,7 +18,7 @@ class NoteRepository {
         return result;
     }
 
-    deleteNote(id: number) {return deleteWithId(this.db, id, tableType.notes); }
+    deleteNote(id: number) { return runNoteDelete(this.db, id) }
     updateNoteTitle(id: number, title: string) {return runNoteTitleUpdate(this.db, title, id);}
     updateNoteContent(id: number, content: string) { return runNoteContentUpdate(this.db, content, id) };
 }

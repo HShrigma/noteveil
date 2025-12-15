@@ -1,5 +1,5 @@
 import { Database } from "better-sqlite3";
-import { runUpdate } from "./repository";
+import { runDelete, runUpdate } from "./repository";
 import { tableType } from "../../config/schema";
 
 const tasksTable = tableType.tasks;
@@ -51,4 +51,24 @@ export const runTaskLabelUpdate = (db: Database, label: string, id: number) => {
         predicateValues: [id]
     }
     return runUpdate(obj);
+}
+
+export const runTaskListDelete = (db: Database, id: number) => {
+    const obj = {
+        db: db,
+        tableName: taskListsTable, 
+        predicateNames: ["id"],
+        predicateValues: [id]
+    }
+    return runDelete(obj);
+}
+
+export const runTaskDelete = (db: Database, id: number) => {
+    const obj = {
+        db: db,
+        tableName: tasksTable, 
+        predicateNames: ["id"],
+        predicateValues: [id]
+    }
+    return runDelete(obj);
 }

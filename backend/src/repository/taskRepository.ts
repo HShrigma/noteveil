@@ -1,8 +1,7 @@
 import DB from "../config/db";
 import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
-import { deleteWithId  } from "../utils/repo/repository";
-import { runTaskDoneUpdate, runTaskLabelUpdate, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
+import { runTaskDelete, runTaskDoneUpdate, runTaskLabelUpdate, runTaskListDelete, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
 
 class TaskRepository {
     db = DB.getInstance().getConnection();
@@ -39,8 +38,8 @@ class TaskRepository {
         return Array.from(taskListMap.values());
     }
 
-    deleteTaskList(listId: number) { return deleteWithId(this.db, listId, tableType.taskLists); }
-    deleteTask(taskId: number) { return deleteWithId(this.db, taskId, tableType.tasks); }
+    deleteTaskList(listId: number) { return runTaskListDelete(this.db, listId); }
+    deleteTask(taskId: number) { return runTaskDelete(this.db, taskId); }
 
     addTaskList(title: string) {
         const stmt = this.db.prepare(`INSERT INTO task_lists (title) VALUES (?)`);
