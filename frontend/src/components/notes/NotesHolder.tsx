@@ -43,7 +43,7 @@ export const NotesHolder = () => {
 
     return (
         <div className="mt-2">
-            <NoteAdder notes={notes} onAddNote={onAddNote} />
+            <NoteAdder notes={notes} onAddNote={onAddNote} disabled={true} />
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="flex gap-4"
