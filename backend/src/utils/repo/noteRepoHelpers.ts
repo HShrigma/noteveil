@@ -1,6 +1,6 @@
 import { Database } from "better-sqlite3";
 import { tableType } from "../../config/schema";
-import { runDelete, runUpdate } from "./repository";
+import { runDelete, runInsertSingle, runUpdate } from "./repository";
 
 const notesTable = tableType.notes;
 
@@ -35,4 +35,14 @@ export const runNoteDelete = (db: Database, id: number) => {
         predicateValues: [id]
     }
     return runDelete(obj);
+}
+
+export const runNoteInsertSingle = (db: Database, title: string, content: string) => {
+    const obj = {
+        db:db,
+        tableName: notesTable,
+        fieldNames: ["title","content"],
+        fieldValues: [title, content]
+    }
+    return runInsertSingle(obj)
 }

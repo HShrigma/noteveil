@@ -1,7 +1,7 @@
 import DB from "../config/db";
 import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
-import { runTaskDelete, runTaskDoneUpdate, runTaskLabelUpdate, runTaskListDelete, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
+import { runTaskDelete, runTaskDoneUpdate, runTaskInsertSingle, runTaskLabelUpdate, runTaskListDelete, runTaskListInsertSingle, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
 
 class TaskRepository {
     db = DB.getInstance().getConnection();
@@ -41,25 +41,14 @@ class TaskRepository {
     deleteTaskList(listId: number) { return runTaskListDelete(this.db, listId); }
     deleteTask(taskId: number) { return runTaskDelete(this.db, taskId); }
 
-    addTaskList(title: string) {
-        const stmt = this.db.prepare(`INSERT INTO task_lists (title) VALUES (?)`);
-        const result = stmt.run(title);
-
-        return result;
-    }
-
-    addTask(listId: number, label: string) {
-        const stmt = this.db.prepare(`INSERT INTO tasks (label, task_list_id) VALUES (?,?)`);
-        const result = stmt.run(label, listId);
-        return result;
-    }
+    addTaskList(title: string) { return runTaskListInsertSingle(this.db, title); }
+    addTask(listId: number, label: string) { return runTaskInsertSingle(this.db, label, listId); }
 
     updateNextId(listId: number, nextId: number | undefined) { return runTaskListNextIdUpdate(this.db, nextId, listId); }
     updateListTitle(listId: number, title: string) { return runTaskListTitleUpdate(this.db, title, listId); }
 
     updateTaskDone(taskId: number, done: boolean) { return runTaskDoneUpdate(this.db, done, taskId); }
     updateTaskLabel(taskId: number, label: string) {return runTaskLabelUpdate(this.db, label, taskId);}
-
 }
 
 export default TaskRepository;
