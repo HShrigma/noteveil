@@ -1,7 +1,8 @@
 import DB from "../config/db";
 import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
-import { deleteWithId, runTaskDoneUpdate, runTaskLabelUpdate, runTaskListNextIdUpdate, runTaskListTitleUpdate, updateSingularById } from "../utils/repository";
+import { deleteWithId  } from "../utils/repo/repository";
+import { runTaskDoneUpdate, runTaskLabelUpdate, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
 
 class TaskRepository {
     db = DB.getInstance().getConnection();

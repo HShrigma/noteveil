@@ -1,7 +1,8 @@
 import DB from "../config/db";
 import { tableType } from "../config/schema";
 import { Note } from "../models/notes";
-import { deleteWithId, runNoteContentUpdate, runNoteTitleUpdate} from "../utils/repository";
+import { runNoteContentUpdate, runNoteTitleUpdate } from "../utils/repo/noteRepoHelpers";
+import { deleteWithId } from "../utils/repo/repository";
 
 class NoteRepository {
     db = DB.getInstance().getConnection();
