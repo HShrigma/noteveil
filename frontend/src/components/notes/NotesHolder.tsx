@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Note  from './model/Note';
+import Note  from './standalone/Note';
 import type { NoteActivity } from '../../utils/registries';
 import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";

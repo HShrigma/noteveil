@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { TaskListData } from "../types";
+import { TaskListData, UseTaskResult } from "../types";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
 
-export const useTask = () => {
+export const useTask = (): UseTaskResult => {
     const [tasks, setTasks] = useState<TaskListData[]>([]);
 
     useEffect(() => {
@@ -120,5 +120,5 @@ export const useTask = () => {
         if(!list) return '';
         return list.title;
     };
-    return { allTasks: tasks, updateTaskDone, updateTaskLabel, createTask, removeTask, removeList, updateTitle, createList, updateGoesTo, getGoesTo};
+    return { tasks, updateTaskDone, updateTaskLabel, createTask, removeTask, removeList, updateTitle, createList, updateGoesTo, getGoesTo } as UseTaskResult;
 }
