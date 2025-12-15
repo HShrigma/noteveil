@@ -1,38 +1,39 @@
 import { useEffect, useState } from "react";
 import { TaskListData, UseTaskResult } from "./taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
+import { getCreatedLists, getCreatedTaskList, getGoesToList, getIndex, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getTaskIndex, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
 
 export const useTask = (): UseTaskResult => {
     const [tasks, setTasks] = useState<TaskListData[]>([]);
 
-    useEffect(() => {
-        fetchTasks().then((data) => setTasks(data));
-    }, []);
+    useEffect(() => { fetchTasks().then((data) => setTasks(data)) }, []);
 
     const setNewList = (list: TaskListData) => setTasks((prev) => prev.map((t) => (t.id === list.id ? list : t)));
-    const findTaskIndex = (list: TaskListData, taskId: number) => { return list.tasks.findIndex((t) => t.id === taskId); }
-    const getTaskListIndexById = (id: number) => {
-        return tasks.findIndex((t) => t.id === id);
-    };
-    const getList = (id: number) => {
-        const index = getTaskListIndexById(id);
-        return index !== -1 ? { ...tasks[getTaskListIndexById(id)] } : null;
-    };
 
-    const updateTaskDone = async(id: number, taskId: number, done: boolean) => {
-        const list = getList(id);
+    const updateListOptimistic = async (
+    derive: () => TaskListData | undefined,
+    persist: (list: TaskListData) => Promise<void>) => { 
+        const list = derive();
         if(!list) return;
+        setNewList(list);
+        await persist(list);
+    }
+    const getGoesTo = (id: number | undefined) => {
+        const list = getList(id ?? -1, tasks);
+        if (!list) return '';
+        return list.title;
+    };
 
-        const taskIndex = findTaskIndex(list, taskId);
+    const updateTaskDone = async (id: number, taskId: number, done: boolean) => {
+        const result = getTaskDoneList(id, taskId, done, tasks);
+        if(!result) return;
+        const {list, taskIndex} = result;
 
-        if (taskIndex === -1) return;
-        const newTask = { ...list.tasks[taskIndex], done };
-        list.tasks[taskIndex] = newTask;
-
-        // move to next list if nextId set
+        const taskLabel = list.tasks[taskIndex].label;
         if (list.nextId && done) {
-            await createTask(list.nextId, newTask.label);
-            await removeTask(list.id, taskId);
+            setNewList({...list, tasks: list.tasks.filter(t => t.id !== taskId)});
+            await createTask(list.nextId, taskLabel);
+            await deleteTask(taskId);
             return;
         }
 
@@ -40,85 +41,48 @@ export const useTask = (): UseTaskResult => {
         await patchTaskDone(taskId, done);
     }
 
-    const updateTaskLabel = async (id: number, taskId: number, label: string) => {
-        const list = getList(id);
-        if (!list) return;
-        const taskIndex = findTaskIndex(list, taskId);
-
-        if (taskIndex === -1) return;
-
-        const newTask = { ...list.tasks[taskIndex], label };
-        list.tasks[taskIndex] = newTask;
-
-        setNewList(list);
-
-        await patchTaskLabel(taskId, label);
-
-    }
 
     const createTask = async (id: number, label: string) => {
+        const result = getCreatedTaskList(id, label, tasks);
+        if (!result) return;
+        const { list, tempId } = result;
+        if (!list) return;
+        setNewList(list);
+
         const res = await addTask(id, label);
-        if (!res.success) return;
 
-        const list = getList(id);
-        if (!list) return;
+        if (!res.success) {
+            setTasks(prev => prev.map(l => l.id === id ? { ...l, tasks: l.tasks.filter(t => t.id !== tempId) } : l));
+            return;
+        }
+        const realId = Number(res.body.id);
+        setTasks(prev => prev.map(l => l.id === id ? { ...l, tasks: l.tasks.map(t => t.id === tempId ? { ...t, id: realId } : t), } : l));
+    };
 
-        const newId = Number(res.body.id);
-        list.tasks.push({ id: newId, label, done: false });
-        setNewList(list);
 
-    }
+    const createList = async (title: string) => {
+        const { lists, id: tempId } = getCreatedLists(title, tasks);
+        setTasks(lists);
 
-    const removeTask = async (id: number, taskId: number) => {
-        const list = getList(id);
-        if (!list) return;
-        
-        list.tasks = list.tasks.filter((t) => t.id !== taskId);
-        setNewList(list);
+        const res = await addList(title);
 
-        await deleteTask(taskId);
+        if (!res.success) {
+            setTasks(prev => getRemovedLists(tempId, prev));
+            return;
+        }
+        const realId = Number(res.body.id);
+        setTasks(prev => prev.map(l => l.id === tempId ? { ...l, id: realId } : l));
     }
 
     const removeList = async (id: number) => {
-        const newTasks = [...tasks];
-        setTasks(newTasks.filter((task) => task.id != id));
+        setTasks(getRemovedLists(id, tasks));
         await deleteTaskList(id);
     }
-    const updateTitle = async (id: number, value: string) => {
-        const list = getList(id);
-        if(!list) return;
+    const removeTask = async (id: number, taskId: number) => updateListOptimistic(() => getRemovedTaskList(id, taskId, tasks), () => deleteTask(taskId));
 
-        list.title = value;
-        setNewList(list);
+    const updateTaskLabel = async (id: number, taskId: number, label: string) => { updateListOptimistic(() => getUpdatedTaskLabelList(id, taskId, label, tasks), () => patchTaskLabel(taskId, label)); }
+    const updateTitle = (id: number, value: string) =>  updateListOptimistic(() => getUpdatedTitleList(id, value, tasks), () => patchListTitle(id, value));
+    const updateGoesTo = async (id: number, nextId: number) => { updateListOptimistic(() => getGoesToList(id, nextId, tasks), () => patchNextId(id, nextId)) };
 
-        await patchListTitle(id, value);
-    };
-
-    const createList = async(title: string) => {
-        const newTasks = [...tasks];
-        const res = await addList(title);
-
-        if (!res.success) return;
-        const newId = Number(res.body.id);
-
-        newTasks.push({ id: newId, title, tasks: [] });
-        setTasks(newTasks);
-    }
-
-    const updateGoesTo = async (id: number, nextId: number) => {
-        const list = getList(id);
-        if(!list) return;
-
-        list.nextId = nextId === -1 ? undefined : nextId;
-        setNewList(list);
-
-        await patchNextId(id, list.nextId);
-    };
-    
-    const getGoesTo = (id: number | undefined) => {
-        const list = getList(id ?? -1);
-        if(!list) return '';
-        return list.title;
-    };
     return { tasks, updateTaskDone, updateTaskLabel, createTask, removeTask, removeList, updateTitle, createList, updateGoesTo, getGoesTo } as UseTaskResult;
 }
