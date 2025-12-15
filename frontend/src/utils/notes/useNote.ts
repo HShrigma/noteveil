@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { NoteData } from "./noteTypes"
 import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from "../../api/notesApi";
+import { createTempId } from "../mathUtils";
 
 export const useNotes = () => {
     const [notes, setNotes] = useState<NoteData[]>([]);
@@ -32,17 +33,24 @@ export const useNotes = () => {
     };
 
     const createNote = async () => {
-        const res = await addNote();
-        const id = Number(res.body.id);
-
+        const tempId = createTempId();
         const note: NoteData = {
-            id,
+            id: tempId,
             title: "New Note",
             content: ""
         };
 
-        setNotes((prev) => [...prev, note]);
-        return id;
+        setNotes(prev => [...prev, note]);
+        const res = await addNote();
+        const realId = Number(res.body.id);
+
+        if(!res.success){
+            setNotes(prev => prev.filter(n => n.id !== tempId))
+            return;
+        }
+
+        setNotes(prev => prev.map(n => n.id === tempId ? {...n, id: realId} : n))
+        return realId;
     };
 
     const removeNote = async (id: number) => {

@@ -6,3 +6,5 @@ export const clamp = (value: number, min: number, max: number) => {
 export const clampArray = <T>(index: number, array: T[]) => {
     return clamp(index, 0, array.length - 1);
 };
+
+export const createTempId = () => Date.now() * -1;
