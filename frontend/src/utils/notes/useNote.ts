@@ -6,11 +6,7 @@ import { createTempId } from "../mathUtils";
 export const useNotes = () => {
     const [notes, setNotes] = useState<NoteData[]>([]);
 
-    useEffect(() => {
-        fetchNotes().then(fetched => {
-            setNotes(fetched);
-        });
-    }, []);
+    useEffect(() => { fetchNotes().then(fetched => { setNotes(fetched); }); }, []);
 
     const getIndex = (id: number) => notes.findIndex(t => t.id === id);
 

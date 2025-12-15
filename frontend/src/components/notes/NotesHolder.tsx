@@ -1,9 +1,7 @@
 import { useState } from 'react';
 import Note  from './standalone/Note';
 import type { NoteActivity } from '../../utils/registries';
-import { Plus } from 'lucide-react';
 import Masonry from "react-masonry-css";
-import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
 import { useNotes } from '../../utils/notes/useNote';
 import { NoteAdder } from './standalone/NoteAdder';
 
@@ -19,7 +17,6 @@ export const NotesHolder = () => {
     const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
     const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
 
-
     const updateActiveNote = (activity: NoteActivity) => {
         setActiveNote(activity);
         setFocusTarget(prev => prev ?? 'content');
@@ -27,16 +24,13 @@ export const NotesHolder = () => {
 
     async function onTitleSubmit  (id: number, title: string)  {
         setFocusTarget('content');
-        setActiveNote({ id, active: true });
-        triggerScreenBob(200);
+        updateActiveNote({ id, active: true });
         await updateTitle(id, title);
     };
 
     async function onNoteRemove(id: number) {
-        triggerScreenShake(250);
         setActiveNote({ id: 0, active: false });
         setFocusTarget(null);
-
         await removeNote(id);
     }
 

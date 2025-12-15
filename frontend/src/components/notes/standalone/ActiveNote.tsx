@@ -95,7 +95,7 @@ export const ActiveNote = ({ data, focusTarget, onNoteFocus, onNoteDelete, onSub
             <ErrorHint triggerCheck={triggerErrorCheck} toValidate={value} message="Cannot submit an empty note" />
 
             <div className="flex justify-between mt-2">
-                <ConfirmDeleteButton onConfirm={() => onNoteDelete?.(data.id)} label="Delete" />
+                <ConfirmDeleteButton onConfirm={() => {onNoteDelete?.(data.id); triggerScreenShake(250);}} label="Delete" />
                 <button
                     onClick={signalInactive}
                     className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
