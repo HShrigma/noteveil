@@ -15,6 +15,7 @@ export const runNoteTitleUpdate = (db: Database, title: string, id: number) => {
     }
     return runUpdate(obj);
 }
+
 export const runNoteContentUpdate = (db: Database, content: string, id: number) => {
     const obj = {
         db: db,

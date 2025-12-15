@@ -1,10 +1,9 @@
 import { Database } from "better-sqlite3";
 import { error } from "console";
-import { tableType } from "../../config/schema";
-
 
 const errMsgFieldMismatch = "Cannot run update with uneven number of field names and values";
 const errMsgPredicateMismatch = "Cannot run update with uneven number of predicate names and values";
+
 interface deleteObject{
     db: Database;
     tableName: string;
@@ -52,7 +51,7 @@ export const runDelete = (obj: deleteObject) => {
 }
 
 const getColsEquals = (fieldNames: string[]) => {
-    fieldNames = fieldNames.map(name => `${name}  = ?`);
+    fieldNames = fieldNames.map(name => `${name} = ?`);
     return fieldNames.join(", ");
 }
 const getArrToQuestionmarks = (arr:any[]) => {

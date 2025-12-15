@@ -1,5 +1,4 @@
 import DB from "../config/db";
-import { tableType } from "../config/schema";
 import { RawJoinTaskList, TaskList } from "../models/tasks";
 import { runTaskDelete, runTaskDoneUpdate, runTaskInsertSingle, runTaskLabelUpdate, runTaskListDelete, runTaskListInsertSingle, runTaskListNextIdUpdate, runTaskListTitleUpdate } from "../utils/repo/taskRepoHelpers";
 
