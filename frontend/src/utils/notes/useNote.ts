@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { NoteData } from "../types"
+import { NoteData } from "./noteTypes"
 import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from "../../api/notesApi";
 
 export const useNotes = () => {

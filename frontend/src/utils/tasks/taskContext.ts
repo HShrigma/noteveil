@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { UseTaskResult } from "../types";
+import { UseTaskResult } from "./taskTypes";
 
 export const TaskContext = createContext<UseTaskResult | null>(null);
 

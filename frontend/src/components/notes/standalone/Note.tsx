@@ -2,7 +2,7 @@ import { useState } from "react";
 import ActiveNote from "./ActiveNote";
 import InactiveNote from "./InactiveNote";
 import { NoteActivity } from "../../../utils/registries";
-import { NoteData } from "../../../utils/types";
+import { NoteData } from "../../../utils/notes/noteTypes";
 import EditableTitle from "../../shared/EditableTitle";
 
 interface NoteProps {

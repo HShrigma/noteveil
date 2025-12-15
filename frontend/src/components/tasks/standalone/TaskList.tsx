@@ -2,7 +2,7 @@ import EditableTitle from "../../shared/EditableTitle";
 import GoesToButton from "./compositional/GoesToButton";
 import Task  from "./Task";
 import TaskBottomBar from "./compositional/TaskBottomBar";
-import { TaskItem, TaskListData } from "../../../utils/types";
+import { TaskItem, TaskListData } from "../../../utils/notes/noteTypes";
 
 interface TaskListProps {
     allTasks: TaskListData[];

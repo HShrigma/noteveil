@@ -4,7 +4,7 @@ import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../shared/ErrorHint";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import { NoteActivity } from "../../../utils/registries";
-import { NoteData } from "../../../utils/types";
+import { NoteData } from "../../../utils/notes/noteTypes";
 
 interface ActiveNoteProps {
     data: NoteData;

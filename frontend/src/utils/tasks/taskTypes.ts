@@ -1,9 +1,3 @@
-export interface NoteData {
-    id: number;
-    title: string;
-    content: string;
-}
-
 export interface TaskItem {
     id: number;
     label: string;

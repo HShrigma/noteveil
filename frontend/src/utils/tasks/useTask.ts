@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { TaskListData, UseTaskResult } from "../types";
+import { TaskListData, UseTaskResult } from "./taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
 
 export const useTask = (): UseTaskResult => {
