@@ -1,20 +1,31 @@
 import { Plus } from "lucide-react";
 import { triggerScreenBob } from "../../../utils/screenShake";
 import { NoteData } from "../../../utils/notes/noteTypes";
-export interface NoteAdderProps{
+import ErrorHint from "../../shared/ErrorHint";
+import { useState } from "react";
+export interface NoteAdderProps {
     notes: NoteData[];
     onAddNote?: () => void;
 }
 
 export const NoteAdder = ({ notes, onAddNote }: NoteAdderProps) => {
-    const addNote = ()=>{
+    const [showHint, setShowHint] = useState(false);
+    const hasEmpty = () => {return notes.some(n => n.title === '' || n.content === '')}
+    const addNote = () => {
         // check if any empty
-        if (notes.some(n => n.title === '' || n.content === '')) return;
+        if (hasEmpty()) {
+            setShowHint(true);
+            return;
+        }
+        setShowHint(false);
         onAddNote?.();
         triggerScreenBob();
     }
+    const passToValidate = () => (hasEmpty() ? "" : "valid");
     return (
-            <div className="flex justify-start mb-4">
+        <div className="flex justify-start mb-4">
+            <div className="fexl-col">
+
                 <button
                     onClick={addNote}
                     className="flex items-center gap-2 px-3 py-1 rounded-full border-2 border-green-500 bg-green-500 text-[#f6faff]
@@ -22,6 +33,8 @@ export const NoteAdder = ({ notes, onAddNote }: NoteAdderProps) => {
                 >
                     <Plus size={18} strokeWidth={3} /> Add Note
                 </button>
+                <ErrorHint message={"Cannot add Note when another note is empty!"} toValidate={passToValidate()} triggerCheck={showHint} />
             </div>
-);
+        </div>
+    );
 }

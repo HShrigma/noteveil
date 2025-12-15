@@ -15,7 +15,7 @@ export const ErrorHint = ({ message, toValidate, triggerCheck, className = "" }:
             setIsValid(toValidate.trim() !== '');
         }
         else setIsValid(true);
-     }, [triggerCheck, isValid]);
+     }, [triggerCheck, toValidate]);
 
     if (isValid) return <></>;
     return <div className={`error-hint ${className}`}> {message}</div>;
