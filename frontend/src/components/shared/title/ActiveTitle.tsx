@@ -32,8 +32,7 @@ export const ActiveTitle = ({ title, onDiscard, onSubmit, onChange }: ActiveTitl
         triggerScreenBob(200);
     };
     const handleDiscard = () => {
-        if (value.trim() !== title.trim() && !confirm(discardMsgNoteTitle))
-            return;
+        if (value.trim() !== title.trim() && !confirm(discardMsgNoteTitle)) return;
         triggerScreenShake(110);
         setValue(title);
         onDiscard?.();

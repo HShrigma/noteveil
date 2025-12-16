@@ -2,10 +2,7 @@ import Note from './standalone/Note';
 import Masonry from "react-masonry-css";
 import { useNotes } from '../../utils/notes/useNote';
 import { NoteAdder } from './standalone/NoteAdder';
-import { NotesActivity } from '../../utils/notes/noteTypes';
-import { useState } from 'react';
 import { getIndex } from '../../utils/notes/noteHelpers';
-import { discardMsgNoteContent, discardMsgNoteTitle } from '../../utils/registries';
 import { useNoteActivity } from '../../utils/notes/useNoteActivity';
 
 export const NotesHolder = () => {
@@ -18,7 +15,7 @@ export const NotesHolder = () => {
 
     const { notes, createNote, updateTitle, updateContent, removeNote } = useNotes();
 
-    const { activeNote, isAdderDisabled, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity } = useNoteActivity();
+    const { activeNote, isAdderDisabled, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity, setNextActive} = useNoteActivity();
 
     async function onTitleSubmit(id: number, title: string) {
         const value = notes[getIndex(id, notes)].content;
@@ -39,7 +36,6 @@ export const NotesHolder = () => {
         if (!id) return;
         setAddNoteActivity(id);
     }
-
     return (
         <div className="mt-2">
             <NoteAdder notes={notes} onAddNote={onAddNote} disabled={isAdderDisabled()} />
@@ -58,6 +54,7 @@ export const NotesHolder = () => {
                             onTitleSubmit={onTitleSubmit}
                             onNoteSubmit={onNoteSubmit}
                             onActivityUpdate={(activity) => handleActivityRequest(notes, activity)}
+                            onFocusNext={(id) => setNextActive(notes, id)}
                         />
                     </div>
                 ))}

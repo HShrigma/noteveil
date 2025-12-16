@@ -10,6 +10,7 @@ interface NoteProps {
     onNoteDelete: (id: number) => void;
     onNoteSubmit: (id: number, content: string) => void;
     onTitleSubmit: (id: number, title: string) => void;
+    onFocusNext: (id:number) => void;
 }
 
 export const Note = ({
@@ -18,7 +19,8 @@ export const Note = ({
     onNoteDelete,
     onNoteSubmit,
     onTitleSubmit,
-    onActivityUpdate
+    onActivityUpdate,
+    onFocusNext
 }: NoteProps) => {
     const isActive = (typeLabel: string) => {
         if (activity === null) return false;
@@ -47,6 +49,7 @@ export const Note = ({
                     onSubmit={onNoteSubmit}
                     onInactive={() => requestBodyActivity(false, data.content)}
                     onWantsActive={(value) => requestBodyActivity(true, value)}
+                    onFocusNext={() => onFocusNext(data.id)}
                 />
             ) : (
                 <InactiveNote data={data} onActivate={() => requestBodyActivity(true,data.content)} />

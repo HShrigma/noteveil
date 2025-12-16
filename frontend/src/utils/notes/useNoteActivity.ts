@@ -48,6 +48,16 @@ export const useNoteActivity = () => {
     const setAddNoteActivity = (id: number) => setActiveNote({ id: id, type: "title", value: "New Note" });
     const setTitleSubmitActivity = (id: number, value: string) => setActiveNote({ id, type: "content", value });
     const setNoActivity = () => setActiveNote(null);
-
-    return { activeNote, isAdderDisabled, confirmDiscardIfDirty, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity };
+    const setNextActive = (notes: NoteData[], id: number) =>{
+        let nextIndex = getIndex(id, notes);
+        if (nextIndex === -1) {
+            console.error(`could not find index for id: ${id}`);
+            return;
+        }
+        nextIndex++;
+        nextIndex %= notes.length;
+        const newNote = notes[nextIndex];
+        setActiveNote({ id: newNote.id, type: "content", value: newNote.content });
+    }
+    return { activeNote, isAdderDisabled, confirmDiscardIfDirty, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity, setNextActive };
 }

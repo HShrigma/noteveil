@@ -12,9 +12,10 @@ interface ActiveNoteProps {
     onSubmit: (id: number, content: string) => void;
     onInactive: () => void;
     onWantsActive: (value: string) => void;
+    onFocusNext: () => void;
 }
 
-export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsActive }: ActiveNoteProps) => {
+export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsActive, onFocusNext }: ActiveNoteProps) => {
     const inputRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(data.content);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
@@ -57,6 +58,7 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsAc
                 e.preventDefault();
                 if (e.shiftKey) {
                     tryDiscard();
+                    onFocusNext();
                     return;
                 }
                 const t = e.currentTarget;
