@@ -13,7 +13,6 @@ export const NoteAdder = ({disabled, notes, onAddNote }: NoteAdderProps) => {
     const [showHint, setShowHint] = useState(false);
     const hasEmpty = () => {return notes.some(n => n.title === '' || n.content === '')}
     const addNote = () => {
-        // check if any empty
         if (hasEmpty()) {
             setShowHint(true);
             return;
@@ -41,3 +40,5 @@ export const NoteAdder = ({disabled, notes, onAddNote }: NoteAdderProps) => {
         </div>
     );
 }
+
+export default NoteAdder;

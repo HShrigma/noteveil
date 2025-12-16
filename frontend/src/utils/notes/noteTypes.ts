@@ -4,3 +4,9 @@ export interface NoteData {
     content: string;
 }
 
+export type NotesActivity = 
+    | {
+        id: number, type: "title" | "content"
+      }
+    | null;
+;

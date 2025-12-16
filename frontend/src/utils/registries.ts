@@ -3,10 +3,6 @@ export const MAIN_STATES = {
     NOTES_DISPLAY: 'notesDisplay',
 } as const;
 
-export type NoteActivity = {
-    id: number,
-    active: boolean
-};
 
 export type TaskActivity = {
     listId: number,

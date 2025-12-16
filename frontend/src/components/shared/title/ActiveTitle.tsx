@@ -1,26 +1,17 @@
-import { Check, Edit, X } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import ErrorHint from "./ErrorHint";
-import { triggerScreenShake, triggerScreenBob } from "../../utils/screenShake";
+import { Check, X } from "lucide-react";
+import ErrorHint from "../ErrorHint";
+import { useState } from "react";
+import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 
-interface EditableTitleProps {
-    id: number;
+export interface ActiveTitleProps{
     title: string;
-    onSubmit: (id: number, newValue: string) => void;
-    autoFocus?: boolean;
+    onDiscard: () => void;
+    onSubmit: (value:string) => void;
 }
 
-export const EditableTitle = ({ id, title = '', onSubmit, autoFocus = false }: EditableTitleProps) => {
-    const [active, setActive] = useState(title === '');
+export const ActiveTitle = ({ onDiscard, onSubmit, title }: ActiveTitleProps) => {
     const [value, setValue] = useState(title);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
-    const inputRef = useRef<HTMLInputElement>(null);
-
-    useEffect(() => {
-        if (active && inputRef.current && autoFocus) {
-            inputRef.current.focus();
-        }
-    }, [active, autoFocus]);
 
     const handleSubmit = () => {
         if (value.trim() === '') {
@@ -29,26 +20,18 @@ export const EditableTitle = ({ id, title = '', onSubmit, autoFocus = false }: E
             return;
         }
 
-        onSubmit?.(id, value.trim());
-        setActive(false);
+        onSubmit?.(value.trim());
         triggerScreenBob(200);
-
     };
-
     const handleDiscard = () => {
-        setValue(title); // revert
-        setActive(false);
+        setValue(title);
+        onDiscard();
     };
-
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter') handleSubmit();
         if (e.key === 'Escape') handleDiscard();
     };
-
-    return (
-        <>
-            {active ? (
-                <div className="flex flex-col gap-1">
+    return (<div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                         <button
                             onClick={handleDiscard}
@@ -57,7 +40,6 @@ export const EditableTitle = ({ id, title = '', onSubmit, autoFocus = false }: E
                             <X size={18} strokeWidth={3} />
                         </button>
                         <input
-                            ref={inputRef}
                             value={value}
                             onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); }}
                             onKeyDown={handleKeyDown}
@@ -73,24 +55,7 @@ export const EditableTitle = ({ id, title = '', onSubmit, autoFocus = false }: E
                     </div>
                     <ErrorHint triggerCheck={triggerErrorCheck} toValidate={value} message="Cannot submit empty title" />
                 </div>
-            ) : (
-                <div className="flex items-center gap-2">
-                    <h3
-                        onClick={() => setActive(true)}
-                        className="flex-1 text-purple-400 font-bold tracking-wide cursor-pointer"
-                    >
-                        {title}
-                    </h3>
-                    <button
-                        className="p-2 rounded-sm bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
-                        onClick={() => setActive(true)}
-                    >
-                        <Edit size={18} strokeWidth={3} />
-                    </button>
-                </div>
-            )}
-        </>
-    );
-};
+);
+}
 
-export default EditableTitle;
+export default ActiveTitle;

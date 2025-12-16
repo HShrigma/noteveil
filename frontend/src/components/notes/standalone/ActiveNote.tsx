@@ -1,33 +1,21 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { Check } from "lucide-react";
 import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../shared/ErrorHint";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
-import { NoteActivity } from "../../../utils/registries";
 import { NoteData } from "../../../utils/notes/noteTypes";
 
 interface ActiveNoteProps {
     data: NoteData;
-    focusTarget: "title" | "content" | null;
-    onNoteFocus: (activity: NoteActivity) => void;
     onNoteDelete: (id: number) => void;
     onSubmit: (id: number, content: string) => void;
     onInactive: () => void;
 }
 
-export const ActiveNote = ({ data, focusTarget, onNoteFocus, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
+export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
     const textareaRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(data.content);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
-
-    useEffect(() => {
-        if (textareaRef.current && focusTarget === "content") {
-            textareaRef.current.style.height = "auto";
-            textareaRef.current.style.height = textareaRef.current.scrollHeight + "px";
-            textareaRef.current.focus();
-        }
-    }, [focusTarget]);
-
 
     const revertToSnapshot = () => {
         setValue(data.content);
@@ -60,7 +48,6 @@ export const ActiveNote = ({ data, focusTarget, onNoteFocus, onNoteDelete, onSub
                     const leave = value.trim() === data.content.trim() || confirm("Discard changes to this note?");
                     if (!leave) return;
                     revertToSnapshot();
-                    onNoteFocus?.({ id: data.id + 1, active: true });
                     return;
                 }
                 const t = e.currentTarget;

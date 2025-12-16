@@ -1,9 +1,9 @@
-import { useState } from 'react';
 import Note  from './standalone/Note';
-import type { NoteActivity } from '../../utils/registries';
 import Masonry from "react-masonry-css";
 import { useNotes } from '../../utils/notes/useNote';
 import { NoteAdder } from './standalone/NoteAdder';
+import { NotesActivity } from '../../utils/notes/noteTypes';
+import { useState } from 'react';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -14,36 +14,54 @@ export const NotesHolder = () => {
     };
 
     const { notes, createNote, updateTitle, updateContent, removeNote } = useNotes();
-    const [ActiveNote, setActiveNote] = useState<NoteActivity>({ id: 0, active: false });
-    const [focusTarget, setFocusTarget] = useState<'title' | 'content' | null>(null);
+    const [activeNote, setActiveNote] = useState<NotesActivity>(null);
 
-    const updateActiveNote = (activity: NoteActivity) => {
-        setActiveNote(activity);
-        setFocusTarget(prev => prev ?? 'content');
-    };
+    const isAdderDisabled = () => {
+        return activeNote !== null;
+    }
+    const handleActivityRequest = (req: NotesActivity) => {
+        if (activeNote === null) 
+        {
+            setActiveNote(req); 
+            return;
+        }
+        switch(activeNote.type){
+            case "content":
+                break;
+            case "title":
+                break;
+            default:
+                if(!activeNote.type){
+                    console.error("Type is not present"); 
+                    break;
+                }
+                console.error(`Unhandled type: ${activeNote.type}`);
+                break;
+        }
+    }
 
     async function onTitleSubmit  (id: number, title: string)  {
-        setFocusTarget('content');
-        updateActiveNote({ id, active: true });
+        setActiveNote({id, type:"content"});
         await updateTitle(id, title);
     };
 
     async function onNoteRemove(id: number) {
-        setActiveNote({ id: 0, active: false });
-        setFocusTarget(null);
+        setActiveNote(null);
         await removeNote(id);
     }
-
+    const onNoteSubmit = async (id:number,content: string) =>{
+        setActiveNote(null);
+        await updateContent(id,content);
+    }
     async function onAddNote() {
         const newNoteId = await createNote();
         if(!newNoteId) return;
-        setFocusTarget('title');
-        setActiveNote({ id: newNoteId, active: true });
+        setActiveNote({ id: newNoteId, type:"title" });
     }
 
     return (
         <div className="mt-2">
-            <NoteAdder notes={notes} onAddNote={onAddNote} disabled={true} />
+            <NoteAdder notes={notes} onAddNote={onAddNote} disabled={isAdderDisabled()} />
             <Masonry
                 breakpointCols={breakpointColumnsObj}
                 className="flex gap-4"
@@ -54,12 +72,11 @@ export const NotesHolder = () => {
                         <Note
                             key={note.id}
                             data={note}
-                            isActive={note.id === ActiveNote.id ? ActiveNote.active : false}
-                            focusTarget={note.id === ActiveNote.id ? focusTarget : null}
-                            onNoteFocus={updateActiveNote}
+                            activity={activeNote}
                             onNoteDelete={onNoteRemove}
                             onTitleSubmit={onTitleSubmit}
-                            onNoteSubmit={updateContent}
+                            onNoteSubmit={onNoteSubmit}
+                            onActivityUpdate={handleActivityRequest}
                         />
                     </div>
                 ))}
