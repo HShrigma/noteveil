@@ -1,9 +1,11 @@
-import Note  from './standalone/Note';
+import Note from './standalone/Note';
 import Masonry from "react-masonry-css";
 import { useNotes } from '../../utils/notes/useNote';
 import { NoteAdder } from './standalone/NoteAdder';
 import { NotesActivity } from '../../utils/notes/noteTypes';
 import { useState } from 'react';
+import { getIndex } from '../../utils/notes/noteHelpers';
+import { discardMsgNoteContent, discardMsgNoteTitle } from '../../utils/registries';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -19,29 +21,49 @@ export const NotesHolder = () => {
     const isAdderDisabled = () => {
         return activeNote !== null;
     }
-    const handleActivityRequest = (req: NotesActivity) => {
-        if (activeNote === null) 
-        {
-            setActiveNote(req); 
+    const confirmDiscardIfDirty = async (reqtype:string): Promise<boolean> => {
+        if (activeNote === null) return true;
+
+        const { id, type, value } = activeNote;
+        const idx = getIndex(id, notes);
+        if (idx === -1) return true;
+
+        const currentValue = notes[idx][type];
+
+        if (value.trim() === currentValue.trim()) {
+            return true;
+        }
+
+        return window.confirm(reqtype === "title" ? discardMsgNoteTitle : discardMsgNoteContent);
+    };
+
+    const handleActivityRequest = async (req: NotesActivity) => {
+        console.log("handling req");
+        
+        console.log(`req data: ${req === null ? " req is null" :req}`);
+        
+        if (activeNote === null || req === null) {
+            setActiveNote(req);
             return;
         }
-        switch(activeNote.type){
-            case "content":
-                break;
-            case "title":
-                break;
-            default:
-                if(!activeNote.type){
-                    console.error("Type is not present"); 
-                    break;
-                }
-                console.error(`Unhandled type: ${activeNote.type}`);
-                break;
-        }
-    }
 
-    async function onTitleSubmit  (id: number, title: string)  {
-        setActiveNote({id, type:"content"});
+        // Same activity - allow
+        if (req.id === activeNote.id && req.type === activeNote.type) {
+            setActiveNote(req);
+            return;
+        }
+
+        // Ask user
+        const canLeave = await confirmDiscardIfDirty(req.type);
+        if (!canLeave) return;
+
+        setActiveNote(req);
+    };
+
+
+    async function onTitleSubmit(id: number, title: string) {
+        const value = notes[getIndex(id, notes)].content;
+        setActiveNote({ id, type: "content", value });
         await updateTitle(id, title);
     };
 
@@ -49,14 +71,15 @@ export const NotesHolder = () => {
         setActiveNote(null);
         await removeNote(id);
     }
-    const onNoteSubmit = async (id:number,content: string) =>{
+    const onNoteSubmit = async (id: number, content: string) => {
         setActiveNote(null);
-        await updateContent(id,content);
+        await updateContent(id, content);
     }
     async function onAddNote() {
-        const newNoteId = await createNote();
-        if(!newNoteId) return;
-        setActiveNote({ id: newNoteId, type:"title" });
+        const id = await createNote();
+        if (!id) return;
+
+        setActiveNote({ id: id, type: "title", value: "New Note" });
     }
 
     return (

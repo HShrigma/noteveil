@@ -1,53 +1,61 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
 import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../shared/ErrorHint";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import { NoteData } from "../../../utils/notes/noteTypes";
+import { discardMsgNoteContent } from "../../../utils/registries";
 
 interface ActiveNoteProps {
     data: NoteData;
     onNoteDelete: (id: number) => void;
     onSubmit: (id: number, content: string) => void;
     onInactive: () => void;
+    onWantsActive: (value: string) => void;
 }
 
-export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive }: ActiveNoteProps) => {
-    const textareaRef = useRef<HTMLTextAreaElement>(null);
+export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsActive }: ActiveNoteProps) => {
+    const inputRef = useRef<HTMLTextAreaElement>(null);
     const [value, setValue] = useState(data.content);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
+
+    useEffect(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+    }, []);
 
     const revertToSnapshot = () => {
         setValue(data.content);
         setTriggerErrorCheck(false);
     };
-
-    const signalInactive = () => {
+    const tryDiscard = () => {
+        const leave = value.trim() === data.content.trim() || confirm(discardMsgNoteContent);
+        if (!leave) return;
+        revertToSnapshot();
+        onInactive();
+    }
+    const trySubmit = () => {
         if (value.trim() === "") {
             setTriggerErrorCheck(true);
             triggerScreenShake();
             return;
         }
         onSubmit(data.id, value);
-        onInactive();
         triggerScreenBob(150);
     };
 
     const onKeyDownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         switch (e.key) {
             case "Escape":
-                revertToSnapshot();
-                onInactive();
+                tryDiscard();
                 return;
             case "Enter":
-                if (e.ctrlKey) signalInactive();
+                if (e.ctrlKey) trySubmit();
                 return;
             case "Tab":
                 e.preventDefault();
                 if (e.shiftKey) {
-                    const leave = value.trim() === data.content.trim() || confirm("Discard changes to this note?");
-                    if (!leave) return;
-                    revertToSnapshot();
+                    tryDiscard();
                     return;
                 }
                 const t = e.currentTarget;
@@ -65,10 +73,10 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive }: ActiveN
     return (
         <div className="flex flex-col gap-2">
             <textarea
-                ref={textareaRef}
+                ref={inputRef}
                 placeholder="Add note here..."
                 value={value}
-                onChange={(e) => setValue(e.target.value)}
+                onChange={(e) => {setValue(e.target.value); onWantsActive(e.target.value)}}
                 onInput={(e) => {
                     const t = e.currentTarget;
                     t.style.height = "auto";
@@ -84,7 +92,7 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive }: ActiveN
             <div className="flex justify-between mt-2">
                 <ConfirmDeleteButton onConfirm={() => {onNoteDelete?.(data.id); triggerScreenShake(250);}} label="Delete" />
                 <button
-                    onClick={signalInactive}
+                    onClick={trySubmit}
                     className="flex items-center gap-1 px-3 py-1 rounded-full bg-green-500 text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
                 >
                     <Check size={18} strokeWidth={3} />

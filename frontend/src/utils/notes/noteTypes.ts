@@ -6,7 +6,7 @@ export interface NoteData {
 
 export type NotesActivity = 
     | {
-        id: number, type: "title" | "content"
+        id: number, type: "title" | "content", value: string
       }
     | null;
 ;

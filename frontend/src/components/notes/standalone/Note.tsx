@@ -26,9 +26,9 @@ export const Note = ({
     }
     const isBodyActive = () => { return  isActive("content")};
     const isTitleActive = () => { return isActive("title")};
-    const requestBodyActivity = (status: boolean) => onActivityUpdate({ id: data.id, type: "content" });
-    const requestTitleActivity = (status: boolean) => onActivityUpdate({id: data.id, type: "title"});
-
+    const requestBodyActivity = (wantsActive: boolean, value: string) => onActivityUpdate(wantsActive ? { id: data.id, type: "content", value: value } : null); 
+    const requestTitleActivity = (wantsActive: boolean, value: string) => onActivityUpdate(wantsActive ? { id: data.id, type: "title", value: value } : null);
+    
     return (
         <div
             className={`flex flex-col gap-3 p-4 rounded-md bg-[#1a1b26] border border-[#2a2f47] ${isBodyActive() ? "border-[#9d7cd8] shadow-[0_0_8px_#9d7cd8]" : ""}`}
@@ -45,10 +45,11 @@ export const Note = ({
                     data={data}
                     onNoteDelete={onNoteDelete}
                     onSubmit={onNoteSubmit}
-                    onInactive={() => requestBodyActivity(false)}
+                    onInactive={() => requestBodyActivity(false, data.content)}
+                    onWantsActive={(value) => requestBodyActivity(true, value)}
                 />
             ) : (
-                <InactiveNote data={data} onActivate={() => requestBodyActivity(true)} />
+                <InactiveNote data={data} onActivate={() => requestBodyActivity(true,data.content)} />
             )}
         </div>
     );

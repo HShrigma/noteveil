@@ -2,18 +2,19 @@ import { useEffect, useState } from "react"
 import { NoteData } from "./noteTypes"
 import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from "../../api/notesApi";
 import { createTempId } from "../mathUtils";
+import { getIndex } from "./noteHelpers";
 
 export const useNotes = () => {
     const [notes, setNotes] = useState<NoteData[]>([]);
 
     useEffect(() => { fetchNotes().then(fetched => { setNotes(fetched); }); }, []);
 
-    const getIndex = (id: number) => notes.findIndex(t => t.id === id);
-
     const updateTitle = async (id: number, title: string) => {
-        setNotes((prev) => {
+        setNotes(prev => {
+            const idx = getIndex(id, prev);
+            if (idx === -1) return prev;
             const copy = [...prev];
-            copy[getIndex(id)].title = title;
+            copy[idx] = { ...copy[idx], title };
             return copy;
         });
         await patchNoteTitle(id, title);
@@ -22,7 +23,7 @@ export const useNotes = () => {
     const updateContent = async (id: number, content: string) => {
         setNotes((prev) => {
             const copy = [...prev];
-            copy[getIndex(id)].content = content;
+            copy[getIndex(id, notes)].content = content;
             return copy;
         });
         await patchNoteContent(id, content);
@@ -40,12 +41,12 @@ export const useNotes = () => {
         const res = await addNote();
         const realId = Number(res.body.id);
 
-        if(!res.success){
+        if (!res.success) {
             setNotes(prev => prev.filter(n => n.id !== tempId))
             return;
         }
 
-        setNotes(prev => prev.map(n => n.id === tempId ? {...n, id: realId} : n))
+        setNotes(prev => prev.map(n => n.id === tempId ? { ...n, id: realId } : n))
         return realId;
     };
 
