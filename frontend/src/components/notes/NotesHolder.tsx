@@ -17,13 +17,13 @@ export const NotesHolder = () => {
 
     const { activeNote, isAdderDisabled, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity, setNextActive} = useNoteActivity();
 
-    async function onTitleSubmit(id: number, title: string) {
+    const onTitleSubmit = async (id: number, title: string) => {
         const value = notes[getIndex(id, notes)].content;
         setTitleSubmitActivity(id, title);
         await updateTitle(id, title);
     };
 
-    async function onNoteRemove(id: number) {
+    const onNoteRemove = async (id: number) => {
         setNoActivity();
         await removeNote(id);
     }
@@ -31,7 +31,7 @@ export const NotesHolder = () => {
         setNoActivity();
         await updateContent(id, content);
     }
-    async function onAddNote() {
+    const onAddNote = async () => {
         const id = await createNote();
         if (!id) return;
         setAddNoteActivity(id);
