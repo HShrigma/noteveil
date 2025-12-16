@@ -18,7 +18,7 @@ export const ActiveTitle = ({ title, onDiscard, onSubmit, onChange }: ActiveTitl
 
     useEffect(() => {
     inputRef.current?.focus();
-    inputRef.current?.select(); // optional but nice
+    inputRef.current?.select();
 }, []);
 
     const handleSubmit = () => {
@@ -34,6 +34,7 @@ export const ActiveTitle = ({ title, onDiscard, onSubmit, onChange }: ActiveTitl
     const handleDiscard = () => {
         if (value.trim() !== title.trim() && !confirm(discardMsgNoteTitle))
             return;
+        triggerScreenShake(110);
         setValue(title);
         onDiscard?.();
     };

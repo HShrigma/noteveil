@@ -33,6 +33,7 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsAc
         if (!leave) return;
         revertToSnapshot();
         onInactive();
+        triggerScreenShake(110);
     }
     const trySubmit = () => {
         if (value.trim() === "") {

@@ -6,6 +6,7 @@ import { NotesActivity } from '../../utils/notes/noteTypes';
 import { useState } from 'react';
 import { getIndex } from '../../utils/notes/noteHelpers';
 import { discardMsgNoteContent, discardMsgNoteTitle } from '../../utils/registries';
+import { useNoteActivity } from '../../utils/notes/useNoteActivity';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {
@@ -16,70 +17,27 @@ export const NotesHolder = () => {
     };
 
     const { notes, createNote, updateTitle, updateContent, removeNote } = useNotes();
-    const [activeNote, setActiveNote] = useState<NotesActivity>(null);
 
-    const isAdderDisabled = () => {
-        return activeNote !== null;
-    }
-    const confirmDiscardIfDirty = async (reqtype:string): Promise<boolean> => {
-        if (activeNote === null) return true;
-
-        const { id, type, value } = activeNote;
-        const idx = getIndex(id, notes);
-        if (idx === -1) return true;
-
-        const currentValue = notes[idx][type];
-
-        if (value.trim() === currentValue.trim()) {
-            return true;
-        }
-
-        return window.confirm(reqtype === "title" ? discardMsgNoteTitle : discardMsgNoteContent);
-    };
-
-    const handleActivityRequest = async (req: NotesActivity) => {
-        console.log("handling req");
-        
-        console.log(`req data: ${req === null ? " req is null" :req}`);
-        
-        if (activeNote === null || req === null) {
-            setActiveNote(req);
-            return;
-        }
-
-        // Same activity - allow
-        if (req.id === activeNote.id && req.type === activeNote.type) {
-            setActiveNote(req);
-            return;
-        }
-
-        // Ask user
-        const canLeave = await confirmDiscardIfDirty(req.type);
-        if (!canLeave) return;
-
-        setActiveNote(req);
-    };
-
+    const { activeNote, isAdderDisabled, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity } = useNoteActivity();
 
     async function onTitleSubmit(id: number, title: string) {
         const value = notes[getIndex(id, notes)].content;
-        setActiveNote({ id, type: "content", value });
+        setTitleSubmitActivity(id, title);
         await updateTitle(id, title);
     };
 
     async function onNoteRemove(id: number) {
-        setActiveNote(null);
+        setNoActivity();
         await removeNote(id);
     }
     const onNoteSubmit = async (id: number, content: string) => {
-        setActiveNote(null);
+        setNoActivity();
         await updateContent(id, content);
     }
     async function onAddNote() {
         const id = await createNote();
         if (!id) return;
-
-        setActiveNote({ id: id, type: "title", value: "New Note" });
+        setAddNoteActivity(id);
     }
 
     return (
@@ -99,7 +57,7 @@ export const NotesHolder = () => {
                             onNoteDelete={onNoteRemove}
                             onTitleSubmit={onTitleSubmit}
                             onNoteSubmit={onNoteSubmit}
-                            onActivityUpdate={handleActivityRequest}
+                            onActivityUpdate={(activity) => handleActivityRequest(notes, activity)}
                         />
                     </div>
                 ))}
