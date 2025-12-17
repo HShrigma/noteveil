@@ -2,16 +2,17 @@ import { Check, X } from "lucide-react";
 import ErrorHint from "../ErrorHint";
 import { useEffect, useRef, useState } from "react";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
-import { discardMsgNoteTitle } from "../../../utils/registries";
+import { discardMsgNoteTitle, discardMsgTaskTitle } from "../../../utils/registries";
 
 export interface ActiveTitleProps {
     title: string;
+    isNote?: boolean;
     onDiscard: () => void;
     onChange?: (currentValue: string) => void;
     onSubmit: (value: string) => void;
 }
 
-export const ActiveTitle = ({ title, onDiscard, onSubmit, onChange }: ActiveTitleProps) => {
+export const ActiveTitle = ({ title, isNote, onDiscard, onSubmit, onChange }: ActiveTitleProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState(title);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
@@ -32,7 +33,7 @@ export const ActiveTitle = ({ title, onDiscard, onSubmit, onChange }: ActiveTitl
         triggerScreenBob(200);
     };
     const handleDiscard = () => {
-        if (value.trim() !== title.trim() && !confirm(discardMsgNoteTitle)) return;
+        if (value.trim() !== title.trim() && !confirm(isNote ? discardMsgNoteTitle : discardMsgTaskTitle)) return;
         triggerScreenShake(110);
         setValue(title);
         onDiscard?.();

@@ -2,44 +2,47 @@ import { useState, useEffect } from "react";
 import { Plus, Check, X } from "lucide-react";
 import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake";
 import ErrorHint from "../../../shared/ErrorHint";
+import { discardMsgTaskAdder } from "../../../../utils/registries";
 
 interface TaskListAdderProps {
     isActive: boolean;
-    onRequestActive: (wantsActive: boolean) => void;
+    onActivityRequest: (wantsActive: boolean, value?: string) => void;
     onTaskListAdded?: (title: string) => void;
 }
 
-export const TaskListAdder = ({ isActive, onTaskListAdded, onRequestActive }: TaskListAdderProps) => {
-    const [txt, setTxt] = useState("");
+export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: TaskListAdderProps) => {
+    const [value, setValue] = useState("");
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
     useEffect(() => {
         if (isActive) triggerScreenBob(150);
+        else setValue("");
     }, [isActive]);
 
-    const discard = () => {
+    const tryDiscard = () => {
+        if(value.trim() !== "" && !confirm(discardMsgTaskAdder)) return;
         triggerScreenShake(150);
-        onRequestActive(false);
-        setTxt("");
+        onActivityRequest(false,value);
+        setValue("");
     };
 
     const submit = () => {
-        if (txt.trim() === "") {
+        if (value.trim() === "") {
             triggerScreenShake(150);
             setTriggerErrorCheck(true);
             return;
         }
 
-        onTaskListAdded?.(txt.trim());
+        onTaskListAdded?.(value.trim());
+        onActivityRequest(false);
 
-        setTxt("");
-        onRequestActive(false);
+        setValue("");
         triggerScreenBob(200);
     };
 
     const handleKey = (e: React.KeyboardEvent) => {
         if (e.key === "Enter") submit();
-        if (e.key === "Escape") discard();
+        if (e.key === "Escape") tryDiscard();
     };
 
     return (
@@ -48,7 +51,7 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onRequestActive }: Ta
                 <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2 mt-2">
                         <button
-                            onClick={discard}
+                            onClick={tryDiscard}
                             className="p-2 rounded-full border-2 border-red-500 text-[#f7768e] 
                          hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150"
                         >
@@ -56,10 +59,11 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onRequestActive }: Ta
                         </button>
 
                         <input
-                            value={txt}
+                            value={value}
                             onChange={(e) => {
-                                setTxt(e.target.value);
+                                setValue(e.target.value);
                                 setTriggerErrorCheck(false);
+                                onActivityRequest(true, e.target.value);
                             }}
                             onKeyDown={handleKey}
                             autoFocus
@@ -79,13 +83,13 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onRequestActive }: Ta
 
                     <ErrorHint
                         triggerCheck={triggerErrorCheck}
-                        toValidate={txt}
+                        toValidate={value}
                         message="List title cannot be empty"
                     />
                 </div>
             ) : (
                 <button
-                    onClick={() => onRequestActive(true)}
+                    onClick={() => onActivityRequest(true)}
                     className="flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-purple-500 bg-purple-500 
                      text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150"
                 >

@@ -3,29 +3,32 @@ import { Plus, Check, X } from "lucide-react";
 import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake"
 import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../../shared/ErrorHint";
+import { discardMsgTaskBottomBar } from "../../../../utils/registries";
 
 interface TaskBottomBarProps {
     isActive: boolean;
     onAdded: (label: string) => void;
     onDelete: () => void;
-    onRequestActive: (wantsActive: boolean) => void;
+    onActivityRequest: (wantsActive: boolean, value?: string) => void;
 }
 
-export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: TaskBottomBarProps) => {
+export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }: TaskBottomBarProps) => {
     const [value, setValue] = useState("");
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
-    useEffect(() => {
-        if (isActive) triggerScreenBob(150);
+    useEffect(() => { 
+        if (isActive) triggerScreenBob(150); 
+        else setValue("");
     }, [isActive]);
 
-    const discardInput = () => {
+    const tryDiscard = () => {
+        if (value.trim() !== "" && !confirm(discardMsgTaskBottomBar)) return;
         triggerScreenShake(150);
-        onRequestActive(false);
+        onActivityRequest(false, value);
         setValue("");
     };
 
-    const submitNewTask = () => {
+    const trySubmit = () => {
         if (value.trim() === '') {
             triggerScreenShake(150);
             setTriggerErrorCheck(true);
@@ -33,14 +36,14 @@ export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: 
         }
         onAdded?.(value);
         setValue("");
-        onRequestActive(false);
+        onActivityRequest(false, value);
         triggerScreenBob(200);
 
     };
 
     const handleKey = (e: React.KeyboardEvent) => {
-        if (e.key === "Enter") submitNewTask();
-        if (e.key === "Escape") discardInput();
+        if (e.key === "Enter") trySubmit();
+        if (e.key === "Escape") tryDiscard();
     };
 
     return isActive ? (
@@ -49,7 +52,7 @@ export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: 
             <div className="flex items-center gap-2 mt-2">
                 {/* Discard Button */}
                 <button
-                    onClick={discardInput}
+                    onClick={tryDiscard}
                     className="p-2 rounded-full border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150"
                 >
                     <X size={18} strokeWidth={3} />
@@ -58,7 +61,7 @@ export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: 
                 {/* Input */}
                 <input
                     value={value}
-                    onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); }}
+                    onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); onActivityRequest(true, e.target.value) }}
                     onKeyDown={handleKey}
                     autoFocus
                     placeholder="Add Task..."
@@ -68,7 +71,7 @@ export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: 
 
                 {/* Submit Button */}
                 <button
-                    onClick={submitNewTask}
+                    onClick={trySubmit}
                     className="p-2 rounded-full border-2 border-green-500 bg-transparent text-[#f6faff] hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
                 >
                     <Check size={18} strokeWidth={3} />
@@ -84,7 +87,7 @@ export const TaskBottomBar = ({ isActive, onRequestActive, onAdded, onDelete }: 
                 label="Delete"
             />
             <button
-                onClick={() => onRequestActive(true)}
+                    onClick={() => onActivityRequest(true)}
                 className="flex items-center gap-2 px-4 py-2 mt-2 rounded-sm border-2 border-green-500 bg-green-500 text-[#f6faff] 
                  hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
             >

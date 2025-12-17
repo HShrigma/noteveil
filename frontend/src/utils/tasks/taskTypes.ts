@@ -12,11 +12,11 @@ export interface TaskListData {
 }
 
 export type TaskActivity = 
-    | { listId: number, taskId: number, type: "task" } 
-    | { listId: number, type: "title" } 
-    | { type: "adder" } 
-    | { listId: number, type: "bottomBar" } 
-    | { listId: number, type: "goesTo" } 
+    | { type: "task", listId: number, taskId: number, value: string } 
+    | { type: "title" ,listId: number,  value: string} 
+    | { type: "adder" , value: string} 
+    | { type: "bottomBar", listId: number, value: string } 
+    | { type: "goesTo", listId: number } 
     | null;
     
 export interface UseTaskResult {

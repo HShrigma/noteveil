@@ -37,8 +37,9 @@ export const TaskList = ({
         <>
             <EditableTitle
                 title={data.title}
+                isNote={false}
                 isActive={activeTask?.type === "title" && activeTask.listId === data.id}
-                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "title", listId: data.id } : null)}
+                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "title", listId: data.id, value} : null)}
                 onSubmit={(value) => onTitleSubmitted?.(data.id,value)}
             />
             <GoesToButton  
@@ -57,7 +58,7 @@ export const TaskList = ({
                             key={task.id}
                             task={task}
                             isActive={activeTask?.type === "task" && activeTask?.listId === data.id && activeTask?.taskId === task.id}
-                            onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? { taskId: task.id, listId: data.id, type: "task" } : null)}
+                            onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { taskId: task.id, listId: data.id, type: "task", value: value ?? "" } : null)}
                             onSubmit={(taskId, label) => onTaskSubmit?.(data.id, taskId, label)}
                             onDoneChange={(taskId, done) => onTaskDoneChanged?.(data.id, taskId, done)}
                             onDelete={(taskId) => onTaskRemoved?.(data.id, taskId)}
@@ -66,7 +67,7 @@ export const TaskList = ({
             </div>
             <TaskBottomBar 
                 isActive={activeTask?.type === 'bottomBar' && activeTask.listId === data.id}
-                onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? { type: "bottomBar", listId: data.id } : null)}
+                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "bottomBar", listId: data.id, value: value ?? "" } : null)}
                 onAdded={(label) => onTaskAdded?.(data.id, label)} 
                 onDelete={() => onDeleted?.(data.id)} 
             />

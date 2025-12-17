@@ -1,18 +1,20 @@
 import { SendHorizonal, X } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import ErrorHint from "../../shared/ErrorHint";
-import { triggerScreenBob } from "../../../utils/screenShake";
+import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
+import { discardMsgTask } from "../../../utils/registries";
 
 interface ActiveTaskProps {
     taskId: number;
-    initialValue: string;
+    label: string;
     done: boolean;
     onSubmit: (id: number, label: string) => void;
-    onCancel: () => void;
+    onChanged: (value: string) => void;
+    onCancel: (value: string) => void;
 }
 
-export const ActiveTask = ({ taskId, initialValue, done, onSubmit, onCancel }: ActiveTaskProps) => {
-    const [value, setValue] = useState(initialValue);
+export const ActiveTask = ({ taskId, label, done, onSubmit, onChanged, onCancel }: ActiveTaskProps) => {
+    const [value, setValue] = useState(label);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,9 +32,16 @@ export const ActiveTask = ({ taskId, initialValue, done, onSubmit, onCancel }: A
         triggerScreenBob(150);
     };
 
+    const tryDiscard = () => {
+        if(value !== label && !confirm(discardMsgTask)) return;
+        triggerScreenShake(150);
+        onCancel(value);
+        setValue(label);
+    }
+
     const handleKey = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") handleSubmit();
-        if (e.key === "Escape") onCancel();
+        if (e.key === "Escape") tryDiscard();
     };
 
     return (
@@ -42,13 +51,13 @@ export const ActiveTask = ({ taskId, initialValue, done, onSubmit, onCancel }: A
                     className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150
                     ${done ? "border-purple-500 bg-transparent text-[#f6faff] hover:bg-purple-500 hover:text-[#1a1b26]"
                             : "border-purple-500 bg-purple-500 text-[#f6faff] hover:bg-purple-400"}`}
-                    onClick={() => onCancel()}>
+                    onClick={() => tryDiscard()}>
                     <X size={16} strokeWidth={4} />
                 </button>
                 <input
                     ref={inputRef}
                     value={value}
-                    onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); }}
+                    onChange={(e) => { setValue(e.target.value); setTriggerErrorCheck(false); onChanged(e.target.value); }}
                     onKeyDown={handleKey}
                     placeholder="Task..."
                     className={`flex-1 bg-transparent border-b-2 outline-none font-mono font-semibold px-1 text-base tracking-wide

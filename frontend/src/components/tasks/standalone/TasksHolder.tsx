@@ -5,7 +5,8 @@ import TaskListAdder from "./compositional/TaskListAdder";
 import { useTasksContext } from "../../../utils/tasks/taskContext";
 import { useState } from "react";
 import { TaskActivity } from "../../../utils/tasks/taskTypes";
-import ActiveTask from "./ActiveTask";
+import { getIndex, getTaskIndex } from "../../../utils/tasks/tasksHelper";
+import { discardMsgTask, discardMsgTaskAdder, discardMsgTaskBottomBar, discardMsgTaskTitle } from "../../../utils/registries";
 
 export const TasksHolder = () => {
     const [activeTask, setActiveTask] = useState<TaskActivity>(null);
@@ -17,16 +18,63 @@ export const TasksHolder = () => {
     };
     const res = useTasksContext();
 
-    const requestActivity = (activity: TaskActivity) => {
-        setActiveTask(activity);
+    const requestActivity = (req: TaskActivity) => {
+        if (activeTask === null || req === null) {
+            setActiveTask(req);
+            return;
+        }
+        if( activeTask.type === "adder" && req.type === activeTask.type){
+            setActiveTask(req);
+            return;
+        }
+        if (activeTask.type !== "adder" && activeTask.type !== "task" && activeTask.type === req.type && activeTask.listId === req.listId) {
+            setActiveTask(req);
+            return;
+        }
+        if (activeTask.type === "goesTo") {
+            setActiveTask(req);
+            return;
+        }
+        if(activeTask.type === "task" && req.type === "task" && activeTask.listId === req.listId && activeTask.taskId === req.taskId){
+            setActiveTask(req);
+            return;
+        }
+        let list;
+        switch(activeTask.type){
+            case "task":
+                list = res.tasks[getIndex(activeTask.listId, res.tasks)];
+                const task = list.tasks[getTaskIndex(list,activeTask.taskId)];
+                if (activeTask.value.trim() === task.label.trim()) setActiveTask(req);
+                else{
+                    if(!window.confirm(discardMsgTask)) return;
+                    setActiveTask(req);
+                }
+                break;
+            case "title":
+                list = res.tasks[getIndex(activeTask.listId, res.tasks)];
+                if (activeTask.value.trim() === list.title.trim()) setActiveTask(req);
+                else{
+                    if(!window.confirm(discardMsgTaskTitle)) return;
+                    setActiveTask(req);
+                }
+                break;
+            case "adder":
+                if(activeTask.value.trim() !== "" && !window.confirm(discardMsgTaskAdder)) return;
+                setActiveTask(req);
+                break;
+            case "bottomBar":
+                if(activeTask.value.trim() !== "" && !window.confirm(discardMsgTaskBottomBar)) return;
+                setActiveTask(req);
+                break;
+        }
     }
 
     return (
         <div>
-            <TaskListAdder 
+            <TaskListAdder
                 isActive={activeTask?.type === "adder"}
-                onTaskListAdded={(title) => { res.createList(title); triggerScreenBob(); }} 
-                onRequestActive={(wantsActive) => { requestActivity(wantsActive ? { type: "adder" } : null) }} />
+                onTaskListAdded={(title) => { res.createList(title); triggerScreenBob(); }}
+                onActivityRequest={(wantsActive, value) => { requestActivity(wantsActive ? { type: "adder", value: value ?? "" } : null) }} />
             <Masonry breakpointCols={breakpointColumnsObj} className="flex gap-4" columnClassName="flex flex-col gap-4">
                 {res.tasks.map((list) => (
                     <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47] fade-in" key={list.id}>
@@ -38,10 +86,10 @@ export const TasksHolder = () => {
                             data={list}
                             onTaskSubmit={res.updateTaskLabel}
                             onTaskDoneChanged={res.updateTaskDone}
-                            onTaskAdded={(id,label)=>{res.createTask(id,label); triggerScreenBob(150);}}
+                            onTaskAdded={(id, label) => { res.createTask(id, label); triggerScreenBob(150); }}
                             onTaskRemoved={res.removeTask}
-                            onTitleSubmitted={(id, title) => { res.updateTitle(id,title); triggerScreenBob(200); }}
-                            onDeleted={(id) => {res.removeList(id); triggerScreenShake();}}
+                            onTitleSubmitted={(id, title) => { res.updateTitle(id, title); triggerScreenBob(200); }}
+                            onDeleted={(id) => { res.removeList(id); triggerScreenShake(); }}
                             onGoesTo={res.updateGoesTo}
                         />
                     </section>
