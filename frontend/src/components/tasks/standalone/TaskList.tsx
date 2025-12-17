@@ -2,7 +2,7 @@ import EditableTitle from "../../shared/title/EditableTitle";
 import GoesToButton from "./compositional/GoesToButton";
 import Task  from "./Task";
 import TaskBottomBar from "./compositional/TaskBottomBar";
-import { TaskItem, TaskListData } from "../../../utils/tasks/taskTypes";
+import { TaskListData } from "../../../utils/tasks/taskTypes";
 
 interface TaskListProps {
     allTasks: TaskListData[];
@@ -32,9 +32,8 @@ export const TaskList = ({
     return (
         <>
             <EditableTitle
-                id={data.id}
                 title={data.title}
-                onSubmit={(id, value) => onTitleSubmitted?.(id,value)}
+                onSubmit={(value) => onTitleSubmitted?.(data.id,value)}
             />
             <GoesToButton  ownId={data.id} label={goesToLabel} items={allTasks} onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} />
             <div className="flex flex-col gap-2 mt-2">

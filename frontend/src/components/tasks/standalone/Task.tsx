@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ActiveTask from "./ActiveTask";
 import InactiveTask from "./InactiveTask";
-import { TaskItem } from "../../../utils/notes/noteTypes";
+import { TaskItem } from "../../../utils/tasks/taskTypes";
 
 interface TaskProps {
   task: TaskItem;

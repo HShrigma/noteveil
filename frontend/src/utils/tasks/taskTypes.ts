@@ -11,6 +11,8 @@ export interface TaskListData {
     nextId?: number;
 }
 
+export type TaskActivity = | {listId: number, taskId: number} | null;
+    
 export interface UseTaskResult {
     tasks: TaskListData[];
 
