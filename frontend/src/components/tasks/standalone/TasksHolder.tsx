@@ -3,7 +3,11 @@ import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import TaskListAdder from "./compositional/TaskListAdder";
 import { useTasksContext } from "../../../utils/tasks/taskContext";
+import { useState } from "react";
+import { TaskActivity } from "../../../utils/tasks/taskTypes";
+
 export const TasksHolder = () => {
+    const [activity, setActivity] = useState<TaskActivity>(null);
     const breakpointColumnsObj = {
         default: 4,
         1024: 3,
