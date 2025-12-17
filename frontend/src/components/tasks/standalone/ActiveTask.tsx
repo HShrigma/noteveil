@@ -16,7 +16,10 @@ export const ActiveTask = ({ taskId, initialValue, done, onSubmit, onCancel }: A
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
 
-    useEffect(() => { inputRef.current?.focus(); }, []);
+    useEffect(() => {
+        inputRef.current?.focus();
+        inputRef.current?.select();
+    }, []);
 
     const isEmpty = () => value.trim() === "";
 

@@ -39,15 +39,23 @@ export const TaskList = ({
                 title={data.title}
                 onSubmit={(value) => onTitleSubmitted?.(data.id,value)}
             />
-            <GoesToButton  ownId={data.id} label={goesToLabel} items={allTasks} onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} />
+            <GoesToButton  
+                ownId={data.id}
+                label={goesToLabel}
+                items={allTasks}
+                isActive={activeTask?.type === "goesTo" && activeTask.listId === data.id}
+                onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? {type:"goesTo", listId: data.id} : null)}
+                onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} 
+
+            />
             <div className="flex flex-col gap-2 mt-2">
                 {data.tasks &&
                     data.tasks.map((task) => (
                         <Task
                             key={task.id}
                             task={task}
-                            isActive={activeTask?.listId === data.id && activeTask?.taskId === task.id}
-                            onRequestActive={(active) => onActivityRequest(active ? { taskId: task.id, listId: data.id } : null)}
+                            isActive={activeTask?.type === "task" && activeTask?.listId === data.id && activeTask?.taskId === task.id}
+                            onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? { taskId: task.id, listId: data.id, type: "task" } : null)}
                             onSubmit={(taskId, label) => onTaskSubmit?.(data.id, taskId, label)}
                             onDoneChange={(taskId, done) => onTaskDoneChanged?.(data.id, taskId, done)}
                             onDelete={(taskId) => onTaskRemoved?.(data.id, taskId)}

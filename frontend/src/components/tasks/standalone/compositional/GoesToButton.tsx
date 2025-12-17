@@ -3,13 +3,14 @@ import { TaskListData } from "../../../../utils/tasks/taskTypes";
 
 interface GoesToButtonProps {
     ownId: number;
+    isActive: boolean;
     label: string;
     items: TaskListData[];
     onGoesTo?: (id: number) => void;
+    onRequestActive: (status: boolean) => void;
 };
 
-export const GoesToButton = ({ ownId, label, items, onGoesTo }: GoesToButtonProps) => {
-    const [active, setActive] = useState(false);
+export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onRequestActive}: GoesToButtonProps) => {
     const [shaking, setShaking] = useState(false);
 
     const triggerShake = () => {
@@ -19,8 +20,7 @@ export const GoesToButton = ({ ownId, label, items, onGoesTo }: GoesToButtonProp
 
     const selectNext = (id: number) => {
         onGoesTo?.(id);
-        setActive(false);
-
+        onRequestActive(false);
         triggerShake();
     };
 
@@ -34,12 +34,12 @@ export const GoesToButton = ({ ownId, label, items, onGoesTo }: GoesToButtonProp
                     hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7]
                     ${shaking ? "shake-subtle" : ""}
                 `}
-                onClick={() => setActive(n => !n)}
+                onClick={() => onRequestActive(!isActive)}
             >
                 Goes To: {!label ? "None": label}
             </button>
 
-            {active && (
+            {isActive && (
                 <div
                     className="absolute mt-2 left-0 w-40 bg-[#1f2335] border border-[#2a2f47] 
                                rounded-md shadow-lg z-50 fade-in"
