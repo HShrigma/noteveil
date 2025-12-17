@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
-import { useTask } from "../../utils/tasks/useTask";
-import { TaskContext } from "../../utils/tasks/taskContext";
+import { TaskManagerContext } from "../../utils/tasks/taskManagerContext";
+import { useTaskManager } from "../../utils/tasks/useTaskManager";
 
 export const TaskProvider = ({ children }: { children: ReactNode }) => {
-  const task = useTask();
+  const manager = useTaskManager();
   return (
-    <TaskContext.Provider value={task}>
+    <TaskManagerContext.Provider value={manager}>
       {children}
-    </TaskContext.Provider>
+    </TaskManagerContext.Provider>
   );
 };

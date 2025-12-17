@@ -31,6 +31,7 @@ export const runUpdate = (obj: updateObject) => {
     if(obj.predicateNames.length !== obj.predicateValues.length) throw error(errMsgPredicateMismatch);
 
     const stmt = obj.db.prepare(getUpdateQuery(obj));
+    console.log(`query: ${getUpdateQuery(obj)}, res: ${[...obj.fieldValues, ...obj.predicateValues]}`)
     const result = stmt.run([...obj.fieldValues], [...obj.predicateValues]);
     return result;
 }

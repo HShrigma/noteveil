@@ -62,3 +62,29 @@ export interface UseTaskResult {
         listId: number | undefined
     ) => string;
 }
+export interface UseTaskManagerResult {
+  // state
+  tasks: TaskListData[];
+  active: TaskActivity;
+
+  // activity
+  activateAdder(): void;
+  activateTitle(listId: number, value: string): void;
+  activateTask(listId: number, taskId: number, value: string): void;
+  activateBottomBar(listId: number, value: string): void;
+  activateGoesTo(listId: number): void;
+  clearActivity(): void;
+
+  // task operations
+  createList(title: string): void;
+  createTask(listId: number, label: string): void;
+  updateTaskLabel(listId: number, taskId: number, label: string): void;
+  updateTaskDone(listId: number, taskId: number, done: boolean): void;
+  updateTitle(listId: number, title: string): void;
+  removeTask(listId: number, taskId: number): void;
+  removeList(listId: number): void;
+  updateGoesTo(listId: number, nextId: number): void;
+
+  // selectors
+  getGoesTo(id?: number): string;
+}

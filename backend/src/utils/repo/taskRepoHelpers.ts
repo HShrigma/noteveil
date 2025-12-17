@@ -10,7 +10,7 @@ export const runTaskListNextIdUpdate = (db: Database, nextId: number | undefined
         db: db,
         tableName: taskListsTable, 
         fieldNames: ["next_id"],
-        fieldValues: [nextId],
+        fieldValues: [nextId == -1 || !nextId ? null : nextId],
         predicateNames: ["id"],
         predicateValues: [id]
     }

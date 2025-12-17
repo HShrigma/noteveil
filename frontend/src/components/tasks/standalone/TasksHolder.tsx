@@ -2,7 +2,7 @@ import TaskList from "./TaskList";
 import Masonry from "react-masonry-css";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import TaskListAdder from "./compositional/TaskListAdder";
-import { useTasksContext } from "../../../utils/tasks/taskContext";
+import { useTaskManagerContext } from "../../../utils/tasks/taskManagerContext";
 import { useTaskActivity } from "../../../utils/tasks/useTaskActivity";
 
 export const TasksHolder = () => {
@@ -12,7 +12,7 @@ export const TasksHolder = () => {
         768: 2,
         500: 1,
     };
-    const ctx = useTasksContext();
+    const ctx = useTaskManagerContext();
     const { activeTask, requestActivity } = useTaskActivity(ctx.tasks);
     return (
         <div>
