@@ -5,29 +5,29 @@ import { TaskItem } from "../../../utils/tasks/taskTypes";
 
 interface TaskProps {
   task: TaskItem;
-  startEditing?: boolean;
+  isActive: boolean;
+  onRequestActive: (status: boolean) => void;
   onSubmit?: (id: number, label: string) => void;
   onDoneChange?: (id: number, done: boolean) => void;
   onDelete: (id: number) => void;
 }
 
-const Task = ({ task, startEditing = false, onSubmit, onDoneChange, onDelete }: TaskProps) => {
-  const [editing, setEditing] = useState(startEditing || task.label === "");
+const Task = ({ task, isActive, onSubmit, onDoneChange, onDelete, onRequestActive }: TaskProps) => {
 
-  return editing ? (
+  return isActive ? (
     <ActiveTask
       taskId={task.id}
       initialValue={task.label}
       done={task.done}
-      onSubmit={(id, label) => { onSubmit?.(id, label); setEditing(false); }}
-      onCancel={() => setEditing(false)}
+          onSubmit={(id, label) => { onSubmit?.(id, label); onRequestActive(false); }}
+      onCancel={() => onRequestActive(false)}
     />
   ) : (
     <InactiveTask
       taskId={task.id}
       label={task.label}
       done={task.done}
-      onActivate={() => setEditing(true)}
+      onActivate={() => onRequestActive(true)}
       onDoneChange={onDoneChange}
       onDelete={onDelete}
     />
@@ -35,4 +35,3 @@ const Task = ({ task, startEditing = false, onSubmit, onDoneChange, onDelete }: 
 };
 
 export default Task;
-

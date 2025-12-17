@@ -46,8 +46,8 @@ export const TaskList = ({
                         <Task
                             key={task.id}
                             task={task}
-                            // startEditing when a task has empty label (created blank)
-                            startEditing={task.label === ""}
+                            isActive={activeTask?.listId === data.id && activeTask?.taskId === task.id}
+                            onRequestActive={(active) => onActivityRequest(active ? { taskId: task.id, listId: data.id } : null)}
                             onSubmit={(taskId, label) => onTaskSubmit?.(data.id, taskId, label)}
                             onDoneChange={(taskId, done) => onTaskDoneChanged?.(data.id, taskId, done)}
                             onDelete={(taskId) => onTaskRemoved?.(data.id, taskId)}
