@@ -5,6 +5,7 @@ import ErrorHint from "../../shared/ErrorHint";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import { NoteData } from "../../../utils/notes/noteTypes";
 import { discardMsgNoteContent } from "../../../utils/registries";
+import { tryCancelDiscard } from "../../../utils/activityHelper";
 
 interface ActiveNoteProps {
     data: NoteData;
@@ -30,8 +31,7 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsAc
         setTriggerErrorCheck(false);
     };
     const tryDiscard = () => {
-        const leave = value.trim() === data.content.trim() || confirm(discardMsgNoteContent);
-        if (!leave) return;
+        if(tryCancelDiscard(value.trim() !== data.content.trim(), discardMsgNoteContent)) return;
         revertToSnapshot();
         onInactive();
         triggerScreenShake(110);

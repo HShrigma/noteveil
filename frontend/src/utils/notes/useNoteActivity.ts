@@ -20,7 +20,8 @@ export const useNoteActivity = () => {
         if (value.trim() === currentValue.trim()) {
             return true;
         }
-        return window.confirm(reqtype === "title" ? discardMsgNoteTitle : discardMsgNoteContent);
+        const msg = activeNote.type === "title" ? discardMsgNoteTitle : discardMsgNoteContent;
+        return window.confirm(msg);
     };
     const handleActivityRequest = async (notes: NoteData[], req: NotesActivity) => {
         console.log("handling req");

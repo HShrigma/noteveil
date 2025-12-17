@@ -4,6 +4,7 @@ import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenSh
 import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../../shared/ErrorHint";
 import { discardMsgTaskBottomBar } from "../../../../utils/registries";
+import { tryCancelDiscard } from "../../../../utils/activityHelper";
 
 interface TaskBottomBarProps {
     isActive: boolean;
@@ -22,7 +23,7 @@ export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }
     }, [isActive]);
 
     const tryDiscard = () => {
-        if (value.trim() !== "" && !confirm(discardMsgTaskBottomBar)) return;
+        if (tryCancelDiscard(value.trim() !== "", discardMsgTaskBottomBar)) return;
         triggerScreenShake(150);
         onActivityRequest(false, value);
         setValue("");

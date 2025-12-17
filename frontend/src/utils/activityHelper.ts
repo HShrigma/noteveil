@@ -1,0 +1,1 @@
+export const tryCancelDiscard = (predicate: boolean, msg: string) => predicate && !window.confirm(msg)

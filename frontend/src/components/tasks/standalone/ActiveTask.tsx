@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import ErrorHint from "../../shared/ErrorHint";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import { discardMsgTask } from "../../../utils/registries";
+import { tryCancelDiscard } from "../../../utils/activityHelper";
 
 interface ActiveTaskProps {
     taskId: number;
@@ -33,7 +34,7 @@ export const ActiveTask = ({ taskId, label, done, onSubmit, onChanged, onCancel 
     };
 
     const tryDiscard = () => {
-        if(value !== label && !confirm(discardMsgTask)) return;
+        if(tryCancelDiscard(value !== label, discardMsgTask)) return;
         triggerScreenShake(150);
         onCancel(value);
         setValue(label);

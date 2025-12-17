@@ -7,6 +7,7 @@ import { useState } from "react";
 import { TaskActivity } from "../../../utils/tasks/taskTypes";
 import { getIndex, getTaskIndex } from "../../../utils/tasks/tasksHelper";
 import { discardMsgTask, discardMsgTaskAdder, discardMsgTaskBottomBar, discardMsgTaskTitle } from "../../../utils/registries";
+import { tryCancelDiscard } from "../../../utils/activityHelper";
 
 export const TasksHolder = () => {
     const [activeTask, setActiveTask] = useState<TaskActivity>(null);
@@ -39,36 +40,34 @@ export const TasksHolder = () => {
             setActiveTask(req);
             return;
         }
-        let list;
-        switch(activeTask.type){
-            case "task":
-                list = res.tasks[getIndex(activeTask.listId, res.tasks)];
-                const task = list.tasks[getTaskIndex(list,activeTask.taskId)];
-                if (activeTask.value.trim() === task.label.trim()) setActiveTask(req);
-                else{
-                    if(!window.confirm(discardMsgTask)) return;
-                    setActiveTask(req);
-                }
-                break;
-            case "title":
-                list = res.tasks[getIndex(activeTask.listId, res.tasks)];
-                if (activeTask.value.trim() === list.title.trim()) setActiveTask(req);
-                else{
-                    if(!window.confirm(discardMsgTaskTitle)) return;
-                    setActiveTask(req);
-                }
-                break;
-            case "adder":
-                if(activeTask.value.trim() !== "" && !window.confirm(discardMsgTaskAdder)) return;
-                setActiveTask(req);
-                break;
-            case "bottomBar":
-                if(activeTask.value.trim() !== "" && !window.confirm(discardMsgTaskBottomBar)) return;
-                setActiveTask(req);
-                break;
-        }
+        const predicate = getPredicateForActiveTask();
+        const msg = getDiscardMsgForActiveTask();
+        if(tryCancelDiscard(predicate,msg)) return;
+        setActiveTask(req);
     }
 
+        const getPredicateForActiveTask = () => {
+            if(activeTask?.type === "task" || activeTask?.type === "title"){
+                const list = res.tasks[getIndex(activeTask.listId, res.tasks)];
+                if(activeTask.type === "title") return activeTask.value !== list.title;
+                
+                const task = list.tasks[getTaskIndex(list,activeTask.taskId)];
+                return activeTask.value.trim() !== task.label.trim();
+            }
+            return activeTask !== null && activeTask.type !== "goesTo" && activeTask.value.trim() !== "";
+        }
+        const getDiscardMsgForActiveTask = () => {
+            switch(activeTask?.type)
+            {
+                case "adder": return discardMsgTaskAdder;
+                case "bottomBar": return discardMsgTaskBottomBar;
+                case "task": return discardMsgTask;
+                case "title": return discardMsgTaskTitle;
+                default:
+                    console.error(`Message not found for type ${activeTask ? activeTask.type : "none"}`);
+                    return "";
+            }
+        }
     return (
         <div>
             <TaskListAdder

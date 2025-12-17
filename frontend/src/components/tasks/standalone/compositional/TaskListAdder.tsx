@@ -3,6 +3,7 @@ import { Plus, Check, X } from "lucide-react";
 import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake";
 import ErrorHint from "../../../shared/ErrorHint";
 import { discardMsgTaskAdder } from "../../../../utils/registries";
+import { tryCancelDiscard } from "../../../../utils/activityHelper";
 
 interface TaskListAdderProps {
     isActive: boolean;
@@ -20,7 +21,7 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: 
     }, [isActive]);
 
     const tryDiscard = () => {
-        if(value.trim() !== "" && !confirm(discardMsgTaskAdder)) return;
+        if (tryCancelDiscard(value.trim() !== "", discardMsgTaskAdder)) return;
         triggerScreenShake(150);
         onActivityRequest(false,value);
         setValue("");
