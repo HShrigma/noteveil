@@ -49,9 +49,11 @@ export const TasksHolder = () => {
         const getPredicateForActiveTask = () => {
             if(activeTask?.type === "task" || activeTask?.type === "title"){
                 const list = res.tasks[getIndex(activeTask.listId, res.tasks)];
-                if(activeTask.type === "title") return activeTask.value !== list.title;
+                if(!list) return false;
+                if(activeTask.type === "title") return activeTask.value.trim() !== list.title.trim();
                 
                 const task = list.tasks[getTaskIndex(list,activeTask.taskId)];
+                if(!task) return false;
                 return activeTask.value.trim() !== task.label.trim();
             }
             return activeTask !== null && activeTask.type !== "goesTo" && activeTask.value.trim() !== "";
