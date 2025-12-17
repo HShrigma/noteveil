@@ -2,12 +2,14 @@ import EditableTitle from "../../shared/title/EditableTitle";
 import GoesToButton from "./compositional/GoesToButton";
 import Task  from "./Task";
 import TaskBottomBar from "./compositional/TaskBottomBar";
-import { TaskListData } from "../../../utils/tasks/taskTypes";
+import { TaskActivity, TaskListData } from "../../../utils/tasks/taskTypes";
 
 interface TaskListProps {
     allTasks: TaskListData[];
     goesToLabel: string;
     data: TaskListData;
+    activeTask: TaskActivity;
+    onActivityRequest: (activity: TaskActivity) => void;
     onTaskSubmit?: (listId: number, taskId: number, label: string) => void;
     onTaskDoneChanged?: (listId: number, taskId: number, done: boolean) => void;
     onTaskAdded?: (listId: number, label: string) => void;
@@ -21,6 +23,8 @@ export const TaskList = ({
     allTasks,
     goesToLabel,
     data,
+    activeTask,
+    onActivityRequest,
     onTaskSubmit,
     onTaskDoneChanged,
     onTaskAdded,

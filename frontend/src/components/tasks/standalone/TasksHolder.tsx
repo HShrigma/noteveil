@@ -5,9 +5,10 @@ import TaskListAdder from "./compositional/TaskListAdder";
 import { useTasksContext } from "../../../utils/tasks/taskContext";
 import { useState } from "react";
 import { TaskActivity } from "../../../utils/tasks/taskTypes";
+import ActiveTask from "./ActiveTask";
 
 export const TasksHolder = () => {
-    const [activity, setActivity] = useState<TaskActivity>(null);
+    const [activeTask, setActiveTask] = useState<TaskActivity>(null);
     const breakpointColumnsObj = {
         default: 4,
         1024: 3,
@@ -15,6 +16,11 @@ export const TasksHolder = () => {
         500: 1,
     };
     const res = useTasksContext();
+
+    const requestActivity = (activity: TaskActivity) => {
+        setActiveTask(activity);
+    }
+
     return (
         <div>
             <TaskListAdder onTaskListAdded={(title) => { res.createList(title); triggerScreenBob(); }} />
@@ -24,6 +30,8 @@ export const TasksHolder = () => {
                         <TaskList
                             allTasks={res.tasks}
                             goesToLabel={res.getGoesTo(list.nextId)}
+                            activeTask={activeTask}
+                            onActivityRequest={requestActivity}
                             data={list}
                             onTaskSubmit={res.updateTaskLabel}
                             onTaskDoneChanged={res.updateTaskDone}
