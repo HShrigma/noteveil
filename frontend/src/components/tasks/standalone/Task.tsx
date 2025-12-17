@@ -6,7 +6,7 @@ import { TaskItem } from "../../../utils/tasks/taskTypes";
 interface TaskProps {
     task: TaskItem;
     isActive: boolean;
-    onRequestActive: (status: boolean) => void;
+    onRequestActive: (wantsActive: boolean) => void;
     onSubmit?: (id: number, label: string) => void;
     onDoneChange?: (id: number, done: boolean) => void;
     onDelete: (id: number) => void;

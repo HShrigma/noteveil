@@ -37,6 +37,8 @@ export const TaskList = ({
         <>
             <EditableTitle
                 title={data.title}
+                isActive={activeTask?.type === "title" && activeTask.listId === data.id}
+                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "title", listId: data.id } : null)}
                 onSubmit={(value) => onTitleSubmitted?.(data.id,value)}
             />
             <GoesToButton  
@@ -44,7 +46,7 @@ export const TaskList = ({
                 label={goesToLabel}
                 items={allTasks}
                 isActive={activeTask?.type === "goesTo" && activeTask.listId === data.id}
-                onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? {type:"goesTo", listId: data.id} : null)}
+                onActivityRequest={(wantsActive) => onActivityRequest(wantsActive ? {type:"goesTo", listId: data.id} : null)}
                 onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} 
 
             />
@@ -62,7 +64,12 @@ export const TaskList = ({
                         />
                     ))}
             </div>
-            <TaskBottomBar onAdded={(label) => onTaskAdded?.(data.id, label)} onDelete={() => onDeleted?.(data.id)} />
+            <TaskBottomBar 
+                isActive={activeTask?.type === 'bottomBar' && activeTask.listId === data.id}
+                onRequestActive={(wantsActive) => onActivityRequest(wantsActive ? { type: "bottomBar", listId: data.id } : null)}
+                onAdded={(label) => onTaskAdded?.(data.id, label)} 
+                onDelete={() => onDeleted?.(data.id)} 
+            />
         </>
     );
 };

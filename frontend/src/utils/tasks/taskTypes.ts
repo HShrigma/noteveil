@@ -13,7 +13,9 @@ export interface TaskListData {
 
 export type TaskActivity = 
     | { listId: number, taskId: number, type: "task" } 
+    | { listId: number, type: "title" } 
     | { type: "adder" } 
+    | { listId: number, type: "bottomBar" } 
     | { listId: number, type: "goesTo" } 
     | null;
     

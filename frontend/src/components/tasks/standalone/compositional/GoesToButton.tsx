@@ -7,10 +7,10 @@ interface GoesToButtonProps {
     label: string;
     items: TaskListData[];
     onGoesTo?: (id: number) => void;
-    onRequestActive: (status: boolean) => void;
+    onActivityRequest: (status: boolean) => void;
 };
 
-export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onRequestActive}: GoesToButtonProps) => {
+export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onActivityRequest: onRequestActive}: GoesToButtonProps) => {
     const [shaking, setShaking] = useState(false);
 
     const triggerShake = () => {
