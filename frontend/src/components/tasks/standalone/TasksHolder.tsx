@@ -23,7 +23,10 @@ export const TasksHolder = () => {
 
     return (
         <div>
-            <TaskListAdder onTaskListAdded={(title) => { res.createList(title); triggerScreenBob(); }} />
+            <TaskListAdder 
+                isActive={activeTask?.type === "adder"}
+                onTaskListAdded={(title) => { res.createList(title); triggerScreenBob(); }} 
+                onRequestActive={(wantsActive) => { requestActivity(wantsActive ? { type: "adder" } : null) }} />
             <Masonry breakpointCols={breakpointColumnsObj} className="flex gap-4" columnClassName="flex flex-col gap-4">
                 {res.tasks.map((list) => (
                     <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47] fade-in" key={list.id}>

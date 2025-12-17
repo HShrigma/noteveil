@@ -13,6 +13,7 @@ export interface TaskListData {
 
 export type TaskActivity = 
     | { listId: number, taskId: number, type: "task" } 
+    | { type: "adder" } 
     | { listId: number, type: "goesTo" } 
     | null;
     
