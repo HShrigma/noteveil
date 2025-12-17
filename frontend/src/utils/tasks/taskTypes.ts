@@ -68,11 +68,12 @@ export interface UseTaskManagerResult {
   active: TaskActivity;
 
   // activity
-  activateAdder(): void;
+  activateAdder(value?:string): void;
   activateTitle(listId: number, value: string): void;
   activateTask(listId: number, taskId: number, value: string): void;
   activateBottomBar(listId: number, value: string): void;
   activateGoesTo(listId: number): void;
+  isActive(type:string): boolean;
   clearActivity(): void;
 
   // task operations

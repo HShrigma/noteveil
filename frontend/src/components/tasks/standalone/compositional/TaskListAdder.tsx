@@ -4,14 +4,15 @@ import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenSh
 import ErrorHint from "../../../shared/ErrorHint";
 import { discardMsgTaskAdder } from "../../../../utils/registries";
 import { tryCancelDiscard } from "../../../../utils/activityHelper";
+import { useTaskManagerContext } from "../../../../utils/tasks/taskManagerContext";
 
 interface TaskListAdderProps {
     isActive: boolean;
-    onActivityRequest: (wantsActive: boolean, value?: string) => void;
     onTaskListAdded?: (title: string) => void;
 }
 
-export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: TaskListAdderProps) => {
+export const TaskListAdder = ({ isActive, onTaskListAdded}: TaskListAdderProps) => {
+    const ctx = useTaskManagerContext();
     const [value, setValue] = useState("");
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
@@ -23,8 +24,8 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: 
     const tryDiscard = () => {
         if (tryCancelDiscard(value.trim() !== "", discardMsgTaskAdder)) return;
         triggerScreenShake(150);
-        onActivityRequest(false,value);
         setValue("");
+        ctx.clearActivity();
     };
 
     const submit = () => {
@@ -35,7 +36,7 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: 
         }
 
         onTaskListAdded?.(value.trim());
-        onActivityRequest(false);
+        ctx.clearActivity();
 
         setValue("");
         triggerScreenBob(200);
@@ -64,7 +65,7 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: 
                             onChange={(e) => {
                                 setValue(e.target.value);
                                 setTriggerErrorCheck(false);
-                                onActivityRequest(true, e.target.value);
+                                ctx.activateAdder(e.target.value);
                             }}
                             onKeyDown={handleKey}
                             autoFocus
@@ -90,7 +91,7 @@ export const TaskListAdder = ({ isActive, onTaskListAdded, onActivityRequest }: 
                 </div>
             ) : (
                 <button
-                    onClick={() => onActivityRequest(true)}
+                        onClick={() => ctx.activateAdder()}
                     className="flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-purple-500 bg-purple-500 
                      text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150"
                 >

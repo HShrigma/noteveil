@@ -2,52 +2,39 @@ import EditableTitle from "../../shared/title/EditableTitle";
 import GoesToButton from "./compositional/GoesToButton";
 import Task  from "./Task";
 import TaskBottomBar from "./compositional/TaskBottomBar";
-import { TaskActivity, TaskListData } from "../../../utils/tasks/taskTypes";
+import { TaskListData } from "../../../utils/tasks/taskTypes";
+import { useTaskManagerContext } from "../../../utils/tasks/taskManagerContext";
+import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 
 interface TaskListProps {
-    allTasks: TaskListData[];
     goesToLabel: string;
     data: TaskListData;
-    activeTask: TaskActivity;
-    onActivityRequest: (activity: TaskActivity) => void;
-    onTaskSubmit?: (listId: number, taskId: number, label: string) => void;
-    onTaskDoneChanged?: (listId: number, taskId: number, done: boolean) => void;
-    onTaskAdded?: (listId: number, label: string) => void;
-    onTaskRemoved?: (listId: number, taskId: number) => void;
     onTitleSubmitted?: (id: number, title: string) => void;
-    onDeleted?: (id: number) => void;
     onGoesTo?: (id: number, nextId: number) => void;
 }
 
 export const TaskList = ({
-    allTasks,
     goesToLabel,
     data,
-    activeTask,
-    onActivityRequest,
-    onTaskSubmit,
-    onTaskDoneChanged,
-    onTaskAdded,
-    onTaskRemoved,
     onTitleSubmitted,
-    onDeleted,
     onGoesTo,
 }: TaskListProps) => {
+    const ctx = useTaskManagerContext();
     return (
         <>
             <EditableTitle
                 title={data.title}
                 isNote={false}
-                isActive={activeTask?.type === "title" && activeTask.listId === data.id}
-                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "title", listId: data.id, value} : null)}
+                isActive={ctx.active?.type === "title" && ctx.active.listId === data.id}
+                onActivityRequest={(wantsActive, value) => wantsActive ? ctx.activateTitle(data.id, value) : ctx.clearActivity()}
                 onSubmit={(value) => onTitleSubmitted?.(data.id,value)}
             />
             <GoesToButton  
                 ownId={data.id}
                 label={goesToLabel}
-                items={allTasks}
-                isActive={activeTask?.type === "goesTo" && activeTask.listId === data.id}
-                onActivityRequest={(wantsActive) => onActivityRequest(wantsActive ? {type:"goesTo", listId: data.id} : null)}
+                items={ctx.tasks}
+                isActive={ctx.active?.type === "goesTo" && ctx.active.listId === data.id}
+                onActivityRequest={(wantsActive) => wantsActive ? ctx.activateGoesTo(data.id) : ctx.clearActivity()}
                 onGoesTo={(goesToId) => onGoesTo?.(data.id, goesToId)} 
 
             />
@@ -57,19 +44,19 @@ export const TaskList = ({
                         <Task
                             key={task.id}
                             task={task}
-                            isActive={activeTask?.type === "task" && activeTask?.listId === data.id && activeTask?.taskId === task.id}
-                            onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { taskId: task.id, listId: data.id, type: "task", value: value ?? "" } : null)}
-                            onSubmit={(taskId, label) => onTaskSubmit?.(data.id, taskId, label)}
-                            onDoneChange={(taskId, done) => onTaskDoneChanged?.(data.id, taskId, done)}
-                            onDelete={(taskId) => onTaskRemoved?.(data.id, taskId)}
+                            isActive={ctx.active?.type === "task" && ctx.active?.listId === data.id && ctx.active?.taskId === task.id}
+                            onActivityRequest={(wantsActive, value) => wantsActive ? ctx.activateTask(data.id, task.id, value ?? "") : ctx.clearActivity()}
+                            onSubmit={(taskId, label) => ctx.updateTaskLabel(data.id, taskId, label)}
+                            onDoneChange={(taskId, done) => ctx.updateTaskDone(data.id, taskId, done)}
+                            onDelete={(taskId) => ctx.removeTask(data.id, taskId)}
                         />
                     ))}
             </div>
             <TaskBottomBar 
-                isActive={activeTask?.type === 'bottomBar' && activeTask.listId === data.id}
-                onActivityRequest={(wantsActive, value) => onActivityRequest(wantsActive ? { type: "bottomBar", listId: data.id, value: value ?? "" } : null)}
-                onAdded={(label) => onTaskAdded?.(data.id, label)} 
-                onDelete={() => onDeleted?.(data.id)} 
+                isActive={ctx.active?.type === 'bottomBar' && ctx.active.listId === data.id}
+                onActivityRequest={(wantsActive, value) => wantsActive ? ctx.activateBottomBar(data.id, value ?? "") : ctx.clearActivity()}
+                onAdded={(label) => { ctx.createTask(data.id, label); triggerScreenBob(150); }} 
+                onDelete={() => { ctx.removeList(data.id); triggerScreenShake(); }}
             />
         </>
     );

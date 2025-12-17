@@ -12,7 +12,6 @@ interface TaskProps {
 }
 
 const Task = ({ task, isActive, onSubmit, onDoneChange, onDelete, onActivityRequest }: TaskProps) => {
-
     return isActive ? (
         <ActiveTask
             taskId={task.id}

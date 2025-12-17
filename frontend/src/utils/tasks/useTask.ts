@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { TaskListData, UseTaskResult } from "./taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
-import { getCreatedLists, getCreatedTaskList, getGoesToList, getIndex, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getTaskIndex, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
+import { getCreatedLists, getCreatedTaskList, getGoesToList, getIndex, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
 
 export const useTask = (): UseTaskResult => {
     const [tasks, setTasks] = useState<TaskListData[]>([]);
@@ -36,7 +36,6 @@ export const useTask = (): UseTaskResult => {
             await deleteTask(taskId);
             return;
         }
-
         setNewList(list);
         await patchTaskDone(taskId, done);
     }

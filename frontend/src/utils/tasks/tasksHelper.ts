@@ -71,9 +71,7 @@ export const getTaskDoneList = (id: number, taskId: number, done: boolean, tasks
     const taskIndex = getTaskIndex(list, taskId);
     if (taskIndex === -1) return;
 
-    if (done) {
-        list.tasks = [...list.tasks];
-        list.tasks[taskIndex] = { ...list.tasks[taskIndex], done };
-    }
+    list.tasks = [...list.tasks];
+    list.tasks[taskIndex] = { ...list.tasks[taskIndex], done };
     return { list, taskIndex };
 }

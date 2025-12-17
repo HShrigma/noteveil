@@ -47,11 +47,7 @@ export const useTaskActivity = (tasks: TaskListData[]) => {
             case "title":
                 return discardMsgTaskTitle;
             default:
-                console.error(
-                    `No discard message for type ${
-                        activeTask ? activeTask.type : "none"
-                    }`
-                );
+                console.error(`No discard message for type ${activeTask ? activeTask.type : "none"}`);
                 return "";
         }
     };
@@ -62,21 +58,12 @@ export const useTaskActivity = (tasks: TaskListData[]) => {
             return;
         }
 
-        // same activity → allow
-        if (
-            activeTask.type === "adder" &&
-            req.type === "adder"
-        ) {
+        if (activeTask.type === "adder" && req.type === "adder") {
             setActiveTask(req);
             return;
         }
 
-        if (
-            activeTask.type !== "adder" &&
-            activeTask.type !== "task" &&
-            activeTask.type === req.type &&
-            activeTask.listId === req.listId
-        ) {
+        if (activeTask.type !== "adder" && activeTask.type !== "task" && activeTask.type === req.type && activeTask.listId === req.listId) {
             setActiveTask(req);
             return;
         }
@@ -96,14 +83,10 @@ export const useTaskActivity = (tasks: TaskListData[]) => {
             return;
         }
 
-        // discard check
-        const shouldCancel = tryCancelDiscard(
-            getPredicateForActiveTask(),
-            getDiscardMsgForActiveTask()
-        );
+        const shouldCancel = tryCancelDiscard(getPredicateForActiveTask(), getDiscardMsgForActiveTask());
 
         if (shouldCancel) return;
-
+        console.log("PASSED CHECKS!");
         setActiveTask(req);
     };
 

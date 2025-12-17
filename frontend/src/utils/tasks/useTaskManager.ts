@@ -1,4 +1,3 @@
-import { TaskManagerContext } from "./taskManagerContext";
 import { UseTaskManagerResult as UseTaskManagerResult, UseTaskResult } from "./taskTypes";
 import { useTask } from "./useTask";
 import { useTaskActivity } from "./useTaskActivity";
@@ -13,8 +12,8 @@ export const useTaskManager = (): UseTaskManagerResult => {
     active: activity.activeTask,
 
     // activity
-    activateAdder: () =>
-      activity.requestActivity({ type: "adder", value: "" }),
+    activateAdder: (value: "") =>
+      activity.requestActivity({ type: "adder", value:value }),
 
     activateTitle: (listId, value) =>
       activity.requestActivity({ type: "title", listId, value }),
@@ -22,12 +21,12 @@ export const useTaskManager = (): UseTaskManagerResult => {
     activateTask: (listId, taskId, value) =>
       activity.requestActivity({ type: "task", listId, taskId, value }),
 
-    activateBottomBar: (listId, value) =>
+    activateBottomBar: (listId, value: "") =>
       activity.requestActivity({ type: "bottomBar", listId, value }),
 
+      isActive: (type: string) => activity.isActive(type),
     activateGoesTo: (listId) =>
       activity.requestActivity({ type: "goesTo", listId }),
-
     clearActivity: () =>
       activity.requestActivity(null),
 
