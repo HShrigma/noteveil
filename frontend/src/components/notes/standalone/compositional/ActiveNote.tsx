@@ -1,11 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Check } from "lucide-react";
-import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
-import ErrorHint from "../../shared/ErrorHint";
-import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
-import { NoteData } from "../../../utils/notes/noteTypes";
-import { discardMsgNoteContent } from "../../../utils/registries";
-import { tryCancelDiscard } from "../../../utils/activityHelper";
+import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
+import ErrorHint from "../../../shared/ErrorHint";
+import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake";
+import { NoteData } from "../../../../utils/notes/noteTypes";
+import { discardMsgNoteContent } from "../../../../utils/registries";
+import { tryCancelDiscard } from "../../../../utils/activityHelper";
 
 interface ActiveNoteProps {
     data: NoteData;

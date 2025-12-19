@@ -1,7 +1,8 @@
-import NotesHolder from "./notes/NotesHolder";
+import NotesHolder from "./notes/standalone/NotesHolder";
 import TasksHolder from "./tasks/standalone/TasksHolder";
 import { MAIN_STATES, type MainState } from '../utils/registries'
 import { TaskProvider } from "./tasks/TaskProvider";
+import { NoteProvider } from "./notes/NoteProvider";
 
 interface MainSreenProps {
     state: MainState
@@ -13,9 +14,9 @@ export const MainScreen = ({ state }: MainSreenProps) => {
             case MAIN_STATES.TASK_DISPLAY:
                 return <TaskProvider>
                     <TasksHolder />
-                    </TaskProvider>
+                </TaskProvider>
             case MAIN_STATES.NOTES_DISPLAY:
-                return <NotesHolder />
+                return <NoteProvider> <NotesHolder /> </NoteProvider>
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>

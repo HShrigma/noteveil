@@ -24,10 +24,6 @@ export const useNoteActivity = () => {
         return window.confirm(msg);
     };
     const handleActivityRequest = async (notes: NoteData[], req: NotesActivity) => {
-        console.log("handling req");
-
-        console.log(`req data: ${req === null ? " req is null" : req}`);
-
         if (activeNote === null || req === null) {
             setActiveNote(req);
             return;
@@ -60,5 +56,12 @@ export const useNoteActivity = () => {
         const newNote = notes[nextIndex];
         setActiveNote({ id: newNote.id, type: "content", value: newNote.content });
     }
-    return { activeNote, isAdderDisabled, confirmDiscardIfDirty, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity, setNextActive };
+    const isActive = (typeLabel: string, note: NoteData) => {
+        if (activeNote === null) return false;
+        return activeNote && (activeNote.type === typeLabel && activeNote.id === note.id)
+    }
+    const isBodyActive = (note: NoteData) => { return  isActive("content", note)};
+    const isTitleActive = (note: NoteData) => { return isActive("title", note)};
+
+    return { activeNote, isAdderDisabled, confirmDiscardIfDirty, handleActivityRequest, setTitleSubmitActivity, setNoActivity, setAddNoteActivity, setNextActive, isBodyActive, isTitleActive};
 }
