@@ -1,6 +1,7 @@
 export const MAIN_STATES = {
     TASK_DISPLAY: 'taskDisplay',
     NOTES_DISPLAY: 'notesDisplay',
+    PROJECTS_DISPLA: 'projectsDisplay'
 } as const;
 
 export const discardMsgNoteTitle = "Discard changes to this Note Title?";
