@@ -6,7 +6,10 @@ import { MAIN_STATES, ProjectData, type MainState } from './utils/registries';
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
 
-    const sampleProjects = [{ id: 1, title: "Sample", taskCount: 20, noteCount: 10, active: true }];
+    const sampleProjects = [
+        { id: 1, title: "Sample", taskCount: 20, noteCount: 10 },
+        { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
+    ];
     const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
 
     const handleDisplayChange = (value: MainState) => {
