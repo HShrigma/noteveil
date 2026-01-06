@@ -9,9 +9,10 @@ interface MainSreenProps {
     projects: ProjectData[];
     state: MainState
     onProjectSelect: (id: number | null) => void;
+    onProjectDelete: (id: number) => void;
 };
 
-export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) => {
+export const MainScreen = ({ projects, state, onProjectSelect, onProjectDelete }: MainSreenProps) => {
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
@@ -21,7 +22,7 @@ export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) 
             case MAIN_STATES.NOTES_DISPLAY:
                 return <NoteProvider> <NotesHolder /> </NoteProvider>
             case MAIN_STATES.PROJECTS_DISPLAY:
-                return <Projects projects={projects} onProjectChange={onProjectSelect} />
+                return <Projects projects={projects} onProjectChange={onProjectSelect} onProjectDelete={onProjectDelete}/>
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>

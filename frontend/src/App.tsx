@@ -22,10 +22,13 @@ function App() {
         setActiveProject({id});
         triggerScreenBob(150);
     }
+    const deleteProject = (id:number) => {
+        setProjects(prev => prev.filter(project => project.id !== id));
+    }
     return (
         <>
             <DefaultHeader activeProject={activeProject} onProjectSelect={handleProjectSelect} onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
-            <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} />
+            <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} onProjectDelete={deleteProject}/>
         </>
     );
 }
