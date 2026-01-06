@@ -17,7 +17,7 @@ function App() {
     }
     return (
         <>
-            <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
+            <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
             <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} />
         </>
     );
