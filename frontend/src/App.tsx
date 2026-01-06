@@ -4,7 +4,7 @@ import MainScreen from './components/MainScreen';
 import { MAIN_STATES, type MainState } from './utils/registries';
 
 function App() {
-  const [state, setState] = useState<MainState>(MAIN_STATES.TASK_DISPLAY);
+  const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
 
   const handleDisplayChange = (value: MainState) => {
     setState(value);

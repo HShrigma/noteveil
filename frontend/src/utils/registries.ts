@@ -1,9 +1,13 @@
 export const MAIN_STATES = {
     TASK_DISPLAY: 'taskDisplay',
     NOTES_DISPLAY: 'notesDisplay',
-    PROJECTS_DISPLA: 'projectsDisplay'
+    PROJECTS_DISPLAY: 'projectsDisplay'
 } as const;
-
+export interface ProjectData{
+    title: string;
+    taskCount: Number;
+    noteCount: Number;
+};
 export const discardMsgNoteTitle = "Discard changes to this Note Title?";
 export const discardMsgNoteContent = "Discard changes to this Note Content?";
 export const discardMsgTaskBottomBar = "Discard changes to this Task Adder?";
