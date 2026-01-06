@@ -4,11 +4,17 @@ interface DefaultHeaderProps {
     projects: ProjectData[];
     activeProject: ProjectActivity;
     onScreenChange: (value: MainState) => void;
-    onProjectSelect: (id: number) => void;
+    onProjectSelect: (id: number | null) => void;
     currentState: MainState; // new prop to track active screen
 }
 
-export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProjectSelect: onProjectChange, currentState }: DefaultHeaderProps) => {
+export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProjectSelect, currentState }: DefaultHeaderProps) => {
+    const goToProjectsScreen = () => {
+        if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
+            onScreenChange(MAIN_STATES.PROJECTS_DISPLAY);
+            onProjectSelect(null);
+        }
+    }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Title */}
@@ -20,13 +26,14 @@ export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProje
             <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
                 <button
-                    onClick={() => { if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) onScreenChange(MAIN_STATES.PROJECTS_DISPLAY) }}
+                    onClick={ () => goToProjectsScreen()}
                     className={
                         currentState === MAIN_STATES.PROJECTS_DISPLAY ? 
                         `px-4 py-1 rounded-sm border-2
                       bg-[#7aa2f7]
                       text-[#1a1b26]
-                        font-semibold tracking-wide` 
+                        font-semibold tracking-wide
+                        ` 
                         : 
                         `flex-shrink-0 px-4 py-1 rounded-sm border-2 border-[#7aa2f7]
                       text-[#7aa2f7] font-semibold tracking-wide
@@ -46,13 +53,16 @@ export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProje
                 {projects.map(project => (
                     <button
                         key={project.id}
-                        onClick={() => { if (activeProject.id !== project.id) onProjectChange(project.id) }}
+                        onClick={() => { if (activeProject.id !== project.id) onProjectSelect(project.id) }}
                         className={
                             activeProject.id === project.id ?
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#9d7cd8]
                               bg-[#bb9af7] text-[#1f2335]
-                                font-mono font-semibold tracking-wide` 
+                                font-mono font-semibold tracking-wide
+                                transition-all duration-200
+                                cursor-default opacity-95
+                                shadow-[0_0_14px_rgba(187,154,247,0.55)]` 
                             :
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#2a2f47]

@@ -2,6 +2,7 @@ import { useState } from 'react';
 import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
 import { MAIN_STATES, ProjectActivity, ProjectData, type MainState } from './utils/registries';
+import { triggerScreenBob } from './utils/screenShake';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
@@ -16,9 +17,10 @@ function App() {
     const handleDisplayChange = (value: MainState) => {
         setState(value);
     };
-    const handleProjectSelect = (id: number) => {
-        handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
+    const handleProjectSelect = (id: number | null) => {
+        if(id !== null) handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
         setActiveProject({id});
+        triggerScreenBob(150);
     }
     return (
         <>

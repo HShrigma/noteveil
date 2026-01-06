@@ -7,7 +7,7 @@ export interface ProjectViewProps {
 export const ProjectView = ({ currentState, onScreenChange }: ProjectViewProps) => {
 
     const baseButtonClass = `
-    px-6 py-1 rounded-sm border-2 border-red-500 
+    px-6 py-1 rounded-sm border-2 border-red-500  fade-in
     font-mono font-semibold transition-all duration-150
   `;
 

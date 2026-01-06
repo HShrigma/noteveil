@@ -8,7 +8,7 @@ import Projects from "./projects/Projects";
 interface MainSreenProps {
     projects: ProjectData[];
     state: MainState
-    onProjectSelect: (id: number) => void;
+    onProjectSelect: (id: number | null) => void;
 };
 
 export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) => {
