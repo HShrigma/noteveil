@@ -7,11 +7,12 @@ import Projects from "./projects/Projects";
 
 interface MainSreenProps {
     state: MainState
+    onProjectSelect: (state: MainState, id: number) => void;
 };
 
-export const MainScreen = ({ state }: MainSreenProps) => {
-    const getProject = (state: MainState, id: Number) => {
-        console.log(`state: ${state}, id: ${id}`);
+export const MainScreen = ({ state, onProjectSelect }: MainSreenProps) => {
+    const getProject = (state: MainState, id: number) => {
+        onProjectSelect(state, id);
     };
 
     const getScreen = () => {

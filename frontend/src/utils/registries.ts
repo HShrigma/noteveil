@@ -4,10 +4,10 @@ export const MAIN_STATES = {
     PROJECTS_DISPLAY: 'projectsDisplay'
 } as const;
 export interface ProjectData{
-    id: Number;
+    id: number;
     title: string;
-    taskCount: Number;
-    noteCount: Number;
+    taskCount: number;
+    noteCount: number;
 };
 export const discardMsgNoteTitle = "Discard changes to this Note Title?";
 export const discardMsgNoteContent = "Discard changes to this Note Content?";

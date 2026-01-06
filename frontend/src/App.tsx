@@ -9,11 +9,13 @@ function App() {
   const handleDisplayChange = (value: MainState) => {
     setState(value);
   };
-
+  const handleProjectSelect = (state: MainState, id: number) => {
+    handleDisplayChange(state);
+  }
   return (
     <>
       <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
-      <MainScreen state={state} />
+      <MainScreen state={state} onProjectSelect={handleProjectSelect}/>
     </>
   );
 }
