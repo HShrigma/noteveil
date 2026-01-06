@@ -4,10 +4,11 @@ interface DefaultHeaderProps {
     projects: ProjectData[];
     activeProject: ProjectActivity;
     onScreenChange: (value: MainState) => void;
+    onProjectSelect: (id: number) => void;
     currentState: MainState; // new prop to track active screen
 }
 
-export const DefaultHeader = ({ projects, activeProject, onScreenChange, currentState }: DefaultHeaderProps) => {
+export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProjectSelect: onProjectChange,currentState }: DefaultHeaderProps) => {
   return (
     <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
       {/* Title */}
@@ -44,7 +45,7 @@ export const DefaultHeader = ({ projects, activeProject, onScreenChange, current
         {projects.map(project => (
           <button
             key={project.id}
-            onClick={() => onScreenChange(MAIN_STATES.TASK_DISPLAY)}
+            onClick={() => onProjectChange(project.id)}
             className={
                 activeProject.id === project.id ?
               ` 

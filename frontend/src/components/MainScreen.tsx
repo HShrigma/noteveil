@@ -8,14 +8,10 @@ import Projects from "./projects/Projects";
 interface MainSreenProps {
     projects: ProjectData[];
     state: MainState
-    onProjectSelect: (state: MainState, id: number) => void;
+    onProjectSelect: (id: number) => void;
 };
 
 export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) => {
-    const getProject = (state: MainState, id: number) => {
-        onProjectSelect(state, id);
-    };
-
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
@@ -25,7 +21,7 @@ export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) 
             case MAIN_STATES.NOTES_DISPLAY:
                 return <NoteProvider> <NotesHolder /> </NoteProvider>
             case MAIN_STATES.PROJECTS_DISPLAY:
-                return <Projects projects={projects} onProjectChange={getProject} />
+                return <Projects projects={projects} onProjectChange={onProjectSelect} />
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>

@@ -11,17 +11,18 @@ function App() {
         { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
     ];
     const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
-    const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: 1 });
+    const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
 
     const handleDisplayChange = (value: MainState) => {
         setState(value);
     };
-    const handleProjectSelect = (state: MainState, id: number) => {
-        handleDisplayChange(state);
+    const handleProjectSelect = (id: number) => {
+        handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
+        setActiveProject({id});
     }
     return (
         <>
-            <DefaultHeader activeProject={activeProject} onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
+            <DefaultHeader activeProject={activeProject} onProjectSelect={handleProjectSelect} onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
             <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} />
         </>
     );

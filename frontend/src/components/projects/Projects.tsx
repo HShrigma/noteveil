@@ -2,12 +2,12 @@ import { MAIN_STATES, MainState, ProjectData } from "../../utils/registries";
 
 export interface ProjectsProps {
     projects: ProjectData[];
-    onProjectChange: (state: MainState, id: number) => void;
+    onProjectChange: (id: number) => void;
 }
 
 export const Projects = ({ projects, onProjectChange }: ProjectsProps) => {
     const changeProject = (id: number) =>
-        onProjectChange(MAIN_STATES.TASK_DISPLAY, id);
+        onProjectChange(id);
 
     return (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
