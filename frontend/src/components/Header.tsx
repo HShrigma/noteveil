@@ -41,9 +41,17 @@ export const DefaultHeader = ({ projects, onScreenChange, currentState }: Defaul
             <h1 className="text-3xl md:text-4xl font-bold text-purple-400 tracking-wider">
                 Noteveil
             </h1>
+            <button
+                onClick={() => handleClick(MAIN_STATES.PROJECTS_DISPLAY)}
+                className={getButtonClass(currentState === MAIN_STATES.PROJECTS_DISPLAY)}
+            >
+            Projects   
+            </button>
+
             {projects.map((project) =>
                 <button
-                    className={getButtonClass(currentState === MAIN_STATES.PROJECTS_DISPLAY)}
+                    onClick={() => handleClick(MAIN_STATES.PROJECTS_DISPLAY)}
+                    className={getButtonClass(project.id === 1)}
                     key={project.id}>
                     {project.title}
                 </button>
