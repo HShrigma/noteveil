@@ -3,12 +3,11 @@ import { MAIN_STATES, MainState, ProjectData } from "../../utils/registries";
 
 export interface ProjectsProps
 { 
+    projects: ProjectData[];
     onProjectChange: (state: MainState, id: number) => void;
 }
 
-export const Projects = ({onProjectChange}:ProjectsProps) =>{
-    const sampleProjects = [{id: 1, title: "Sample", taskCount: 20, noteCount: 10}];
-    const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
+export const Projects = ({projects, onProjectChange}:ProjectsProps) =>{
     
     const changeProject = (id: number,) => onProjectChange(MAIN_STATES.TASK_DISPLAY, id);
 

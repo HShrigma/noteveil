@@ -1,16 +1,17 @@
 import NotesHolder from "./notes/standalone/NotesHolder";
 import TasksHolder from "./tasks/standalone/TasksHolder";
-import { MAIN_STATES, type MainState } from '../utils/registries'
+import { MAIN_STATES, ProjectData, type MainState } from '../utils/registries'
 import { TaskProvider } from "./tasks/TaskProvider";
 import { NoteProvider } from "./notes/NoteProvider";
 import Projects from "./projects/Projects";
 
 interface MainSreenProps {
+    projects: ProjectData[];
     state: MainState
     onProjectSelect: (state: MainState, id: number) => void;
 };
 
-export const MainScreen = ({ state, onProjectSelect }: MainSreenProps) => {
+export const MainScreen = ({projects, state, onProjectSelect }: MainSreenProps) => {
     const getProject = (state: MainState, id: number) => {
         onProjectSelect(state, id);
     };
@@ -24,7 +25,7 @@ export const MainScreen = ({ state, onProjectSelect }: MainSreenProps) => {
             case MAIN_STATES.NOTES_DISPLAY:
                 return <NoteProvider> <NotesHolder /> </NoteProvider>
             case MAIN_STATES.PROJECTS_DISPLAY:
-                return <Projects onProjectChange={getProject} />
+                return <Projects projects={projects} onProjectChange={getProject} />
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>
