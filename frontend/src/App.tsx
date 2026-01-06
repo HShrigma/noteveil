@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import DefaultHeader from './components/Header';
+import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
 import { MAIN_STATES, ProjectData, type MainState } from './utils/registries';
 
