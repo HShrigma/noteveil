@@ -10,6 +10,10 @@ interface MainSreenProps {
 };
 
 export const MainScreen = ({ state }: MainSreenProps) => {
+    const getProject = (state: MainState, id: Number) => {
+        console.log(`state: ${state}, id: ${id}`);
+    };
+
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
@@ -19,7 +23,7 @@ export const MainScreen = ({ state }: MainSreenProps) => {
             case MAIN_STATES.NOTES_DISPLAY:
                 return <NoteProvider> <NotesHolder /> </NoteProvider>
             case MAIN_STATES.PROJECTS_DISPLAY:
-                return <Projects/>
+                return <Projects onProjectChange={getProject} />
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>

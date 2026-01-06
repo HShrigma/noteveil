@@ -4,6 +4,7 @@ export const MAIN_STATES = {
     PROJECTS_DISPLAY: 'projectsDisplay'
 } as const;
 export interface ProjectData{
+    id: Number;
     title: string;
     taskCount: Number;
     noteCount: Number;
