@@ -39,12 +39,6 @@ export const Projects = ({ projects, onProjectChange }: ProjectsProps) => {
                             {project.noteCount}
                         </div>
                     </div>
-
-                    {project && (
-                        <div className="mt-3 text-xs text-[#9ece6a] italic">
-                            Active project
-                        </div>
-                    )}
                 </div>
             ))}
         </div>

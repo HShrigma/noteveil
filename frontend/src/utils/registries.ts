@@ -9,6 +9,7 @@ export interface ProjectData{
     taskCount: number;
     noteCount: number;
 };
+export type ProjectActivity = { id: number | null };
 export const discardMsgNoteTitle = "Discard changes to this Note Title?";
 export const discardMsgNoteContent = "Discard changes to this Note Content?";
 export const discardMsgTaskBottomBar = "Discard changes to this Task Adder?";

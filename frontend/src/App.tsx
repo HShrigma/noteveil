@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
-import { MAIN_STATES, ProjectData, type MainState } from './utils/registries';
+import { MAIN_STATES, ProjectActivity, ProjectData, type MainState } from './utils/registries';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
@@ -11,6 +11,7 @@ function App() {
         { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
     ];
     const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
+    const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: 1 });
 
     const handleDisplayChange = (value: MainState) => {
         setState(value);
@@ -20,7 +21,7 @@ function App() {
     }
     return (
         <>
-            <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
+            <DefaultHeader activeProject={activeProject} onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
             <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} />
         </>
     );
