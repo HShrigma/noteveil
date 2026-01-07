@@ -1,10 +1,10 @@
-import { discardMsgProjectTitle, ProjectActivity, ProjectData } from "../../utils/registries";
+import { discardMsgProjectTitle, ProjectData, ProjectElementActivity } from "../../utils/registries";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import EditableTitle from "../shared/title/EditableTitle";
 
 export interface ProjectProps {
     project: ProjectData;
-    activeProjectElement: ProjectActivity;
+    activeProjectElement: ProjectElementActivity;
     onTitleSubmit: (id: number, value: string) => void;
     onActivityRequest: (id: number, wantsActive: boolean, value: string) => void;
     onProjectChange: (id: number) => void;
@@ -31,7 +31,7 @@ export const Project = ({ project, onProjectChange, onProjectDelete, onActivityR
                 <div onClick={(e) => e.stopPropagation()}>
                     <EditableTitle
                         title={project.title}
-                        isActive={activeProjectElement.id === project.id}
+                        isActive={activeProjectElement !== null && activeProjectElement.type === "title" && activeProjectElement.id === project.id}
                         discardMsg={discardMsgProjectTitle}
                         onActivityRequest={(wantsActive, value) => onActivityRequest(project.id, wantsActive, value)}
                         onSubmit={(newValue) => onTitleSubmit(project.id, newValue)} />

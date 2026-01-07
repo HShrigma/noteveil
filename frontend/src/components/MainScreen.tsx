@@ -1,19 +1,19 @@
 import NotesHolder from "./notes/standalone/NotesHolder";
 import TasksHolder from "./tasks/standalone/TasksHolder";
-import { MAIN_STATES, ProjectActivity, ProjectData, type MainState } from '../utils/registries'
+import { MAIN_STATES, ProjectData, ProjectElementActivity, type MainState } from '../utils/registries'
 import { TaskProvider } from "./tasks/TaskProvider";
 import { NoteProvider } from "./notes/NoteProvider";
 import Projects from "./projects/Projects";
 
 interface MainSreenProps {
     projects: ProjectData[];
-    activeProjectElement: ProjectActivity;
+    activeProjectElement: ProjectElementActivity;
     state: MainState
     onProjectSelect: (id: number | null) => void;
     onProjectAdded: (value: string) => void;
     onProjectDelete: (id: number) => void;
     onProjectTitleSubmit: (id: number, value: string) => void;
-    onProjectActivityElementRequest: (id: number, wantsActive: boolean, value: string) => void;
+    onProjectActivityElementRequest: (req: ProjectElementActivity) => void;
 };
 
 export const MainScreen = ({ projects, activeProjectElement, state, onProjectSelect, onProjectDelete, onProjectTitleSubmit: onTitleSubmit, onProjectActivityElementRequest, onProjectAdded }: MainSreenProps) => {

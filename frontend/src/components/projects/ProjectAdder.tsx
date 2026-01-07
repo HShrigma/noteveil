@@ -8,14 +8,14 @@ import { discardMsgProjectAdder } from "../../utils/registries";
 export interface ProjectAdderProps {
     isActive: boolean;
     onProjectAdded?: (value: string) => void;
-    onActivityRequest: (id: number, wantsActive: boolean, value: string) => void;
+    onActivityRequest: (wantsActive: boolean, value: string) => void;
 }
 export const ProjectAdder = ({ isActive, onProjectAdded , onActivityRequest}: ProjectAdderProps) => {
     const [value, setValue] = useState("");
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
-    const clearActivity = () => { onActivityRequest(-1, false, "") };
-    const activateAdder = (value = "") => { onActivityRequest(-1, true, value) };
+    const clearActivity = () => { onActivityRequest(false, "") };
+    const activateAdder = (value = "") => { onActivityRequest(true, value) };
 
     useEffect(() => {
         if (isActive) triggerScreenBob(150);

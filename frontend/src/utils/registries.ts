@@ -10,6 +10,15 @@ export interface ProjectData{
     noteCount: number;
 };
 export type ProjectActivity = { id: number | null };
+
+export type ProjectElementActivity = {
+    type: "title" ,
+    id: number ,
+    value: string 
+} | {
+    type: "adder" ,
+    value: string 
+} |null;
 const getDiscardMsg = (toWhat: string) => {return `Discard changes to this ${toWhat}?`};
 export const discardMsgNoteTitle = getDiscardMsg("Note Title");
 export const discardMsgNoteContent = getDiscardMsg("Note Content");
