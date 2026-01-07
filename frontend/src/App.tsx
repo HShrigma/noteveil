@@ -3,6 +3,7 @@ import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
 import { discardMsgProjectTitle, MAIN_STATES, ProjectActivity, ProjectData, type MainState } from './utils/registries';
 import { triggerScreenBob } from './utils/screenShake';
+import { createTempId } from './utils/mathUtils';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
@@ -40,6 +41,10 @@ function App() {
         setActiveProjectElement({id:null});
     };
     const handleActivityRequest = (id: number, wantsActive: boolean, value: string) => { 
+        if(id === -1){
+            wantsActive ? setActiveProjectElement({id:-1}) : setActiveProjectElement({id:null});
+            return;
+        }
         const index = [...projects].findIndex(proj => proj.id === id);
         if(index === -1) return;
         if(!wantsActive) {
@@ -48,6 +53,18 @@ function App() {
             return;
         }
         setActiveProjectElement({id});
+    };
+
+    const handleProjectAdded = (value: string) => {
+        const newId = createTempId();
+        const newProject:ProjectData = {
+            id: newId,
+            title: value,
+            taskCount: 0,
+            noteCount: 0
+        }
+
+        setProjects(prev => [...prev,newProject]);
     };
     return (
         <>
@@ -59,6 +76,7 @@ function App() {
                 projects={projects} />
             <MainScreen
                 state={state}
+                onProjectAdded={handleProjectAdded}
                 onProjectSelect={handleProjectSelect}
                 projects={projects}
                 activeProjectElement={activeProjectElement}

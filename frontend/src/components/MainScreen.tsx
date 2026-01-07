@@ -10,12 +10,13 @@ interface MainSreenProps {
     activeProjectElement: ProjectActivity;
     state: MainState
     onProjectSelect: (id: number | null) => void;
+    onProjectAdded: (value: string) => void;
     onProjectDelete: (id: number) => void;
     onProjectTitleSubmit: (id: number, value: string) => void;
     onProjectActivityElementRequest: (id: number, wantsActive: boolean, value: string) => void;
 };
 
-export const MainScreen = ({ projects, state, onProjectSelect, onProjectDelete, onProjectTitleSubmit: onTitleSubmit, onProjectActivityElementRequest: onActivityRequest , activeProjectElement}: MainSreenProps) => {
+export const MainScreen = ({ projects, activeProjectElement, state, onProjectSelect, onProjectDelete, onProjectTitleSubmit: onTitleSubmit, onProjectActivityElementRequest, onProjectAdded }: MainSreenProps) => {
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
@@ -28,10 +29,11 @@ export const MainScreen = ({ projects, state, onProjectSelect, onProjectDelete, 
                 return(
                  <Projects 
                     projects={projects}
+                    onProjectAdded={onProjectAdded}
                     activeProjectElement={activeProjectElement}
                     onProjectChange={onProjectSelect} 
                     onProjectDelete={onProjectDelete} 
-                    onActivityRequest={onActivityRequest}
+                    onActivityRequest={onProjectActivityElementRequest}
                     onTitleSubmit={onTitleSubmit}
                     />);
             default:
