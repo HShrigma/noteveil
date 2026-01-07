@@ -6,13 +6,13 @@ import { discardMsgNoteTitle, discardMsgTaskTitle } from "../../../utils/registr
 
 export interface ActiveTitleProps {
     title: string;
-    isNote?: boolean;
+    discardMsg?: string;
     onDiscard: () => void;
     onChange?: (currentValue: string) => void;
     onSubmit: (value: string) => void;
 }
 
-export const ActiveTitle = ({ title, isNote, onDiscard, onSubmit, onChange }: ActiveTitleProps) => {
+export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }: ActiveTitleProps) => {
     const inputRef = useRef<HTMLInputElement>(null);
     const [value, setValue] = useState(title);
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
@@ -33,7 +33,7 @@ export const ActiveTitle = ({ title, isNote, onDiscard, onSubmit, onChange }: Ac
         triggerScreenBob(200);
     };
     const handleDiscard = () => {
-        if (value.trim() !== title.trim() && !confirm(isNote ? discardMsgNoteTitle : discardMsgTaskTitle)) return;
+        if (value.trim() !== title.trim() && !confirm(discardMsg ?? discardMsgNoteTitle)) return;
         triggerScreenShake(110);
         setValue(title);
         onDiscard?.();

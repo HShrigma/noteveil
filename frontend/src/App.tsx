@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
-import { MAIN_STATES, ProjectActivity, ProjectData, type MainState } from './utils/registries';
+import { discardMsgProjectTitle, MAIN_STATES, ProjectActivity, ProjectData, type MainState } from './utils/registries';
 import { triggerScreenBob } from './utils/screenShake';
 
 function App() {
@@ -13,22 +13,58 @@ function App() {
     ];
     const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
     const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
+    const [activeProjectElement, setActiveProjectElement] = useState<ProjectActivity>({ id: null });
 
     const handleDisplayChange = (value: MainState) => {
         setState(value);
     };
     const handleProjectSelect = (id: number | null) => {
-        if(id !== null) handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
-        setActiveProject({id});
+        if(activeProjectElement.id !== null && !window.confirm(discardMsgProjectTitle)) return;
+        if (id !== null){
+            handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
+            setActiveProjectElement({id:null});
+        } 
+        setActiveProject({ id });
         triggerScreenBob(150);
     }
-    const deleteProject = (id:number) => {
+    const deleteProject = (id: number) => {
         setProjects(prev => prev.filter(project => project.id !== id));
     }
+    const handleTitleSubmit = (id: number, value: string) => 
+    {
+        const newProject = [...projects].find(proj => proj.id === id);
+        if(!newProject) return;
+
+        newProject.title = value;
+        setProjects(prev => prev.map( project => project.id === id ? newProject : project));
+        setActiveProjectElement({id:null});
+    };
+    const handleActivityRequest = (id: number, wantsActive: boolean, value: string) => { 
+        const index = [...projects].findIndex(proj => proj.id === id);
+        if(index === -1) return;
+        if(!wantsActive) {
+            console.log("Doesn't want active!");
+            setActiveProjectElement({id:null});
+            return;
+        }
+        setActiveProjectElement({id});
+    };
     return (
         <>
-            <DefaultHeader activeProject={activeProject} onProjectSelect={handleProjectSelect} onScreenChange={handleDisplayChange} currentState={state} projects={projects} />
-            <MainScreen state={state} onProjectSelect={handleProjectSelect} projects={projects} onProjectDelete={deleteProject}/>
+            <DefaultHeader
+                activeProject={activeProject}
+                onProjectSelect={handleProjectSelect}
+                onScreenChange={handleDisplayChange}
+                currentState={state}
+                projects={projects} />
+            <MainScreen
+                state={state}
+                onProjectSelect={handleProjectSelect}
+                projects={projects}
+                activeProjectElement={activeProjectElement}
+                onProjectDelete={deleteProject}
+                onProjectActivityElementRequest={handleActivityRequest}
+                onProjectTitleSubmit={handleTitleSubmit} />
         </>
     );
 }

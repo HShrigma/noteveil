@@ -4,19 +4,19 @@ import ActiveTitle from "./ActiveTitle";
 interface EditableTitleProps {
     title: string;
     isActive: boolean;
-    isNote?: boolean;
+    discardMsg?: string;
     onActivityRequest: (wantsActive: boolean, value:string) => void;
     onSubmit: (newValue: string) => void;
 }
 
-export const EditableTitle = ({ title, isActive, isNote, onActivityRequest, onSubmit }: EditableTitleProps) => {
+export const EditableTitle = ({ title, isActive, discardMsg, onActivityRequest, onSubmit }: EditableTitleProps) => {
     const handleDiscard = () => onActivityRequest(false, title);
     const handleSubmit = (newValue: string) => onSubmit(newValue);
 
     return (
         isActive ? <ActiveTitle 
             title={title} 
-            isNote={isNote ?? true}
+            discardMsg={discardMsg}
             onDiscard={handleDiscard} 
             onChange={(value) => onActivityRequest(true, value)}
             onSubmit={handleSubmit}

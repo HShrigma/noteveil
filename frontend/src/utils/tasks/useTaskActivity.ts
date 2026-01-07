@@ -86,7 +86,6 @@ export const useTaskActivity = (tasks: TaskListData[]) => {
         const shouldCancel = tryCancelDiscard(getPredicateForActiveTask(), getDiscardMsgForActiveTask());
 
         if (shouldCancel) return;
-        console.log("PASSED CHECKS!");
         setActiveTask(req);
     };
 

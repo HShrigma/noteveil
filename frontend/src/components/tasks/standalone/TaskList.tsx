@@ -5,6 +5,7 @@ import TaskBottomBar from "./compositional/TaskBottomBar";
 import { TaskListData } from "../../../utils/tasks/taskTypes";
 import { useTaskManagerContext } from "../../../utils/tasks/taskManagerContext";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
+import { discardMsgTaskTitle } from "../../../utils/registries";
 
 interface TaskListProps {
     goesToLabel: string;
@@ -24,7 +25,7 @@ export const TaskList = ({
         <>
             <EditableTitle
                 title={data.title}
-                isNote={false}
+                discardMsg={discardMsgTaskTitle}
                 isActive={ctx.active?.type === "title" && ctx.active.listId === data.id}
                 onActivityRequest={(wantsActive, value) => wantsActive ? ctx.activateTitle(data.id, value) : ctx.clearActivity()}
                 onSubmit={(value) => onTitleSubmitted?.(data.id,value)}

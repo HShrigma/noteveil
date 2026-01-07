@@ -1,13 +1,17 @@
-import { ProjectData } from "../../utils/registries";
+import { discardMsgProjectTitle, ProjectActivity, ProjectData } from "../../utils/registries";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
+import EditableTitle from "../shared/title/EditableTitle";
 
 export interface ProjectProps {
     project: ProjectData;
+    activeProjectElement: ProjectActivity;
+    onTitleSubmit: (id: number, value: string) => void;
+    onActivityRequest: (id: number, wantsActive: boolean, value: string) => void;
     onProjectChange: (id: number) => void;
     onProjectDelete: (id: number) => void;
 }
 
-export const Project = ({ project, onProjectChange, onProjectDelete }: ProjectProps) => {
+export const Project = ({ project, onProjectChange, onProjectDelete, onActivityRequest, onTitleSubmit, activeProjectElement }: ProjectProps) => {
     return (
         <div
             key={project.id}
@@ -24,10 +28,14 @@ export const Project = ({ project, onProjectChange, onProjectDelete }: ProjectPr
                 active:translate-y-0`}>
             {/* Top row */}
             <div className="flex items-center justify-between px-5 py-4">
-                <h2 className="text-lg font-bold tracking-wide text-[#c0caf5]">
-                    {project.title}
-                </h2>
-
+                <div onClick={(e) => e.stopPropagation()}>
+                    <EditableTitle
+                        title={project.title}
+                        isActive={activeProjectElement.id === project.id}
+                        discardMsg={discardMsgProjectTitle}
+                        onActivityRequest={(wantsActive, value) => onActivityRequest(project.id, wantsActive, value)}
+                        onSubmit={(newValue) => onTitleSubmit(project.id, newValue)} />
+                </div>
                 <div className="flex gap-3 text-sm">
                     <span className="text-[#7aa2f7]">
                         Tasks:{project.taskCount}
@@ -46,7 +54,7 @@ export const Project = ({ project, onProjectChange, onProjectDelete }: ProjectPr
                 <div onClick={(e) => e.stopPropagation()}>
                     <ConfirmDeleteButton
                         label="Delete"
-                        onConfirm={() => onProjectDelete(project.id)}/>
+                        onConfirm={() => onProjectDelete(project.id)} />
                 </div>
 
                 <span className={`
