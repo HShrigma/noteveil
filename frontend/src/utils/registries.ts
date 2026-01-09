@@ -3,22 +3,7 @@ export const MAIN_STATES = {
     NOTES_DISPLAY: 'notesDisplay',
     PROJECTS_DISPLAY: 'projectsDisplay'
 } as const;
-export interface ProjectData{
-    id: number;
-    title: string;
-    taskCount: number;
-    noteCount: number;
-};
-export type ProjectActivity = { id: number | null };
 
-export type ProjectElementActivity = {
-    type: "title" ,
-    id: number ,
-    value: string 
-} | {
-    type: "adder" ,
-    value: string 
-} |null;
 const getDiscardMsg = (toWhat: string) => {return `Discard changes to this ${toWhat}?`};
 export const discardMsgNoteTitle = getDiscardMsg("Note Title");
 export const discardMsgNoteContent = getDiscardMsg("Note Content");

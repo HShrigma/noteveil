@@ -1,9 +1,10 @@
 import NotesHolder from "./notes/standalone/NotesHolder";
 import TasksHolder from "./tasks/standalone/TasksHolder";
-import { MAIN_STATES, ProjectData, ProjectElementActivity, type MainState } from '../utils/registries'
+import { MAIN_STATES, type MainState } from '../utils/registries'
 import { TaskProvider } from "./tasks/TaskProvider";
 import { NoteProvider } from "./notes/NoteProvider";
 import Projects from "./projects/Projects";
+import { ProjectData, ProjectElementActivity } from "../utils/projects/projectTypes";
 
 interface MainSreenProps {
     projects: ProjectData[];

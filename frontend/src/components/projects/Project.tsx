@@ -1,4 +1,5 @@
-import { discardMsgProjectTitle, ProjectData, ProjectElementActivity } from "../../utils/registries";
+import { ProjectData, ProjectElementActivity } from "../../utils/projects/projectTypes";
+import { discardMsgProjectTitle  } from "../../utils/registries";
 import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
 import EditableTitle from "../shared/title/EditableTitle";
 

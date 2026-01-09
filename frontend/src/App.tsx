@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
-import { discardMsgProjectAdder, discardMsgProjectTitle, MAIN_STATES, ProjectActivity, ProjectData, ProjectElementActivity, type MainState } from './utils/registries';
+import { discardMsgProjectAdder, discardMsgProjectTitle, MAIN_STATES, type MainState } from './utils/registries';
 import { triggerScreenBob } from './utils/screenShake';
 import { createTempId } from './utils/mathUtils';
 import { tryCancelDiscard } from './utils/activityHelper';
+import { ProjectActivity, ProjectData, ProjectElementActivity } from './utils/projects/projectTypes';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);

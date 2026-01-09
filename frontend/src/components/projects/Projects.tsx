@@ -1,4 +1,4 @@
-import { ProjectData, ProjectElementActivity } from "../../utils/registries";
+import { ProjectData, ProjectElementActivity } from "../../utils/projects/projectTypes";
 import Project from "./Project";
 import ProjectAdder from "./ProjectAdder";
 
