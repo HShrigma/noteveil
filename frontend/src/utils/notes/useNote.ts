@@ -4,10 +4,10 @@ import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } fro
 import { createTempId } from "../mathUtils";
 import { getIndex } from "./noteHelpers";
 
-export const useNotes = () => {
+export const useNotes = ( activeProjectId: number | null) => {
     const [notes, setNotes] = useState<NoteData[]>([]);
 
-    useEffect(() => { fetchNotes().then(fetched => { setNotes(fetched); }); }, []);
+    useEffect(() => { if(activeProjectId !== null) fetchNotes(activeProjectId).then(fetched => { setNotes(fetched); }); }, []);
 
     const updateTitle = async (id: number, title: string) => {
         setNotes(prev => {
@@ -30,6 +30,7 @@ export const useNotes = () => {
     };
 
     const createNote = async () => {
+        if(activeProjectId === null) return;
         const tempId = createTempId();
         const note: NoteData = {
             id: tempId,
@@ -38,7 +39,7 @@ export const useNotes = () => {
         };
 
         setNotes(prev => [...prev, note]);
-        const res = await addNote();
+        const res = await addNote(activeProjectId);
         const realId = Number(res.body.id);
 
         if (!res.success) {

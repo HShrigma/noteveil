@@ -3,10 +3,10 @@ import { TaskListData, UseTaskResult } from "./taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
 import { getCreatedLists, getCreatedTaskList, getGoesToList, getIndex, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
 
-export const useTask = (): UseTaskResult => {
+export const useTask = (activeProjectId: number | null): UseTaskResult => {
     const [tasks, setTasks] = useState<TaskListData[]>([]);
 
-    useEffect(() => { fetchTasks().then((data) => setTasks(data)) }, []);
+    useEffect(() => { if(activeProjectId != null) fetchTasks(activeProjectId).then((data) => setTasks(data)) }, []);
 
     const setNewList = (list: TaskListData) => setTasks((prev) => prev.map((t) => (t.id === list.id ? list : t)));
 
@@ -60,10 +60,11 @@ export const useTask = (): UseTaskResult => {
 
 
     const createList = async (title: string) => {
+        if(activeProjectId === null) return;
         const { lists, id: tempId } = getCreatedLists(title, tasks);
         setTasks(lists);
 
-        const res = await addList(title);
+        const res = await addList(activeProjectId, title);
 
         if (!res.success) {
             setTasks(prev => getRemovedLists(tempId, prev));

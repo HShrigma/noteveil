@@ -13,6 +13,7 @@ export type NotesActivity =
 export interface useNoteManagerResult {
     notes: NoteData[];
     activeNote: NotesActivity;
+    activeProjectId: number | null;
     isAdderDisabled: () => boolean;
     onAddNote: () => Promise<void>;
     onTitleSubmit: (id: number, title: string) => Promise<void>;

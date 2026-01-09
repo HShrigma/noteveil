@@ -1,13 +1,13 @@
 const BASE_URL = "http://localhost:4000/api/notes";
 
 // Get notes
-export const fetchNotes = async () => {
+export const fetchNotes = async (activeProjectId: number) => {
   const res = await fetch(BASE_URL);
   return res.json();
 };
 
 // Delete Note
-export async function deleteNote(id:number) {
+export async function deleteNote(id: number) {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method:"DELETE"
   });
@@ -17,7 +17,7 @@ export async function deleteNote(id:number) {
 }
 
 // Add Note
-export async function addNote() {
+export async function addNote(activeProjectId: number) {
   const res = await fetch(`${BASE_URL}`, {
     method:"POST",
     headers: {"Content-Type": "application/json"}

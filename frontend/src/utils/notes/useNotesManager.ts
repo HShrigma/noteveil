@@ -2,8 +2,8 @@ import { NoteData, NotesActivity } from "./noteTypes";
 import { useNotes } from "./useNote";
 import { useNoteActivity } from "./useNoteActivity";
 
-export const useNotesManager = () => {
-    const notesHook = useNotes();
+export const useNotesManager = ( activeProjectId: number | null) => {
+    const notesHook = useNotes(activeProjectId);
     const activityHook = useNoteActivity();
 
     const { notes, createNote, updateTitle, updateContent, removeNote } = notesHook;
@@ -40,6 +40,7 @@ export const useNotesManager = () => {
     const requestTitleActivity = (wantsActive: boolean, value: string, note: NoteData) => requestActivity(wantsActive, "title", value, note); 
     return {
         notes,
+        activeProjectId,
         activeNote,
         isAdderDisabled,
         onAddNote,

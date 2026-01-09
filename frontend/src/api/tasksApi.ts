@@ -1,6 +1,7 @@
 const BASE_URL = "http://localhost:4000/api/tasks";
 
-export const fetchTasks = async () => {
+export const fetchTasks = async (activeProjectId: number) => {
+    console.log(`Active Project ID: ${activeProjectId}`);
     const res = await fetch(BASE_URL);
     return res.json();
 };
@@ -26,7 +27,8 @@ export async function deleteTask(taskId: number) {
 }
 
 
-export async function addList(title: string) {
+export async function addList( activeProjectId: number, title: string) {
+    console.log(`Active Project ID: ${activeProjectId}`);
     const res = await fetch(`${BASE_URL}/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },

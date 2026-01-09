@@ -2,13 +2,14 @@ import { UseTaskManagerResult as UseTaskManagerResult, UseTaskResult } from "./t
 import { useTask } from "./useTask";
 import { useTaskActivity } from "./useTaskActivity";
 
-export const useTaskManager = (): UseTaskManagerResult => {
-  const task:UseTaskResult = useTask(); 
+export const useTaskManager = (activeProjectId: number | null): UseTaskManagerResult => {
+  const task:UseTaskResult = useTask(activeProjectId); 
   const activity = useTaskActivity(task.tasks);
 
   return {
     // state
     tasks: task.tasks,
+    activeProjectId: task.activeProjectId,
     active: activity.activeTask,
 
     // activity

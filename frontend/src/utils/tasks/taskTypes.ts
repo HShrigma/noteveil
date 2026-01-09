@@ -21,6 +21,7 @@ export type TaskActivity =
     
 export interface UseTaskResult {
     tasks: TaskListData[];
+    activeProjectId: number | null;
 
     updateTaskDone: (
         listId: number,
@@ -66,6 +67,7 @@ export interface UseTaskManagerResult {
   // state
   tasks: TaskListData[];
   active: TaskActivity;
+  activeProjectId: number | null;
 
   // activity
   activateAdder(value?:string): void;
