@@ -14,3 +14,15 @@ export type ProjectElementActivity = {
     type: "adder" ,
     value: string 
 } |null;
+
+export type ProjectsContextResult = {
+    projects: ProjectData[];
+    activeProject: ProjectActivity;
+    activeProjectElement: ProjectElementActivity;
+
+    selectProject: (id: number | null) => void;
+    addProject: (title: string) => void;
+    deleteProject: (id: number) => void;
+    submitProjectTitle: (id: number, value: string) => void;
+    requestProjectElementActivity: (req: ProjectElementActivity) => void;
+};

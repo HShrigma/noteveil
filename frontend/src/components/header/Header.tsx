@@ -1,18 +1,17 @@
-import { MAIN_STATES, ProjectActivity, ProjectData, type MainState } from '../../utils/registries';
+import { useProjectsContext } from '../../utils/projects/projectsContext';
+import { MAIN_STATES,  type MainState } from '../../utils/registries';
 import ProjectView from './ProjectView';
 interface DefaultHeaderProps {
-    projects: ProjectData[];
-    activeProject: ProjectActivity;
     onScreenChange: (value: MainState) => void;
-    onProjectSelect: (id: number | null) => void;
-    currentState: MainState; // new prop to track active screen
+    currentState: MainState; 
 }
 
-export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProjectSelect, currentState }: DefaultHeaderProps) => {
+export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderProps) => {
+    const ctx = useProjectsContext();
     const goToProjectsScreen = () => {
         if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
             onScreenChange(MAIN_STATES.PROJECTS_DISPLAY);
-            onProjectSelect(null);
+            ctx.selectProject(null);
         }
     }
     return (
@@ -50,12 +49,12 @@ export const DefaultHeader = ({ projects, activeProject, onScreenChange, onProje
                 <div className="h-6 w-px bg-[#2a2f47]" />
 
                 {/* Project buttons */}
-                {projects.map(project => (
+                {ctx.projects.map(project => (
                     <button
                         key={project.id}
-                        onClick={() => { if (activeProject.id !== project.id) onProjectSelect(project.id) }}
+                        onClick={() => { if (ctx.activeProject.id !== project.id) ctx.selectProject(project.id) }}
                         className={
-                            activeProject.id === project.id ?
+                            ctx.activeProject.id === project.id ?
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#9d7cd8]
                               bg-[#bb9af7] text-[#1f2335]

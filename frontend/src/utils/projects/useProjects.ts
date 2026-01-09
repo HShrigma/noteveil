@@ -1,9 +1,5 @@
 import { useState } from "react";
-import {
-    ProjectActivity,
-    ProjectData,
-    ProjectElementActivity,
-} from "./projectTypes"
+import { ProjectActivity, ProjectData, ProjectElementActivity } from "./projectTypes"
 import { triggerScreenBob } from "../screenShake";
 import { createTempId } from "../mathUtils";
 import { tryCancelDiscard } from "../activityHelper";
@@ -21,16 +17,7 @@ export function useProjects(onProjectOpened?: () => void) {
         useState<ProjectElementActivity>(null);
 
     const selectProject = (id: number | null) => {
-        if (
-            tryCancelDiscard(
-                activeProjectElement !== null,
-                activeProjectElement?.type === "title"
-                    ? discardMsgProjectTitle
-                    : discardMsgProjectAdder
-            )
-        )
-            return;
-
+        if (tryCancelDiscard( activeProjectElement !== null, activeProjectElement?.type === "title" ? discardMsgProjectTitle : discardMsgProjectAdder)) return;
         if (id !== null) {
             onProjectOpened?.();
             setActiveProjectElement(null);
@@ -73,25 +60,12 @@ export function useProjects(onProjectOpened?: () => void) {
 
         if (req.type !== activeProjectElement.type) {
             if (activeProjectElement.type === "adder") {
-                if (
-                    tryCancelDiscard(
-                        activeProjectElement.value !== "",
-                        discardMsgProjectAdder
-                    )
-                )
-                    return;
+                if (tryCancelDiscard(activeProjectElement.value !== "", discardMsgProjectAdder))return;
             }
 
             if (activeProjectElement.type === "title") {
                 const proj = projects.find(p => p.id === activeProjectElement.id);
-                if (
-                    proj &&
-                    tryCancelDiscard(
-                        activeProjectElement.value !== proj.title,
-                        discardMsgProjectTitle
-                    )
-                )
-                    return;
+                if (proj && tryCancelDiscard(activeProjectElement.value !== proj.title, discardMsgProjectTitle)) return;
             }
         }
 

@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
-import ErrorHint from "../shared/ErrorHint";
+import ErrorHint from "../../../shared/ErrorHint";
 import { Check, Plus, X } from "lucide-react";
-import { triggerScreenBob, triggerScreenShake } from "../../utils/screenShake";
-import { tryCancelDiscard } from "../../utils/activityHelper";
-import { discardMsgProjectAdder } from "../../utils/registries";
+import { triggerScreenBob, triggerScreenShake } from "../../../../utils/screenShake";
+import { tryCancelDiscard } from "../../../../utils/activityHelper";
+import { discardMsgProjectAdder } from "../../../../utils/registries";
 
 export interface ProjectAdderProps {
     isActive: boolean;

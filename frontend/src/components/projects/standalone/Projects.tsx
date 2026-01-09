@@ -1,6 +1,6 @@
-import { ProjectData, ProjectElementActivity } from "../../utils/projects/projectTypes";
-import Project from "./Project";
-import ProjectAdder from "./ProjectAdder";
+import { ProjectData, ProjectElementActivity } from "../../../utils/projects/projectTypes";
+import Project from "./compositional/Project";
+import ProjectAdder from "./compositional/ProjectAdder";
 
 export interface ProjectsProps {
     projects: ProjectData[];

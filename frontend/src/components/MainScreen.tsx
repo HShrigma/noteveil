@@ -3,21 +3,15 @@ import TasksHolder from "./tasks/standalone/TasksHolder";
 import { MAIN_STATES, type MainState } from '../utils/registries'
 import { TaskProvider } from "./tasks/TaskProvider";
 import { NoteProvider } from "./notes/NoteProvider";
-import Projects from "./projects/Projects";
-import { ProjectData, ProjectElementActivity } from "../utils/projects/projectTypes";
+import Projects from "./projects/standalone/Projects";
+import { useProjectsContext } from "../utils/projects/projectsContext";
 
 interface MainSreenProps {
-    projects: ProjectData[];
-    activeProjectElement: ProjectElementActivity;
     state: MainState
-    onProjectSelect: (id: number | null) => void;
-    onProjectAdded: (value: string) => void;
-    onProjectDelete: (id: number) => void;
-    onProjectTitleSubmit: (id: number, value: string) => void;
-    onProjectActivityElementRequest: (req: ProjectElementActivity) => void;
 };
 
-export const MainScreen = ({ projects, activeProjectElement, state, onProjectSelect, onProjectDelete, onProjectTitleSubmit: onTitleSubmit, onProjectActivityElementRequest, onProjectAdded }: MainSreenProps) => {
+export const MainScreen = ({ state, }: MainSreenProps) => {
+    const ctx = useProjectsContext();
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
@@ -29,13 +23,13 @@ export const MainScreen = ({ projects, activeProjectElement, state, onProjectSel
             case MAIN_STATES.PROJECTS_DISPLAY:
                 return(
                  <Projects 
-                    projects={projects}
-                    onProjectAdded={onProjectAdded}
-                    activeProjectElement={activeProjectElement}
-                    onProjectChange={onProjectSelect} 
-                    onProjectDelete={onProjectDelete} 
-                    onActivityRequest={onProjectActivityElementRequest}
-                    onTitleSubmit={onTitleSubmit}
+                    projects={ctx.projects}
+                    onProjectAdded={ctx.addProject}
+                    activeProjectElement={ctx.activeProjectElement}
+                    onProjectChange={ctx.selectProject} 
+                    onProjectDelete={ctx.deleteProject} 
+                    onActivityRequest={ctx.requestProjectElementActivity}
+                    onTitleSubmit={ctx.submitProjectTitle}
                     />);
             default:
                 console.error(`Unknown State${state}`);

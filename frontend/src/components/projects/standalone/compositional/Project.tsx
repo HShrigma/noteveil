@@ -1,7 +1,7 @@
-import { ProjectData, ProjectElementActivity } from "../../utils/projects/projectTypes";
-import { discardMsgProjectTitle  } from "../../utils/registries";
-import ConfirmDeleteButton from "../shared/ConfirmDeleteButton";
-import EditableTitle from "../shared/title/EditableTitle";
+import { ProjectData, ProjectElementActivity } from "../../../../utils/projects/projectTypes";
+import { discardMsgProjectTitle  } from "../../../../utils/registries";
+import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
+import EditableTitle from "../../../shared/title/EditableTitle";
 
 export interface ProjectProps {
     project: ProjectData;
