@@ -4,11 +4,13 @@ import { error } from "console";
 const TASKS: string = "tasks";
 const NOTES: string = "notes";
 const TASK_LISTS: string = "task_lists";
+const PROJECTS: string = "projects";
 
 export const tableType = {
     notes: NOTES,
     tasks: TASKS,
     taskLists: TASK_LISTS,
+    projects: PROJECTS,
 }
 
 export class dbSchema {
@@ -30,9 +32,33 @@ export class dbSchema {
                 return dbSchema.createNotes();
             case TASK_LISTS:
                 return dbSchema.createTaskLists();
+            case PROJECTS:
+                return dbSchema.createProjects();
             default:
                 throw error(`No such table named: ${table}`);
         }
+    }
+    public static dropTables = (params: string[], db: Database.Database) => {
+        params.forEach(param => {
+        try {
+            db.exec(dbSchema.dropTable(param));
+        } catch (error) {
+            console.error(`Error creating table ${param}:`, error);
+            throw error; // Re-throw to stop initialization
+        }
+        });
+ 
+    }
+    static dropTable(tableName: string) {
+        return `DROP TABLE IF EXISTS ${tableName}`;
+    }
+
+    static createProjects() {
+        return `CREATE TABLE IF NOT EXISTS projects (
+        id           INTEGER PRIMARY KEY AUTOINCREMENT,
+        title        TEXT NOT NULL,
+        created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`;
     }
 
     static createTasks(){
@@ -51,7 +77,9 @@ export class dbSchema {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         content TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        project_id INTEGER,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
       )
     `;
 
@@ -61,12 +89,12 @@ export class dbSchema {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         title TEXT NOT NULL,
         next_id INTEGER,
+        project_id INTEGER,
         created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-        FOREIGN KEY (next_id) REFERENCES task_lists(id) ON DELETE SET NULL
+        FOREIGN KEY (next_id) REFERENCES task_lists(id) ON DELETE SET NULL,
+        FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
       )
     `;
 
     };
 }
-
-

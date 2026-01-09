@@ -5,13 +5,8 @@ import { createTempId } from "../mathUtils";
 import { tryCancelDiscard } from "../activityHelper";
 import { discardMsgProjectAdder, discardMsgProjectTitle } from "../registries";
 
-const sampleProjects: ProjectData[] = [
-    { id: 1, title: "Sample", taskCount: 20, noteCount: 10 },
-    { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
-];
-
 export function useProjects(onProjectOpened?: (id:number) => void) {
-    const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
+    const [projects, setProjects] = useState<ProjectData[]>([]);
     const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
     const [activeProjectElement, setActiveProjectElement] =
         useState<ProjectElementActivity>(null);
