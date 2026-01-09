@@ -11,7 +11,6 @@ function App() {
     };
 
     const handleProjectOpened = (id: number) => {
-        console.log("PROJECT OPENED");
         handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
     }
 

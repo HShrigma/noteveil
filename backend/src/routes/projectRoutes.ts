@@ -6,9 +6,22 @@ import { runMiddleware } from "../utils/middleware";
 const router = Router();
 // ------------------ OWN ---------------
 
+// Get Projects
+router.get("/", runMiddleware({}), (_req, res) => { });
+
+// Delete Project
+router.delete("/:id", runMiddleware({}), (_req, res) => { });
+
+// Add Project
+router.post("/", runMiddleware({}), (_req, res) => { });
+
+// Update Project title
+router.patch("/:id", runMiddleware({}), (_req, res) => { });
+
 // ------------------ SHARED ---------------
+
 // Get notes
-router.get("/:id/notes", (_req, res) => NoteController.getNotes(_req, res));
+router.get("/:id/notes", runMiddleware({}), (_req, res) => NoteController.getNotes(_req, res));
 
 // Get tasks
 router.get("/:id/tasks", runMiddleware({}), (_req, res) => TaskController.getTasks(_req, res));
