@@ -7,30 +7,26 @@ import Projects from "./projects/standalone/Projects";
 import { useProjectsContext } from "../utils/projects/projectsContext";
 
 interface MainSreenProps {
-    state: MainState
+    state: MainState;
+    activeProjectId: number;
 };
 
-export const MainScreen = ({ state, }: MainSreenProps) => {
-    const ctx = useProjectsContext();
+export const MainScreen = ({ state, activeProjectId }: MainSreenProps) => {
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
-                return <TaskProvider>
+                return (
+                <TaskProvider>
                     <TasksHolder />
-                </TaskProvider>
+                </TaskProvider>);
             case MAIN_STATES.NOTES_DISPLAY:
-                return <NoteProvider> <NotesHolder /> </NoteProvider>
+                return (
+                    <NoteProvider>
+                        <NotesHolder />
+                    </NoteProvider>
+                );
             case MAIN_STATES.PROJECTS_DISPLAY:
-                return(
-                 <Projects 
-                    projects={ctx.projects}
-                    onProjectAdded={ctx.addProject}
-                    activeProjectElement={ctx.activeProjectElement}
-                    onProjectChange={ctx.selectProject} 
-                    onProjectDelete={ctx.deleteProject} 
-                    onActivityRequest={ctx.requestProjectElementActivity}
-                    onTitleSubmit={ctx.submitProjectTitle}
-                    />);
+                return (<Projects/>);
             default:
                 console.error(`Unknown State${state}`);
                 return <div>An Error Occurred</div>

@@ -10,7 +10,7 @@ const sampleProjects: ProjectData[] = [
     { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
 ];
 
-export function useProjects(onProjectOpened?: () => void) {
+export function useProjects(onProjectOpened?: (id:number) => void) {
     const [projects, setProjects] = useState<ProjectData[]>(sampleProjects);
     const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
     const [activeProjectElement, setActiveProjectElement] =
@@ -19,7 +19,7 @@ export function useProjects(onProjectOpened?: () => void) {
     const selectProject = (id: number | null) => {
         if (tryCancelDiscard( activeProjectElement !== null, activeProjectElement?.type === "title" ? discardMsgProjectTitle : discardMsgProjectAdder)) return;
         if (id !== null) {
-            onProjectOpened?.();
+            onProjectOpened?.(id);
             setActiveProjectElement(null);
         }
 
@@ -47,6 +47,12 @@ export function useProjects(onProjectOpened?: () => void) {
         setActiveProjectElement(null);
     };
 
+    const didUserDiscardTitle = (req: ProjectElementActivity) => {
+        if(activeProject === null || activeProjectElement?.type !== "title") return false;
+        const proj = projects.find(p => p.id === activeProjectElement.id);
+        if(!proj) return false;
+        return proj && tryCancelDiscard(activeProjectElement.value !== proj.title, discardMsgProjectTitle);
+    }
     const requestProjectElementActivity = (req: ProjectElementActivity) => {
         if (req === null) {
             setActiveProjectElement(null);
@@ -59,19 +65,22 @@ export function useProjects(onProjectOpened?: () => void) {
         }
 
         if (req.type !== activeProjectElement.type) {
-            if (activeProjectElement.type === "adder") {
-                if (tryCancelDiscard(activeProjectElement.value !== "", discardMsgProjectAdder))return;
-            }
-
-            if (activeProjectElement.type === "title") {
-                const proj = projects.find(p => p.id === activeProjectElement.id);
-                if (proj && tryCancelDiscard(activeProjectElement.value !== proj.title, discardMsgProjectTitle)) return;
-            }
+            if (activeProjectElement.type === "adder"
+                && tryCancelDiscard(activeProjectElement.value !== "", discardMsgProjectAdder)) return;
+            if (didUserDiscardTitle(req)) return;
         }
+        if(req.type === "title" 
+            && activeProjectElement.type === "title" 
+            && req.id !== activeProjectElement.id
+            && didUserDiscardTitle(req)) return;
 
         setActiveProjectElement(req);
     };
 
+    const buildTitleActivityRequest = (id: number, wantsActive: boolean, value: string) => requestProjectElementActivity(wantsActive ? { id: id, type: "title", value: value } : null);
+    const buildAdderActivityRequest = (wantsActive: boolean, value: string) => requestProjectElementActivity(wantsActive ? {type:"adder", value:value} : null);
+    const isProjectTitleActive = (id: number) => activeProjectElement !== null && activeProjectElement.type === "title" && activeProjectElement.id === id;
+    const isAdderActive = () => {return activeProjectElement !== null && activeProjectElement.type === "adder"};
     return {
         projects,
         activeProject,
@@ -81,5 +90,9 @@ export function useProjects(onProjectOpened?: () => void) {
         deleteProject,
         submitProjectTitle,
         requestProjectElementActivity,
+        buildAdderActivityRequest,
+        buildTitleActivityRequest,
+        isAdderActive,
+        isProjectTitleActive,
     };
 }

@@ -20,9 +20,14 @@ export type ProjectsContextResult = {
     activeProject: ProjectActivity;
     activeProjectElement: ProjectElementActivity;
 
+    isAdderActive: () => boolean;
+    isProjectTitleActive: (id: number) => boolean;
     selectProject: (id: number | null) => void;
     addProject: (title: string) => void;
     deleteProject: (id: number) => void;
     submitProjectTitle: (id: number, value: string) => void;
     requestProjectElementActivity: (req: ProjectElementActivity) => void;
+
+    buildAdderActivityRequest: (wantsActive: boolean, value: string) => void;
+    buildTitleActivityRequest:(id: number, wantsActive: boolean, value: string) => void;
 };

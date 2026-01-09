@@ -1,38 +1,18 @@
-import { ProjectData, ProjectElementActivity } from "../../../utils/projects/projectTypes";
+import { useProjectsContext } from "../../../utils/projects/projectsContext";
 import Project from "./compositional/Project";
 import ProjectAdder from "./compositional/ProjectAdder";
 
-export interface ProjectsProps {
-    projects: ProjectData[];
-    activeProjectElement: ProjectElementActivity;
-    onProjectChange: (id: number) => void;
-    onProjectDelete: (id: number) => void;
-    onTitleSubmit: (id: number, value: string) => void;
-    onProjectAdded: (value:string) => void;
-    onActivityRequest: (req:ProjectElementActivity) => void;
-}
-
-export const Projects = ({ projects, activeProjectElement, onProjectChange, onProjectDelete, onActivityRequest, onTitleSubmit, onProjectAdded }: ProjectsProps) => {
-    const buildTitleActivityRequest = (id: number, wantsActive: boolean, value: string) => onActivityRequest(wantsActive ? {id:id, type:"title", value:value} : null);
-    const buildAdderActivityRequest = (wantsActive: boolean, value: string) => onActivityRequest(wantsActive ? {type:"adder", value:value} : null);
+export const Projects = () => {
+    const ctx = useProjectsContext();
 
     return (
         <>
             <ProjectAdder 
-                isActive={activeProjectElement !== null && activeProjectElement.type === "adder"} 
-                onActivityRequest={buildAdderActivityRequest} 
-                onProjectAdded={onProjectAdded} />
+                isActive={ctx.isAdderActive()} 
+                onActivityRequest={ctx.buildAdderActivityRequest} 
+                onProjectAdded={ctx.addProject} />
             <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {projects.map(project => (
-                    <Project
-                        key={project.id}
-                        project={project}
-                        activeProjectElement={activeProjectElement}
-                        onProjectChange={onProjectChange}
-                        onProjectDelete={onProjectDelete} 
-                        onTitleSubmit={onTitleSubmit}
-                        onActivityRequest={buildTitleActivityRequest} />)
-                )}
+                {ctx.projects.map(project => (<Project key={project.id} project={project} />))}
             </div>
         </>
     );

@@ -1,3 +1,4 @@
+import { useProjectsContext } from "../../../../utils/projects/projectsContext";
 import { ProjectData, ProjectElementActivity } from "../../../../utils/projects/projectTypes";
 import { discardMsgProjectTitle  } from "../../../../utils/registries";
 import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
@@ -5,18 +6,15 @@ import EditableTitle from "../../../shared/title/EditableTitle";
 
 export interface ProjectProps {
     project: ProjectData;
-    activeProjectElement: ProjectElementActivity;
-    onTitleSubmit: (id: number, value: string) => void;
-    onActivityRequest: (id: number, wantsActive: boolean, value: string) => void;
-    onProjectChange: (id: number) => void;
-    onProjectDelete: (id: number) => void;
 }
 
-export const Project = ({ project, onProjectChange, onProjectDelete, onActivityRequest, onTitleSubmit, activeProjectElement }: ProjectProps) => {
+export const Project = ({ project  }: ProjectProps) => {
+
+    const ctx = useProjectsContext();
     return (
         <div
             key={project.id}
-            onClick={() => onProjectChange(project.id)}
+            onClick={() => ctx.selectProject(project.id)}
             className={`
                 group cursor-pointer
                 rounded-md border-2 border-[#2a2f47]
@@ -32,10 +30,10 @@ export const Project = ({ project, onProjectChange, onProjectDelete, onActivityR
                 <div onClick={(e) => e.stopPropagation()}>
                     <EditableTitle
                         title={project.title}
-                        isActive={activeProjectElement !== null && activeProjectElement.type === "title" && activeProjectElement.id === project.id}
+                        isActive={ctx.isProjectTitleActive(project.id)}
                         discardMsg={discardMsgProjectTitle}
-                        onActivityRequest={(wantsActive, value) => onActivityRequest(project.id, wantsActive, value)}
-                        onSubmit={(newValue) => onTitleSubmit(project.id, newValue)} />
+                        onActivityRequest={(wantsActive, value) => ctx.buildTitleActivityRequest(project.id, wantsActive, value)}
+                        onSubmit={(newValue) => ctx.submitProjectTitle(project.id, newValue)} />
                 </div>
                 <div className="flex gap-3 text-sm">
                     <span className="text-[#7aa2f7]">
@@ -55,7 +53,7 @@ export const Project = ({ project, onProjectChange, onProjectDelete, onActivityR
                 <div onClick={(e) => e.stopPropagation()}>
                     <ConfirmDeleteButton
                         label="Delete"
-                        onConfirm={() => onProjectDelete(project.id)} />
+                        onConfirm={() => ctx.deleteProject(project.id)} />
                 </div>
 
                 <span className={`
