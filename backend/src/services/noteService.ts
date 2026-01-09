@@ -4,12 +4,12 @@ import { runService } from "../utils/service";
 export class NoteService {
     repo = new NoteRepository();
 
-    getAllNotes() {
-        return runService(() => this.repo.getNotes(),'Error fetching notes:');
+    getAllNotes(id: number) {
+        return runService(() => this.repo.getNotes(id), 'Error fetching notes:');
     }
 
-    addNote() {
-        const res = runService(() => this.repo.addNote(),'Error adding note:');
+    addNote(projectId: number) {
+        const res = runService(() => this.repo.addNote(projectId),'Error adding note:');
         return res ? {id: res.lastInsertRowid as number} : null;
     }
 

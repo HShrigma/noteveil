@@ -73,12 +73,12 @@ export const runTaskDelete = (db: Database, id: number) => {
     return runDelete(obj);
 }
 
-export const runTaskListInsertSingle = (db: Database, title: string ) => {
+export const runTaskListInsertSingle = (db: Database, projectId: number, title: string) => {
     const obj = {
         db:db,
         tableName: taskListsTable,
-        fieldNames: ["title"],
-        fieldValues: [title]
+        fieldNames: ["title", "project_id"],
+        fieldValues: [title, projectId]
     }
     return runInsertSingle(obj)
 }

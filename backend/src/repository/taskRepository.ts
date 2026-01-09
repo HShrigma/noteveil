@@ -5,15 +5,15 @@ import { runTaskDelete, runTaskDoneUpdate, runTaskInsertSingle, runTaskLabelUpda
 class TaskRepository {
     db = DB.getInstance().getConnection();
 
-    getAllTasks() {
+    getAllTasks(projectId: number) {
         const stmt = this.db.prepare(`
                 SELECT l.id AS list_id, l.title AS list_title, l.next_id AS next_id,
                        t.id AS task_id, t.label AS task_label, t.done AS task_done
                 FROM task_lists l
                 LEFT JOIN tasks t ON l.id = t.task_list_id
-                JOIN projects p ON l.project_id = p.id
+                WHERE l.project_id = ?
                 ORDER BY l.created_at, t.created_at, t.id`);
-        const rows = stmt.all() as RawJoinTaskList[];
+        const rows = stmt.all(projectId) as RawJoinTaskList[];
         const taskListMap = new Map<number, TaskList>();
         rows.forEach(row => {
             const listId = row.list_id;
@@ -41,7 +41,7 @@ class TaskRepository {
     deleteTaskList(listId: number) { return runTaskListDelete(this.db, listId); }
     deleteTask(taskId: number) { return runTaskDelete(this.db, taskId); }
 
-    addTaskList(title: string) { return runTaskListInsertSingle(this.db, title); }
+    addTaskList(projectId: number, title: string) { return runTaskListInsertSingle(this.db, projectId, title); }
     addTask(listId: number, label: string) { return runTaskInsertSingle(this.db, label, listId); }
 
     updateNextId(listId: number, nextId: number | undefined) { return runTaskListNextIdUpdate(this.db, nextId, listId); }

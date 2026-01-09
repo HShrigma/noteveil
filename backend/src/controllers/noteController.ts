@@ -5,7 +5,8 @@ import  NoteService  from "../services/noteService";
 export class NoteController {
 
     public getNotes = (req:Request, res:Response) => {
-        const result = NoteService.getAllNotes();
+        const id = Number(req.params.id);
+        const result = NoteService.getAllNotes(id);
         if (result === null) return sendError(res, 500, "Could not fetch Notes");
         res.json(result);
     }
@@ -21,7 +22,8 @@ export class NoteController {
     }
 
     public addNote = (req:Request, res:Response) => {
-        const result = NoteService.addNote();
+        const projectId = Number(req.params.id);
+        const result = NoteService.addNote(projectId);
         if (result === null) return sendError(res, 500, "Could not add Note");
         res.json(sendSuccess(result));
     }

@@ -4,8 +4,8 @@ import { runService } from "../utils/service";
 class TaskService {
     repo = new TaskRepository();
 
-    getAllTasks() {
-        return runService(() => this.repo.getAllTasks(), 'Error fetching taskLists:');
+    getAllTasks(projectId: number) {
+        return runService(() => this.repo.getAllTasks(projectId), 'Error fetching taskLists:');
     }
 
     deleteTaskList(listId: number) {
@@ -18,8 +18,8 @@ class TaskService {
         return res ? { deleted: res.changes > 0, taskId: taskId } : null;
     }
 
-    addTaskList(title: string) {
-        const res = runService(() => this.repo.addTaskList(title), 'Error adding TaskList:');
+    addTaskList(projectId: number, title: string) {
+        const res = runService(() => this.repo.addTaskList(projectId, title), 'Error adding TaskList:');
         return res ? { id: res.lastInsertRowid as number } : null;
     }
 

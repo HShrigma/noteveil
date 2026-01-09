@@ -1,15 +1,22 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { ProjectActivity, ProjectData, ProjectElementActivity } from "./projectTypes"
 import { triggerScreenBob } from "../screenShake";
 import { createTempId } from "../mathUtils";
 import { tryCancelDiscard } from "../activityHelper";
 import { discardMsgProjectAdder, discardMsgProjectTitle } from "../registries";
+import { addProject, deleteProject, fetchProjects, patchProjectTitle } from "../../api/projectsApi";
 
 export function useProjects(onProjectOpened?: (id:number) => void) {
+    const refreshProjects = async () => {
+        const data = await fetchProjects();
+        setProjects(data);
+    };
     const [projects, setProjects] = useState<ProjectData[]>([]);
     const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
     const [activeProjectElement, setActiveProjectElement] =
         useState<ProjectElementActivity>(null);
+
+    useEffect(() => { fetchProjects().then((fetched) => setProjects(fetched))}, []);
 
     const selectProject = (id: number | null) => {
         if (tryCancelDiscard( activeProjectElement !== null, activeProjectElement?.type === "title" ? discardMsgProjectTitle : discardMsgProjectAdder)) return;
@@ -22,24 +29,37 @@ export function useProjects(onProjectOpened?: (id:number) => void) {
         triggerScreenBob(150);
     };
 
-    const addProject = (title: string) => {
+    const createProject = async (title: string) => {
+        const tempId = createTempId();
         const newProject: ProjectData = {
-            id: createTempId(),
+            id: tempId,
             title,
-            taskCount: 0,
+            taskListCount: 0,
             noteCount: 0,
         };
 
         setProjects(prev => [...prev, newProject]);
+
+        const res = await addProject(title);
+        if (!res.success) {
+            setProjects(prev => prev.filter(n => n.id !== tempId))
+            return;
+        }
+
+        const realId = Number(res.body.id);
+        setProjects(prev => prev.map(n => n.id === tempId ? { ...n, id: realId } : n))
+        return realId;
     };
 
-    const deleteProject = (id: number) => {
+    const removeProject = async (id: number) => {
         setProjects(prev => prev.filter(project => project.id !== id));
+        await deleteProject(id);
     };
 
-    const submitProjectTitle = (id: number, value: string) => {
+    const submitProjectTitle = async (id: number, value: string) => {
         setProjects(prev => prev.map(project => project.id === id ? { ...project, title: value } : project));
         setActiveProjectElement(null);
+        await patchProjectTitle(id,value);
     };
 
     const didUserDiscardTitle = (req: ProjectElementActivity) => {
@@ -80,9 +100,10 @@ export function useProjects(onProjectOpened?: (id:number) => void) {
         projects,
         activeProject,
         activeProjectElement,
+        refreshProjects,
         selectProject,
-        addProject,
-        deleteProject,
+        addProject: createProject,
+        deleteProject: removeProject,
         submitProjectTitle,
         requestProjectElementActivity,
         buildAdderActivityRequest,

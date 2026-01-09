@@ -37,7 +37,7 @@ export const Project = ({ project  }: ProjectProps) => {
                 </div>
                 <div className="flex gap-3 text-sm">
                     <span className="text-[#7aa2f7]">
-                        Tasks:{project.taskCount}
+                        Tasks Lists:{project.taskListCount}
                     </span>
                     <span className="text-[#bb9af7]">
                         Notes:{project.noteCount}

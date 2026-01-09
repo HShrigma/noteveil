@@ -1,7 +1,7 @@
 export interface ProjectData{
     id: number;
     title: string;
-    taskCount: number;
+    taskListCount: number;
     noteCount: number;
 };
 export type ProjectActivity = { id: number | null };
@@ -20,14 +20,19 @@ export type ProjectsContextResult = {
     activeProject: ProjectActivity;
     activeProjectElement: ProjectElementActivity;
 
-    isAdderActive: () => boolean;
-    isProjectTitleActive: (id: number) => boolean;
+    // Async   
+    refreshProjects: () => Promise<void>;
+    addProject: (title: string) => Promise<void>;
+    deleteProject: (id: number) => Promise<void>;
+    submitProjectTitle: (id: number, value: string) => Promise<void>;
+
+    // Base
     selectProject: (id: number | null) => void;
-    addProject: (title: string) => void;
-    deleteProject: (id: number) => void;
-    submitProjectTitle: (id: number, value: string) => void;
     requestProjectElementActivity: (req: ProjectElementActivity) => void;
 
+    // Composite
+    isAdderActive: () => boolean;
+    isProjectTitleActive: (id: number) => boolean;
     buildAdderActivityRequest: (wantsActive: boolean, value: string) => void;
     buildTitleActivityRequest:(id: number, wantsActive: boolean, value: string) => void;
 };

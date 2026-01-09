@@ -6,12 +6,30 @@ class ProjectRepository {
     db = DB.getInstance().getConnection();
 
     getProjects() {
-        const stmt = this.db.prepare(`SELECT * FROM projects ORDER BY created_at`);
+        const stmt = this.db.prepare(`
+        SELECT
+            p.id,
+            p.title,
+            COALESCE(tl.taskListCount, 0) AS taskListCount,
+            COALESCE(n.noteCount, 0) AS noteCount
+        FROM projects p
+        LEFT JOIN (
+            SELECT project_id, COUNT(*) AS taskListCount
+            FROM task_lists
+            GROUP BY project_id
+        ) tl ON tl.project_id = p.id
+        LEFT JOIN (
+            SELECT project_id, COUNT(*) AS noteCount
+            FROM notes
+            GROUP BY project_id
+        ) n ON n.project_id = p.id
+        ORDER BY p.created_at
+    `);
         const rows = stmt.all() as Project[];
         return rows;
     }
 
-    addProject(title: string) { return runProjectInsertSingle(this.db, "New Project")}
+    addProject(title: string) { return runProjectInsertSingle(this.db, title)}
     deleteProject(id: number) { return runProjectDelete(this.db, id) }
     updateProjectTitle(id: number, title: string) {return runProjectTitleUpdate(this.db, title, id);}
 }

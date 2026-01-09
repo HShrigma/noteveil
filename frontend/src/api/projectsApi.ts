@@ -19,7 +19,7 @@ export const deleteProject = async (id: number) => {
 
 
 // Add Project
-export const createProject = async (title: string) => {
+export const addProject = async (title: string) => {
     const res = await fetch(BASE_URL, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -33,8 +33,8 @@ export const createProject = async (title: string) => {
 }
 
 // Update Project Title
-export const updateProject = async (id: number, title: string) => {
-    const res = await fetch(`${BASE_URL}/${id}/title`, {
+export const patchProjectTitle = async (id: number, title: string) => {
+    const res = await fetch(`${BASE_URL}/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

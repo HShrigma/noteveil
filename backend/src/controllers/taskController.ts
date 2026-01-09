@@ -4,7 +4,8 @@ import TaskService from "../services/taskService";
 
 export class TaskController {
     getTasks = (_req: Request, res: Response) => {
-        const result = TaskService.getAllTasks();
+        const id = Number(_req.params.id);
+        const result = TaskService.getAllTasks(id);
         if (result === null) return sendError(res, 500, "Could not fetch tasks");
 
         res.json(result);
@@ -31,8 +32,9 @@ export class TaskController {
     }
 
     addTaskList = (req: Request, res: Response) => {
+        const id = Number(req.params.id);
         const { title } = req.body;
-        const result = TaskService.addTaskList(title);
+        const result = TaskService.addTaskList(id,title);
 
         if (result === null) return sendError(res, 500, "Could not add TaskList");
 

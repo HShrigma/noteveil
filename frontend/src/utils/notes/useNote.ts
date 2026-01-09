@@ -3,10 +3,12 @@ import { NoteData } from "./noteTypes"
 import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from "../../api/notesApi";
 import { createTempId } from "../mathUtils";
 import { getIndex } from "./noteHelpers";
+import { useProjectsContext } from "../projects/projectsContext";
 
 export const useNotes = ( activeProjectId: number | null) => {
     const [notes, setNotes] = useState<NoteData[]>([]);
 
+    const { refreshProjects } = useProjectsContext();
     useEffect(() => { if(activeProjectId !== null) fetchNotes(activeProjectId).then(fetched => { setNotes(fetched); }); }, []);
 
     const updateTitle = async (id: number, title: string) => {
@@ -48,12 +50,14 @@ export const useNotes = ( activeProjectId: number | null) => {
         }
 
         setNotes(prev => prev.map(n => n.id === tempId ? { ...n, id: realId } : n))
+        await refreshProjects();
         return realId;
     };
 
     const removeNote = async (id: number) => {
         setNotes((prev) => prev.filter((n) => n.id !== id));
         await deleteNote(id);
+        await refreshProjects();
     };
 
     return { notes, createNote, updateTitle, updateContent, addNote, removeNote }

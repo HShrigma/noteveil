@@ -38,12 +38,12 @@ export const runNoteDelete = (db: Database, id: number) => {
     return runDelete(obj);
 }
 
-export const runNoteInsertSingle = (db: Database, title: string, content: string) => {
+export const runNoteInsertSingle = (db: Database, title: string, content: string, projectId: number) => {
     const obj = {
         db:db,
         tableName: notesTable,
-        fieldNames: ["title","content"],
-        fieldValues: [title, content]
+        fieldNames: ["title","content", "project_id"],
+        fieldValues: [title, content, projectId]
     }
     return runInsertSingle(obj)
 }
