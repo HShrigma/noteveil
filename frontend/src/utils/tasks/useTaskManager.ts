@@ -5,7 +5,10 @@ import { useTaskActivity } from "./useTaskActivity";
 export const useTaskManager = (activeProjectId: number | null): UseTaskManagerResult => {
   const task:UseTaskResult = useTask(activeProjectId); 
   const activity = useTaskActivity(task.tasks);
-
+  const updateTitle = async (id: number, value: string) => {
+    activity.clearActivity();
+    await task.updateTitle(id, value);
+  }
   return {
     // state
     tasks: task.tasks,
@@ -36,7 +39,7 @@ export const useTaskManager = (activeProjectId: number | null): UseTaskManagerRe
     createTask: task.createTask,
     updateTaskLabel: task.updateTaskLabel,
     updateTaskDone: task.updateTaskDone,
-    updateTitle: task.updateTitle,
+    updateTitle,
     removeTask: task.removeTask,
     removeList: task.removeList,
     updateGoesTo: task.updateGoesTo,
