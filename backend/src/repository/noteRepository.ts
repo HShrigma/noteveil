@@ -6,7 +6,11 @@ class NoteRepository {
     db = DB.getInstance().getConnection();
 
     getNotes() {
-        const stmt = this.db.prepare(`SELECT * FROM notes ORDER BY created_at`);
+        const stmt = this.db.prepare(`
+            SELECT n.* 
+            FROM notes n
+            JOIN projects p ON n.project_id = p.id
+            ORDER BY n.created_at`);
         const rows = stmt.all() as Note[];
         return rows;
     }

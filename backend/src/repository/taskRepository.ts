@@ -11,6 +11,7 @@ class TaskRepository {
                        t.id AS task_id, t.label AS task_label, t.done AS task_done
                 FROM task_lists l
                 LEFT JOIN tasks t ON l.id = t.task_list_id
+                JOIN projects p ON l.project_id = p.id
                 ORDER BY l.created_at, t.created_at, t.id`);
         const rows = stmt.all() as RawJoinTaskList[];
         const taskListMap = new Map<number, TaskList>();
