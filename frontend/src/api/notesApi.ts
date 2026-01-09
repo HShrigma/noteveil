@@ -1,8 +1,10 @@
-const BASE_URL = "http://localhost:4000/api/notes";
+import { CORE_URL, PROJECTS_URL } from "./apiUtils";
+const BASE_URL = `${CORE_URL}/notes`;
+const getProjectUrl = (projectId: number) => `${PROJECTS_URL}/${projectId}/notes`;
 
 // Get notes
 export const fetchNotes = async (activeProjectId: number) => {
-  const res = await fetch(BASE_URL);
+  const res = await fetch(`${getProjectUrl(activeProjectId)}`);
   return res.json();
 };
 
@@ -18,7 +20,7 @@ export async function deleteNote(id: number) {
 
 // Add Note
 export async function addNote(activeProjectId: number) {
-  const res = await fetch(`${BASE_URL}`, {
+  const res = await fetch(`${getProjectUrl(activeProjectId)}`, {
     method:"POST",
     headers: {"Content-Type": "application/json"}
   });

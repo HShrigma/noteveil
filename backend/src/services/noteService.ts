@@ -4,7 +4,7 @@ import { runService } from "../utils/service";
 export class NoteService {
     repo = new NoteRepository();
 
-    public getAllNotes() {
+    getAllNotes() {
         return runService(() => this.repo.getNotes(),'Error fetching notes:');
     }
 

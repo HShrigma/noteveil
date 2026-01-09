@@ -3,14 +3,14 @@ import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import TaskService from "../services/taskService";
 
 export class TaskController {
-    public getTasks = (_req: Request, res: Response) => {
+    getTasks = (_req: Request, res: Response) => {
         const result = TaskService.getAllTasks();
         if (result === null) return sendError(res, 500, "Could not fetch tasks");
 
         res.json(result);
     };
 
-    public deleteTaskList = (req: Request, res: Response) => {
+    deleteTaskList = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const result = TaskService.deleteTaskList(listId);
 
@@ -20,7 +20,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     };
 
-    public deleteTask = (req: Request, res: Response) => {
+    deleteTask = (req: Request, res: Response) => {
         const taskId = Number(req.params.taskId);
         const result = TaskService.deleteTask(taskId);
 
@@ -30,7 +30,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public addTaskList = (req: Request, res: Response) => {
+    addTaskList = (req: Request, res: Response) => {
         const { title } = req.body;
         const result = TaskService.addTaskList(title);
 
@@ -39,7 +39,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public addTask = (req: Request, res: Response) => {
+    addTask = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { label } = req.body;
 
@@ -50,7 +50,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public updateNextId = (req: Request, res: Response) => {
+    updateNextId = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { nextId } = req.body;
 
@@ -62,7 +62,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public updateTaskDone = (req: Request, res: Response) => {
+    updateTaskDone = (req: Request, res: Response) => {
         const taskId = Number(req.params.taskId);
         const { done } = req.body;
 
@@ -74,7 +74,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public updateTaskLabel = (req: Request, res: Response) => {
+    updateTaskLabel = (req: Request, res: Response) => {
         const taskId = Number(req.params.taskId);
         const { label } = req.body;
 
@@ -86,7 +86,7 @@ export class TaskController {
         res.json(sendSuccess(result));
     }
 
-    public updateListTitle = (req: Request, res: Response) => {
+    updateListTitle = (req: Request, res: Response) => {
         const listId = Number(req.params.id);
         const { title } = req.body;
 
@@ -99,4 +99,4 @@ export class TaskController {
     }
 };
 
-export default TaskController;
+export default new TaskController;

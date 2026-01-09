@@ -51,4 +51,4 @@ export class NoteController {
     }
 };
 
-export default NoteController;
+export default new NoteController;

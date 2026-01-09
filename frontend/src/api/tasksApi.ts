@@ -1,8 +1,10 @@
-const BASE_URL = "http://localhost:4000/api/tasks";
+import { CORE_URL, PROJECTS_URL } from "./apiUtils";
+const BASE_URL = `${CORE_URL}/tasks`;
+const getProjectUrl = (projectId: number) => `${PROJECTS_URL}/${projectId}/tasks`;
 
 export const fetchTasks = async (activeProjectId: number) => {
     console.log(`Active Project ID: ${activeProjectId}`);
-    const res = await fetch(BASE_URL);
+    const res = await fetch(getProjectUrl(activeProjectId));
     return res.json();
 };
 
@@ -29,7 +31,7 @@ export async function deleteTask(taskId: number) {
 
 export async function addList( activeProjectId: number, title: string) {
     console.log(`Active Project ID: ${activeProjectId}`);
-    const res = await fetch(`${BASE_URL}/`, {
+    const res = await fetch(getProjectUrl(activeProjectId), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })

@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import projectsRouter from "./routes/projectRoutes";
 import tasksRouter from "./routes/taskRoutes";
 import notesRouter from "./routes/noteRoutes";
 import DB from "./config/db";
@@ -13,6 +14,7 @@ app.use(cors({ origin: "http://localhost:5173"}));
 app.use(express.json());
 
 // Routes
+app.use("/api/projects", projectsRouter);
 app.use("/api/tasks", tasksRouter);
 app.use("/api/notes", notesRouter);
 
