@@ -17,7 +17,7 @@ const UserTopIcon = ({ userName = "User", OnIconClicked }: UserTopIconProps) => 
                 className="w-10 h-10 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer
                            transition-all duration-150 hover:scale-105 hover:shadow-lg"
                 onClick={OnIconClicked}
-                title={userName} // optional tooltip for accessibility
+                title={userName} 
             >
                 {initials || "U"}
             </div>

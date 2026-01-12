@@ -7,14 +7,14 @@ export interface ProjectViewProps {
 export const ProjectView = ({ currentState, onScreenChange }: ProjectViewProps) => {
 
     const baseButtonClass = `
-    px-6 py-1 rounded-sm border-2 border-red-500  fade-in
+    py-1 px-4 py-1 rounded-sm border-2  fade-in
     font-mono font-semibold transition-all duration-150
   `;
 
     const getButtonClass = (isActive: boolean) =>
         `${baseButtonClass} ${isActive
-            ? 'bg-red-800 text-gray-200 py-2 rounded-xl shadow-lg shadow-[0_0_16px_#f7768e]'
-            : 'bg-transparent text-red-400 rounded-xl shadow-md hover:bg-red-400 hover:text-red-200 hover:shadow-[0_0_12px_#f7768e]'
+            ? 'bg-red-400  text-[#1f2335]  rounded-xl  shadow-[0_0_12px_#f7768e] border-red-400 '
+            : 'bg-transparent text-red-400 rounded-xl shadow-md hover:bg-red-400 hover:text-red-200 hover:shadow-[0_0_12px_#f7768e] border-red-500 '
         }`;
 
     const handleClick = (value: MainState) => onScreenChange?.(value);
