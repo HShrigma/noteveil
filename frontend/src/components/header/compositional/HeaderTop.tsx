@@ -1,18 +1,6 @@
-import { useState } from "react";
-import UserTopIcon from "./user/UserTopIcon";
+import User from "./user/User";
 
-interface HeaderTopProps {
-    userName?: string; // optional, default to "User"
-}
-
-const HeaderTop = ({ userName = "User" }: HeaderTopProps) => {
-    const [isUserActive, setIsUserActive] = useState(false);
-
-    const initials = userName
-        .split(" ")
-        .map(n => n[0])
-        .join("")
-        .toUpperCase();
+const HeaderTop = () => {
 
     return (
         <div className="flex justify-between items-center">
@@ -21,7 +9,7 @@ const HeaderTop = ({ userName = "User" }: HeaderTopProps) => {
                 Noteveil
             </h1>
             {/* User */}
-            <UserTopIcon OnIconClicked={() => setIsUserActive(true)} isActive={isUserActive}/>
+            <User/>
         </div>
     );
 };

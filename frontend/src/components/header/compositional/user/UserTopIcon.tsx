@@ -15,11 +15,10 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, isActive}: UserTopIconP
     return (
         <div 
             onClick={OnIconClicked}
-            className="flex items-center gap-2 "
+            className={`fade-in flex items-center gap-2 duration-150 ${isActive ? "" : "hover:scale-105 hover:shadow-lg transition-all"}`} 
         >
             <div 
-                className="w-10 h-10 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer
-                           transition-all duration-150 hover:scale-105 hover:shadow-lg"
+                className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer select-none"
                 title={userName} 
             >
                 {initials || "U"}
@@ -32,4 +31,3 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, isActive}: UserTopIconP
 };
 
 export default UserTopIcon;
-
