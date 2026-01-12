@@ -1,10 +1,10 @@
 import NotesHolder from "./notes/standalone/NotesHolder";
 import TasksHolder from "./tasks/standalone/TasksHolder";
 import { MAIN_STATES, type MainState } from '../utils/registries'
-import { TaskProvider } from "./tasks/TaskProvider";
-import { NoteProvider } from "./notes/NoteProvider";
+import { TaskProvider } from "../context/tasks/TaskProvider";
+import { NoteProvider } from "../context/notes/NoteProvider";
 import Projects from "./projects/standalone/Projects";
-import { useProjectsContext } from "../utils/projects/projectsContext";
+import { useProjectsContext } from "../context/projects/projectsContext";
 
 interface MainSreenProps {
     state: MainState;

@@ -1,6 +1,6 @@
-import ActiveTask from "./ActiveTask";
-import InactiveTask from "./InactiveTask";
-import { TaskItem } from "../../../utils/tasks/taskTypes";
+import ActiveTask from "../compositional/ActiveTask";
+import InactiveTask from "../compositional/InactiveTask";
+import { TaskItem } from "../../../types/taskTypes";
 
 interface TaskProps {
     task: TaskItem;

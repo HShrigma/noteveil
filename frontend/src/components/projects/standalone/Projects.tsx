@@ -1,6 +1,6 @@
-import { useProjectsContext } from "../../../utils/projects/projectsContext";
-import Project from "./compositional/Project";
-import ProjectAdder from "./compositional/ProjectAdder";
+import { useProjectsContext } from "../../../context/projects/projectsContext";
+import Project from "./Project";
+import ProjectAdder from "../compositional/ProjectAdder";
 
 export const Projects = () => {
     const ctx = useProjectsContext();

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import DefaultHeader from './components/header/Header';
 import MainScreen from './components/MainScreen';
 import { MAIN_STATES, MainState } from './utils/registries';
-import { ProjectsProvider } from './components/projects/ProjectsProvider';
+import { ProjectsProvider } from './context/projects/ProjectsProvider';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);

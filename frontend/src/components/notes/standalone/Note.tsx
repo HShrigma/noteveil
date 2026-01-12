@@ -1,8 +1,8 @@
-import ActiveNote from "./compositional/ActiveNote";
-import InactiveNote from "./compositional/InactiveNote";
-import { NoteData } from "../../../utils/notes/noteTypes";
+import ActiveNote from "../compositional/ActiveNote";
+import InactiveNote from "../compositional/InactiveNote";
+import { NoteData } from "../../../types/noteTypes";
 import EditableTitle from "../../shared/title/EditableTitle";
-import { useNoteManagerContext } from "../../../utils/notes/noteManagerContext";
+import { useNoteManagerContext } from "../../../context/notes/noteManagerContext";
 
 interface NoteProps {
     data: NoteData;

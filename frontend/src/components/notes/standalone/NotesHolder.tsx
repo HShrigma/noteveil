@@ -1,7 +1,7 @@
 import Note from './Note';
 import Masonry from "react-masonry-css";
-import { NoteAdder } from './compositional/NoteAdder';
-import { useNoteManagerContext } from '../../../utils/notes/noteManagerContext';
+import { NoteAdder } from '../compositional/NoteAdder';
+import { useNoteManagerContext } from '../../../context/notes/noteManagerContext';
 
 export const NotesHolder = () => {
     const breakpointColumnsObj = {

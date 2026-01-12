@@ -1,8 +1,8 @@
 import TaskList from "./TaskList";
 import Masonry from "react-masonry-css";
-import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
-import TaskListAdder from "./compositional/TaskListAdder";
-import { useTaskManagerContext } from "../../../utils/tasks/taskManagerContext";
+import { triggerScreenBob } from "../../../utils/screenShake";
+import TaskListAdder from "../compositional/TaskListAdder";
+import { useTaskManagerContext } from "../../../context/tasks/taskManagerContext";
 
 export const TasksHolder = () => {
     const breakpointColumnsObj = {

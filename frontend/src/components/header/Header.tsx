@@ -1,4 +1,4 @@
-import { useProjectsContext } from '../../utils/projects/projectsContext';
+import { useProjectsContext } from '../../context/projects/projectsContext';
 import { MAIN_STATES,  type MainState } from '../../utils/registries';
 import ProjectView from './ProjectView';
 interface DefaultHeaderProps {
