@@ -59,7 +59,7 @@ export const Project = ({ project  }: ProjectProps) => {
                 <span className={`
                     text-xs font-semibold tracking-wide
                     rounded-md p-2
-                    bg-[#bb9af7] text-[#fff]
+                    bg-[#bb9af7] text-white
                     opacity-0 group-hover:opacity-100
                     transition-opacity`}>
                     Open

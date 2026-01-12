@@ -1,6 +1,7 @@
-import { useProjectsContext } from '../../context/projects/projectsContext';
-import { MAIN_STATES,  type MainState } from '../../utils/registries';
-import ProjectView from './ProjectView';
+import { useProjectsContext } from '../../../context/projects/projectsContext';
+import { MAIN_STATES,  type MainState } from '../../../utils/registries';
+import HeaderTop from '../compositional/HeaderTop';
+import ProjectView from '../compositional/ProjectView';
 interface DefaultHeaderProps {
     onScreenChange: (value: MainState) => void;
     currentState: MainState; 
@@ -16,11 +17,8 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
     }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
-            {/* Title */}
-            <h1 className="text-3xl md:text-4xl font-bold text-purple-400 tracking-wider">
-                Noteveil
-            </h1>
-
+            {/* Header top section */}
+            <HeaderTop userName="User" />
             {/* Projects row */}
             <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}

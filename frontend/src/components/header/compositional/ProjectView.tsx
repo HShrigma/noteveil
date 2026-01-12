@@ -1,4 +1,4 @@
-import { MAIN_STATES, MainState } from "../../utils/registries";
+import { MAIN_STATES, MainState } from "../../../utils/registries";
 
 export interface ProjectViewProps {
     currentState: MainState;
