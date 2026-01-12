@@ -18,9 +18,9 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop onLogout={() => onScreenChange(MAIN_STATES.LOGIN_DISPLAY)}/>
+            <HeaderTop currentState={currentState} onLogout={() => onScreenChange(MAIN_STATES.LOGIN_DISPLAY)}/>
             {/* Projects row */}
-            <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
+            {currentState !== MAIN_STATES.LOGIN_DISPLAY && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
                 <button
                     onClick={ () => goToProjectsScreen()}
@@ -29,6 +29,7 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                         `px-4 py-1 rounded-sm border-2
                       bg-[#7aa2f7]
                       text-[#1a1b26]
+                        fade-in
                         font-semibold tracking-wide
                         ` 
                         : 
@@ -37,6 +38,7 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                         transition-all duration-150
                       hover:bg-[#7aa2f7] hover:text-[#1a1b26]
                         hover:shadow-[0_0_12px_rgba(122,162,247,0.6)]
+                        fade-in
                         cursor-pointer`
                     }
                 >
@@ -47,7 +49,7 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                 <div className="h-6 w-px bg-[#2a2f47]" />
 
                 {/* Project buttons */}
-                {ctx.projects.map(project => (
+                { ctx.projects.map(project => (
                     <button
                         key={project.id}
                         onClick={() => { if (ctx.activeProject.id !== project.id) ctx.selectProject(project.id) }}
@@ -59,7 +61,7 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                                 font-mono font-semibold tracking-wide
                                 transition-all duration-200
                                 cursor-default opacity-95
-                                shadow-[0_0_14px_rgba(187,154,247,0.55)]` 
+                                shadow-[0_0_14px_rgba(187,154,247,0.55)] slide-left` 
                             :
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#2a2f47]
@@ -70,7 +72,8 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                               hover:bg-[#1f2335]
                               hover:border-[#9d7cd8]
                               hover:text-[#bb9af7]
-                                hover:shadow-[0_0_10px_rgba(157,124,216,0.35)]`
+                                hover:shadow-[0_0_10px_rgba(157,124,216,0.35)]
+                                slide-left`
                         }
                     >
                         {project.title}
@@ -78,8 +81,9 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
                 ))}
             </div>
 
-            {/* Mode switch (Tasks / Notes) */}
-            {currentState !== MAIN_STATES.PROJECTS_DISPLAY && <ProjectView currentState={currentState} onScreenChange={onScreenChange} />}
+}
+                        {/* Mode switch (Tasks / Notes) */}
+            {(currentState === MAIN_STATES.NOTES_DISPLAY || currentState === MAIN_STATES.TASK_DISPLAY) && <ProjectView currentState={currentState} onScreenChange={onScreenChange} />}
         </header>
     );
 };

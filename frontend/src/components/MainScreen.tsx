@@ -9,9 +9,10 @@ import {Login} from "./login/Login";
 
 interface MainSreenProps {
     state: MainState;
+    onScreenChange: (value: MainState) => void;
 };
 
-export const MainScreen = ({ state }: MainSreenProps) => {
+export const MainScreen = ({ state, onScreenChange }: MainSreenProps) => {
     const ctx = useProjectsContext();
     const getScreen = () => {
         switch (state) {
@@ -33,7 +34,7 @@ export const MainScreen = ({ state }: MainSreenProps) => {
             case MAIN_STATES.PROJECTS_DISPLAY:
                 return (<Projects />);
             case MAIN_STATES.LOGIN_DISPLAY:
-                return (<Login/>);
+                return (<Login onLogin={() => onScreenChange(MAIN_STATES.PROJECTS_DISPLAY) }/>);
             default:
                 console.error(`Unknown State: ${state}`);
                 return <div>An Error Occurred</div>

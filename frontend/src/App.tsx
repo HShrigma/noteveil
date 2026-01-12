@@ -17,7 +17,7 @@ function App() {
     return (
         <ProjectsProvider onProjectOpened={handleProjectOpened}>
             <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
-            <MainScreen state={state}/>
+            <MainScreen state={state} onScreenChange={handleDisplayChange}/>
         </ProjectsProvider>
     );
 }
