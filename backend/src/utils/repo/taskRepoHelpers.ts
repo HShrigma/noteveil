@@ -53,21 +53,22 @@ export const runTaskLabelUpdate = (db: Database, label: string, id: number) => {
     return runUpdate(obj);
 }
 
-export const runTaskListDelete = (db: Database, id: number) => {
+export const runTaskListDelete = (db: Database, id: number, predicateNames = ["id"], taskPredicateNames = ["task_list_id"]) => {
     const obj = {
         db: db,
         tableName: taskListsTable, 
-        predicateNames: ["id"],
+        predicateNames: predicateNames,
         predicateValues: [id]
     }
+    runTaskDelete(db, id, taskPredicateNames);
     return runDelete(obj);
 }
 
-export const runTaskDelete = (db: Database, id: number) => {
+export const runTaskDelete = (db: Database, id: number, predicateNames = ["id"]) => {
     const obj = {
         db: db,
         tableName: tasksTable, 
-        predicateNames: ["id"],
+        predicateNames: predicateNames,
         predicateValues: [id]
     }
     return runDelete(obj);

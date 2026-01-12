@@ -28,11 +28,11 @@ export const runNoteContentUpdate = (db: Database, content: string, id: number) 
     return runUpdate(obj);
 }
 
-export const runNoteDelete = (db: Database, id: number) => {
+export const runNoteDelete = (db: Database, id: number, predicateNames = ["id"]) => {
     const obj = {
         db: db,
         tableName: notesTable, 
-        predicateNames: ["id"],
+        predicateNames: predicateNames,
         predicateValues: [id]
     }
     return runDelete(obj);
