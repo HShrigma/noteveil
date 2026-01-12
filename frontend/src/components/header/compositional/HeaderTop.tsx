@@ -1,4 +1,4 @@
-import { UserIcon } from "lucide-react";
+import { useState } from "react";
 import UserTopIcon from "./user/UserTopIcon";
 
 interface HeaderTopProps {
@@ -6,6 +6,8 @@ interface HeaderTopProps {
 }
 
 const HeaderTop = ({ userName = "User" }: HeaderTopProps) => {
+    const [isUserActive, setIsUserActive] = useState(false);
+
     const initials = userName
         .split(" ")
         .map(n => n[0])
@@ -19,7 +21,7 @@ const HeaderTop = ({ userName = "User" }: HeaderTopProps) => {
                 Noteveil
             </h1>
             {/* User */}
-            <UserTopIcon  OnIconClicked={() => console.log("clicked")} />
+            <UserTopIcon OnIconClicked={() => setIsUserActive(true)} isActive={isUserActive}/>
         </div>
     );
 };
