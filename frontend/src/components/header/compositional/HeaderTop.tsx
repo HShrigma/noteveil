@@ -1,6 +1,8 @@
 import User from "./user/User";
-
-const HeaderTop = () => {
+interface HeaderTopProps{
+onLogout: () => void;
+}
+const HeaderTop = ({onLogout} : HeaderTopProps) => {
 
     return (
         <div className="flex justify-between items-center">
@@ -9,7 +11,7 @@ const HeaderTop = () => {
                 Noteveil
             </h1>
             {/* User */}
-            <User/>
+            <User onLogout={onLogout}/>
         </div>
     );
 };

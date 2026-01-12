@@ -18,7 +18,7 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop />
+            <HeaderTop onLogout={() => onScreenChange(MAIN_STATES.LOGIN_DISPLAY)}/>
             {/* Projects row */}
             <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}

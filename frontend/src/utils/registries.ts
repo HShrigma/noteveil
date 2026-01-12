@@ -1,7 +1,8 @@
 export const MAIN_STATES = {
     TASK_DISPLAY: 'taskDisplay',
     NOTES_DISPLAY: 'notesDisplay',
-    PROJECTS_DISPLAY: 'projectsDisplay'
+    PROJECTS_DISPLAY: 'projectsDisplay',
+    LOGIN_DISPLAY: 'loginDisplay'
 } as const;
 
 const getDiscardMsg = (toWhat: string) => {return `Discard changes to this ${toWhat}?`};

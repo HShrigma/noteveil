@@ -5,6 +5,7 @@ import { TaskProvider } from "../context/tasks/TaskProvider";
 import { NoteProvider } from "../context/notes/NoteProvider";
 import Projects from "./projects/standalone/Projects";
 import { useProjectsContext } from "../context/projects/projectsContext";
+import {Login} from "./login/Login";
 
 interface MainSreenProps {
     state: MainState;
@@ -31,8 +32,10 @@ export const MainScreen = ({ state }: MainSreenProps) => {
                 );
             case MAIN_STATES.PROJECTS_DISPLAY:
                 return (<Projects />);
+            case MAIN_STATES.LOGIN_DISPLAY:
+                return (<Login/>);
             default:
-                console.error(`Unknown State${state}`);
+                console.error(`Unknown State: ${state}`);
                 return <div>An Error Occurred</div>
         }
     }
