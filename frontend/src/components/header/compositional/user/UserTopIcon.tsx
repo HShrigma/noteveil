@@ -1,9 +1,9 @@
-interface UserIconProps {
-    userName?: string; // optional, default to "User"
+interface UserTopIconProps {
+    userName?: string; 
     OnIconClicked: () => void;
 }
 
-const UserTopIcon = ({ userName = "User", OnIconClicked }: UserIconProps) => {
+const UserTopIcon = ({ userName = "User", OnIconClicked }: UserTopIconProps) => {
     // Compute initials from the name
     const initials = userName
         .split(" ")
@@ -14,8 +14,10 @@ const UserTopIcon = ({ userName = "User", OnIconClicked }: UserIconProps) => {
     return (
         <div className="flex items-center gap-2">
             <div 
-                className="w-10 h-10 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer"
+                className="w-10 h-10 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer
+                           transition-all duration-150 hover:scale-105 hover:shadow-lg"
                 onClick={OnIconClicked}
+                title={userName} // optional tooltip for accessibility
             >
                 {initials || "U"}
             </div>
@@ -27,3 +29,4 @@ const UserTopIcon = ({ userName = "User", OnIconClicked }: UserIconProps) => {
 };
 
 export default UserTopIcon;
+
