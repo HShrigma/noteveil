@@ -1,11 +1,12 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
 import { invalidSignupMsg } from "../../../utils/registries"; 
+import { signUpErrorType } from "../../../types/userTypes";
 
 interface SignupProps {
     onSignup: (email: string, username: string, password: string) => void;
     onLoginScreenOpen: () => void;
-    signupError: boolean;
+    signupError: signUpErrorType;
 }
 
 export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps) => {
@@ -136,12 +137,6 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                         "
                     />
                 </div>
-
-                <ErrorHint
-                    message={invalidSignupMsg}
-                    toValidate={signupError ? "" : "valid"}
-                    triggerCheck={signupError}
-                />
 
                 {/* Submit */}
                 <button

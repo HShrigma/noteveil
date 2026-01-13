@@ -108,7 +108,8 @@ export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
                 return (<LoginScreen
                     onLogin={handleLoginAttempt}
                     onSignup={handleSignupAttempt}
-                    loginError={loginError} />);
+                    loginError={loginError}
+                    signupError={signupError} />);
             default:
                 console.error(`Unknown State: ${state}`);
                 return <div>An Error Occurred</div>
