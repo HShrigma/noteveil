@@ -4,11 +4,12 @@ import User from "./user/User";
 interface HeaderTopProps {
     user: UserType;
     onUserPasswordChange: (newPass: string) => void;
+    onUsernameUpdate: (newName:string)=> void;
     onLogout: (withMessage?: boolean) => void;
     onUserDelete: (id: number) => void;
 }
 
-const HeaderTop = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: HeaderTopProps) => {
+const HeaderTop = ({ user, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate, }: HeaderTopProps) => {
     const isLogin = user === null;
 
     return (
@@ -24,6 +25,7 @@ const HeaderTop = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: Head
                 onLogout={onLogout}
                 onUserDelete={onUserDelete}
                 onUserPasswordChange={onUserPasswordChange}
+                onUsernameUpdate={onUsernameUpdate}
             />}
         </div>
     );

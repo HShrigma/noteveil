@@ -113,7 +113,7 @@ const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordU
                         <button
                             type="submit"
                             disabled={!current || !confirmCurrent || !newPass || !confirmNew}
-                            className="flex-1 px-3 py-2 rounded-md bg-blue-500 text-[#1a1b26] font-semibold disabled:opacity-50"
+                            className={`flex-1 px-3 py-2 rounded-md bg-blue-500 text-[#1a1b26] font-semibold disabled:opacity-50 cursor-pointer disabled:cursor-auto`}
                         >
                             Update
                         </button>

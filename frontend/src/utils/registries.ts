@@ -16,6 +16,7 @@ export const discardMsgTask = getDiscardMsg("Task");
 export const discardMsgTaskTitle = getDiscardMsg("Task Title");
 export const discardMsgProjectTitle = getDiscardMsg("Project Title");
 export const discardMsgProjectAdder = getDiscardMsg("Project Adder");
+export const discardMsgUsername = getDiscardMsg("Username");
 
 export const deleteAccountMsg = "Are you sure you want to delete your account?";
 export const logoutMsg = "Are you sure you want to log out?";

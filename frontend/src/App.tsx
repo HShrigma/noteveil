@@ -114,7 +114,7 @@ function App() {
         newUsers[userIndex].password = newPass;
         setTempUsers(newUsers);
     }
-    const handleOnUserNameChange = (id: number, newName: string) => {
+    const handleOnUserNameUpdate = (id: number, newName: string) => {
         const newUsers = [...tempUsers];
         const userIndex = newUsers.findIndex(user => user.id === id);
         if(userIndex === -1) return;
@@ -131,6 +131,7 @@ function App() {
                 onLogout={handleLogout}
                 onUserDelete={handleUserDelete}
                 onUserPasswordChange={handleOnUserPasswordChange}    
+                onUsernameUpdate={handleOnUserNameUpdate}
             />
             <MainScreen 
                 state={state}

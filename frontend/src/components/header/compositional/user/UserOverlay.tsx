@@ -10,10 +10,11 @@ interface UserOverlayProps {
     onClose: () => void;
     onLogout: (withMessage?: boolean) => void;
     onUserPasswordChange: (newPass: string) => void;
+    onUsernameUpdate: (newName:string)=> void;
     onUserDelete: (id: number) => void;
 }
 
-const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPasswordChange, }: UserOverlayProps) => {
+const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate }: UserOverlayProps) => {
     return (
         <>
             {/* On/Off Background */}
@@ -23,11 +24,15 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPass
 
             {/* Sidebar panel */}
             <div
-                className={`fixed top-0 right-0 h-full w-80 bg-[#1a1b26] shadow-2xl transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-6/12 bg-[#1a1b26] shadow-2xl transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="p-6  flex justify-between items-center border-b border-[#2a2f47]">
-                    <UserTopIcon userName={user.userName} OnIconClicked={onClose} isActive={false} />
+                    <UserTopIcon 
+                        userName={user.userName}
+                        OnIconClicked={onClose}
+                        isActive={isOpen}
+                        onUsernameUpdate={onUsernameUpdate} />
                     <button
                         className="cursor-pointer fade-in p-2 rounded-full border-2 border-purple-400 hover:shadow-[0_0_10px_rgba(157,124,216,0.35)] hover:bg-purple-400 hover:text-[#1a1b26] hover:font-extrabold"
                         onClick={onClose}

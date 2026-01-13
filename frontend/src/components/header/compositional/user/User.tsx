@@ -8,9 +8,10 @@ interface UserProps {
     user: UserData;
     onLogout: (withMessage?: boolean) => void;
     onUserPasswordChange: (newPass: string) => void;
+    onUsernameUpdate: (newName:string)=> void;
     onUserDelete: (id: number) => void;
 }
-export const User = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: UserProps) => {
+export const User = ({ user, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate}: UserProps) => {
     const [isUserActive, setIsUserActive] = useState(false);
     return (
         <>
@@ -22,6 +23,7 @@ export const User = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: Us
                 onLogout={onLogout}
                 onUserDelete={onUserDelete}
                 onUserPasswordChange={onUserPasswordChange}
+                onUsernameUpdate={onUsernameUpdate}
             />
         </>
     );

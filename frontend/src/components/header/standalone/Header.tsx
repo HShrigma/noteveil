@@ -10,9 +10,10 @@ interface DefaultHeaderProps {
     currentState: MainState;
     onUserDelete: (id: number) => void;
     onUserPasswordChange: (id:number, newPass: string) => void;
+    onUsernameUpdate: (id:number, newName:string)=> void;
 }
 
-export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete, onUserPasswordChange, }: DefaultHeaderProps) => {
+export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate }: DefaultHeaderProps) => {
     const ctx = useProjectsContext();
     const goToProjectsScreen = () => {
         if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
@@ -31,7 +32,8 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
                 user={user}
                 onLogout={handleLogout}
                 onUserDelete={onUserDelete}
-                onUserPasswordChange={(newPass) => { if (user !== null) onUserPasswordChange(user?.id, newPass); }}
+                onUserPasswordChange={(newPass) => { if (user !== null) onUserPasswordChange(user.id, newPass); }}
+                onUsernameUpdate={(newName) => {if (user !== null) onUsernameUpdate(user.id, newName)}}
             />
             {/* Projects row */}
             {user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
