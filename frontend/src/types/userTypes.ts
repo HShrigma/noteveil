@@ -10,7 +10,16 @@ export const signupValidationParams = {
     maxUser: 20,
     minPassword: 8,
     maxPassword: 32,
+    passwordRequires: { upper: true, lower: true, number: true, symbol: true }
 };
 
-export type signUpErrorType =  "userViolation" | "passwordViolation" | null
+export type signUpErrorType =
+    "userTooShort"
+    | "userTooLong"
+    | "passwordTooShort" 
+    | "passwordTooLong" 
+    | "passwordContentsWrong"
+    | "emailExists"
+    | null
+
 export type UserType = UserData | null;
