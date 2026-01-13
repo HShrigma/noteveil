@@ -1,5 +1,5 @@
 import { useProjectsContext } from '../../../context/projects/projectsContext';
-import { MAIN_STATES,  type MainState } from '../../../utils/registries';
+import { logoutMsg, MAIN_STATES,  type MainState } from '../../../utils/registries';
 import HeaderTop from '../compositional/HeaderTop';
 import ProjectView from '../compositional/ProjectView';
 interface DefaultHeaderProps {
@@ -15,10 +15,13 @@ export const DefaultHeader = ({ onScreenChange, currentState }: DefaultHeaderPro
             ctx.selectProject(null);
         }
     }
+    const handleLogout = () =>{
+        if(window.confirm(logoutMsg)) onScreenChange(MAIN_STATES.LOGIN_DISPLAY);
+    }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop currentState={currentState} onLogout={() => onScreenChange(MAIN_STATES.LOGIN_DISPLAY)}/>
+            <HeaderTop currentState={currentState} onLogout={handleLogout} />
             {/* Projects row */}
             {currentState !== MAIN_STATES.LOGIN_DISPLAY && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
