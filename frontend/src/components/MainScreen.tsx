@@ -6,8 +6,9 @@ import { NoteProvider } from "../context/notes/NoteProvider";
 import Projects from "./projects/standalone/Projects";
 import { useProjectsContext } from "../context/projects/projectsContext";
 import {LoginScreen} from "./login/standalone/LoginScreen";
-import { UserData } from "../types/userTypes";
+import { signUpErrorType, signupValidationParams, UserData } from "../types/userTypes";
 import { useState } from "react";
+import { createTempId } from "../utils/mathUtils";
 
 interface MainSreenProps {
     state: MainState;
@@ -18,15 +19,28 @@ export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
     const ctx = useProjectsContext();
     // PlaceHolder validation
     const sampleUser = {id:1, userName:"test", email: "sample@mail.com", password: "123" };
+    const [tempUsers, setTempUsers] = useState<UserData[]>([sampleUser]);
     const [loginError, setLoginError] = useState(false);
+    const [signupError, setSignupError] = useState<signUpErrorType>(null);
 
     const handleLoginAttempt = ( email:string, password: string) => {
-        if (sampleUser.email === email && sampleUser.password === password) { 
+        if (tempUsers.find(user => user.email === email && user.password === password)) { 
             setLoginError(false);
             onLogin(sampleUser);
             return;
         }
         setLoginError(true);
+    }
+
+    const handleSignupAttempt = ( email:string, userName: string, password: string) => {
+        const err = null;
+        if(err === null) {
+            const newUser = {id: createTempId(), email, userName, password};
+            setTempUsers(prev => [...prev, newUser]);
+            onLogin(newUser);
+        }
+
+        setSignupError(err);
     }
 
     const getScreen = () => {
@@ -51,6 +65,7 @@ export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
             case MAIN_STATES.LOGIN_DISPLAY:
                 return (<LoginScreen 
                     onLogin={handleLoginAttempt} 
+                    onSignup={handleSignupAttempt}
                     loginError={loginError}/>);
             default:
                 console.error(`Unknown State: ${state}`);

@@ -5,6 +5,8 @@ export const MAIN_STATES = {
     LOGIN_DISPLAY: 'loginDisplay'
 } as const;
 
+export type MainState = typeof MAIN_STATES[keyof typeof MAIN_STATES];
+
 const getDiscardMsg = (toWhat: string) => {return `Discard changes to this ${toWhat}?`};
 export const discardMsgNoteTitle = getDiscardMsg("Note Title");
 export const discardMsgNoteContent = getDiscardMsg("Note Content");
@@ -17,4 +19,4 @@ export const discardMsgProjectAdder = getDiscardMsg("Project Adder");
 
 export const logoutMsg = "Are you sure you want to log out?";
 export const invalidLoginMsg = "Invalid email or password";
-export type MainState = typeof MAIN_STATES[keyof typeof MAIN_STATES];
+export const invalidSignupMsg = "Invalid email or password";

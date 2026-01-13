@@ -1,43 +1,53 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
-import { invalidLoginMsg } from "../../../utils/registries";
+import { invalidSignupMsg } from "../../../utils/registries"; 
 
-interface LoginProps {
-    onLogin: (email: string, password: string) => void;
-    onSignupScreenOpen: () => void;
-    loginError: boolean;
+interface SignupProps {
+    onSignup: (email: string, username: string, password: string) => void;
+    onLoginScreenOpen: () => void;
+    signupError: boolean;
 }
-export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) => {
+
+export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps) => {
+    const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onLogin(email, password);
+        onSignup(email, username, password);
     };
+
     return (
         <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center gap-4">
-            <span> don't have an account?
+            
+            {/* Back to Login Button */}
+            <span>
+                Already have an account?
                 <button
                     className="
-                px-4 py-2
-                mx-2.5
-                border-1
-                border-[#7aa2f7]
-                text-[#7aa2f7]
-                font-semibold
-                rounded-lg
-                shadow-[0_0_10px_rgba(122,162,247,0.3)]
-                hover:bg-[#7aa2f7]
-                hover:text-[#1a1b26]
-                hover:shadow-[0_0_14px_rgba(122,162,247,0.6)]
-                transition-all
-                active:scale-95
-                cursor-pointer"
-                    onClick={onSignupScreenOpen}>
-                    Sign Up
+                        px-4 py-2
+                        mx-2.5
+                        border-1
+                        border-[#7aa2f7]
+                        text-[#7aa2f7]
+                        font-semibold
+                        rounded-lg
+                        shadow-[0_0_10px_rgba(122,162,247,0.3)]
+                        hover:bg-[#7aa2f7]
+                        hover:text-[#1a1b26]
+                        hover:shadow-[0_0_14px_rgba(122,162,247,0.6)]
+                        transition-all
+                        active:scale-95
+                        cursor-pointer
+                    "
+                    onClick={onLoginScreenOpen}
+                >
+                    Login
                 </button>
             </span>
 
+            {/* Signup Form */}
             <form
                 onSubmit={handleSubmit}
                 className="
@@ -52,7 +62,7 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                 "
             >
                 <h2 className="text-2xl font-bold text-purple-400 text-center">
-                    Log in
+                    Sign Up
                 </h2>
 
                 {/* Email */}
@@ -74,7 +84,32 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                             outline-none
                             focus:border-[#7aa2f7]
                             focus:shadow-[0_0_10px_rgba(122,162,247,0.35)]
-                            transition-all"
+                            transition-all
+                        "
+                    />
+                </div>
+
+                {/* Username */}
+                <div className="flex flex-col gap-1">
+                    <label className="text-sm text-[#c0caf5]">Username</label>
+                    <input
+                        type="user"
+                        name="user"
+                        autoComplete="user"
+                        value={username}
+                        onChange={e => setUsername(e.target.value)}
+                        required
+                        className="
+                            px-3 py-2
+                            bg-[#16161e]
+                            border border-[#2a2f47]
+                            rounded-md
+                            text-[#c0caf5]
+                            outline-none
+                            focus:border-[#7aa2f7]
+                            focus:shadow-[0_0_10px_rgba(122,162,247,0.35)]
+                            transition-all
+                        "
                     />
                 </div>
 
@@ -84,7 +119,7 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                     <input
                         type="password"
                         name="password"
-                        autoComplete="current-password"
+                        autoComplete="new-password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required
@@ -97,15 +132,17 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                             outline-none
                             focus:border-[#7aa2f7]
                             focus:shadow-[0_0_10px_rgba(122,162,247,0.35)]
-                            transition-all"
+                            transition-all
+                        "
                     />
                 </div>
 
                 <ErrorHint
-                    message={invalidLoginMsg}
-                    toValidate={loginError ? "" : "valid"}
-                    triggerCheck={loginError}
+                    message={invalidSignupMsg}
+                    toValidate={signupError ? "" : "valid"}
+                    triggerCheck={signupError}
                 />
+
                 {/* Submit */}
                 <button
                     type="submit"
@@ -113,8 +150,8 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                         mt-2
                         py-2 rounded-md
                         border-1
-                      border-[#7aa2f7]
-                      text-[#7aa2f7]
+                        border-[#7aa2f7]
+                        text-[#7aa2f7]
                         font-semibold
                         tracking-wide
                         hover:shadow-[0_0_14px_rgba(122,162,247,0.6)]
@@ -122,9 +159,10 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                         hover:text-[#1a1b26]
                         transition-all
                         active:scale-95
-                        cursor-pointer"
+                        cursor-pointer
+                    "
                 >
-                    Login
+                    Sign Up
                 </button>
 
                 {/* Footer */}
@@ -132,8 +170,6 @@ export const Login = ({ onLogin, loginError, onSignupScreenOpen }: LoginProps) =
                     Noteveil © {new Date().getFullYear()}
                 </p>
             </form>
-
         </div>
-
     );
-}
+};
