@@ -1,18 +1,18 @@
 import { useState } from "react";
+import ErrorHint from "../shared/ErrorHint";
 
 interface LoginProps{
     onLogin: (email:string, password:string) => void;
+    loginError: boolean;
 }
 
-export const Login = ({ onLogin }: LoginProps) => {
+export const Login = ({ onLogin, loginError }: LoginProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
-        // Stub: hook real auth here later
-        console.log("Login attempt:", { email, password });
         onLogin(email,password);
     };
 
@@ -40,6 +40,8 @@ export const Login = ({ onLogin }: LoginProps) => {
                     <label className="text-sm text-[#c0caf5]">Email</label>
                     <input
                         type="email"
+                        name="email"
+                        autoComplete="username"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
@@ -62,6 +64,8 @@ export const Login = ({ onLogin }: LoginProps) => {
                     <label className="text-sm text-[#c0caf5]">Password</label>
                     <input
                         type="password"
+                        name="password"
+                        autoComplete="current-password"
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                         required
@@ -79,6 +83,11 @@ export const Login = ({ onLogin }: LoginProps) => {
                     />
                 </div>
 
+                <ErrorHint
+                    message="Invalid email or password"
+                    toValidate={loginError ? "" : "valid"}
+                    triggerCheck={loginError}
+                />
                 {/* Submit */}
                 <button
                     type="submit"
@@ -102,6 +111,7 @@ export const Login = ({ onLogin }: LoginProps) => {
                     Noteveil © {new Date().getFullYear()}
                 </p>
             </form>
+
         </div>
     );
 };
