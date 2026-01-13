@@ -24,9 +24,10 @@ export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
     const [signupError, setSignupError] = useState<signUpErrorType>(null);
 
     const handleLoginAttempt = ( email:string, password: string) => {
-        if (tempUsers.find(user => user.email === email && user.password === password)) { 
+        const foundUser = tempUsers.find(user => user.email === email && user.password === password);
+        if (foundUser) { 
             setLoginError(false);
-            onLogin(sampleUser);
+            onLogin(foundUser);
             return;
         }
         setLoginError(true);

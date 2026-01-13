@@ -1,12 +1,13 @@
+import { UserType } from "../../../types/userTypes";
 import { MAIN_STATES, MainState } from "../../../utils/registries";
 import User from "./user/User";
 interface HeaderTopProps {
+    user: UserType;
     onLogout: () => void;
-    currentState: MainState;
 }
 
-const HeaderTop = ({ currentState, onLogout }: HeaderTopProps) => {
-    const isLogin = currentState === MAIN_STATES.LOGIN_DISPLAY;
+const HeaderTop = ({user, onLogout }: HeaderTopProps) => {
+    const isLogin = user === null;
 
     return (
         <div className={`flex items-center ${isLogin ? "justify-center" : "justify-between"}`}>
@@ -16,7 +17,7 @@ const HeaderTop = ({ currentState, onLogout }: HeaderTopProps) => {
             </h1>
 
             {/* User */}
-            {!isLogin && <User onLogout={onLogout} />}
+            {!isLogin && <User user={user} onLogout={onLogout} />}
         </div>
     );
 };

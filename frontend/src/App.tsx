@@ -6,7 +6,7 @@ import { ProjectsProvider } from './context/projects/ProjectsProvider';
 import { UserData, UserType } from './types/userTypes';
 
 function App() {
-    const [state, setState] = useState<MainState>(MAIN_STATES.PROJECTS_DISPLAY);
+    const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
     const [user, setUser] = useState<UserType>(null);
 
     const handleDisplayChange = (value: MainState) => {
@@ -16,13 +16,22 @@ function App() {
     const handleProjectOpened = (id: number) => {
         handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
     }
-    const handleOnLogin = (user: UserData) => {
+    const handleLogin = (user: UserData) => {
+        setUser(user);
         handleDisplayChange(MAIN_STATES.PROJECTS_DISPLAY);
+    }
+    const handleLogout= () => {
+        setUser(null);
+        handleDisplayChange(MAIN_STATES.LOGIN_DISPLAY);
     }
     return (
         <ProjectsProvider onProjectOpened={handleProjectOpened}>
-            <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
-            <MainScreen state={state} onLogin={handleOnLogin}/>
+            <DefaultHeader 
+                user={user} 
+                onScreenChange={handleDisplayChange}
+                currentState={state} 
+                onLogout={handleLogout}/>
+            <MainScreen state={state} onLogin={handleLogin}/>
         </ProjectsProvider>
     );
 }

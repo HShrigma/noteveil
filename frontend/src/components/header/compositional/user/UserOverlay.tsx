@@ -1,12 +1,14 @@
 import { LogOutIcon, X} from "lucide-react";
 import UserTopIcon from "./UserTopIcon";
+import { UserData } from "../../../../types/userTypes";
 interface UserOverlayProps {
+    user: UserData;
     isOpen: boolean;
     onClose: () => void;
     onLogout: () => void;
 }
 
-const UserOverlay = ({ isOpen, onClose, onLogout }: UserOverlayProps) => {
+const UserOverlay = ({ user, isOpen, onClose, onLogout }: UserOverlayProps) => {
     return (
         <>
             {/* On/Off Background */}           
@@ -21,7 +23,7 @@ const UserOverlay = ({ isOpen, onClose, onLogout }: UserOverlayProps) => {
                 }`}
             >
                 <div className="p-6 flex justify-between items-center border-b border-[#2a2f47]">
-                    <UserTopIcon OnIconClicked={onClose} isActive={false}/>
+                    <UserTopIcon userName={user.userName} OnIconClicked={onClose} isActive={false}/>
                     <button
                         className="cursor-pointer fade-in p-2 rounded-full border-2 border-purple-400 hover:shadow-[0_0_10px_rgba(157,124,216,0.35)] hover:bg-purple-400 hover:text-[#1a1b26] hover:font-extrabold"
                         onClick={onClose}
