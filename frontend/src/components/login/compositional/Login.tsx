@@ -1,5 +1,6 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
+import { invalidLoginMsg } from "../../../utils/registries";
 
 interface LoginProps{
     onLogin: (email:string, password:string) => void;
@@ -81,7 +82,7 @@ export const Login = ({ onLogin, loginError }: LoginProps) => {
                 </div>
 
                 <ErrorHint
-                    message="Invalid email or password"
+                    message={invalidLoginMsg}
                     toValidate={loginError ? "" : "valid"}
                     triggerCheck={loginError}
                 />
