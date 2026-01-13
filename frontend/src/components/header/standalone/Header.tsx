@@ -19,8 +19,9 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
             ctx.selectProject(null);
         }
     }
-    const handleLogout = () =>{
-        if(window.confirm(logoutMsg)) onLogout();
+    const handleLogout = (withMessage?: boolean) =>{
+        if (!withMessage) onLogout(); 
+        if (withMessage && window.confirm(logoutMsg))  onLogout(); 
     }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">

@@ -3,7 +3,7 @@ import { MAIN_STATES, MainState } from "../../../utils/registries";
 import User from "./user/User";
 interface HeaderTopProps {
     user: UserType;
-    onLogout: () => void;
+    onLogout: (withMessage?: boolean) => void;
     onUserDelete: (id: number) => void;
 }
 
