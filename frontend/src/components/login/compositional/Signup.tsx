@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
-import { invalidSignupMsg } from "../../../utils/registries"; 
-import { signUpErrorType } from "../../../types/userTypes";
+import { invalidSignupMsg } from "../../../utils/registries";
+import { getErrorMessageForSignUp, signUpErrorType } from "../../../types/userTypes";
 
 interface SignupProps {
     onSignup: (email: string, username: string, password: string) => void;
@@ -14,6 +14,19 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
+    const isEmailError =
+        signupError === "emailExists" ||
+        signupError === "emailFalse";
+
+    const isUserError =
+        signupError === "userTooShort" ||
+        signupError === "userTooLong";
+
+    const isPasswordError =
+        signupError === "passwordTooShort" ||
+        signupError === "passwordTooLong" ||
+        signupError === "passwordContentsWrong";
+
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSignup(email, username, password);
@@ -21,7 +34,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
 
     return (
         <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center gap-4">
-            
+
             {/* Back to Login Button */}
             <span>
                 Already have an account?
@@ -72,7 +85,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                     <input
                         type="email"
                         name="email"
-                        autoComplete="email"
+                        autoComplete="new-email"
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
@@ -89,6 +102,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                         "
                     />
                 </div>
+                <ErrorHint message={getErrorMessageForSignUp(signupError)} toValidate={isEmailError ? "" : "valid"} triggerCheck={isEmailError} />
 
                 {/* Username */}
                 <div className="flex flex-col gap-1">
@@ -96,7 +110,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                     <input
                         type="user"
                         name="user"
-                        autoComplete="user"
+                        autoComplete="new-user"
                         value={username}
                         onChange={e => setUsername(e.target.value)}
                         required
@@ -113,6 +127,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                         "
                     />
                 </div>
+                <ErrorHint message={getErrorMessageForSignUp(signupError)} toValidate={isUserError ? "" : "valid"} triggerCheck={isUserError} />
 
                 {/* Password */}
                 <div className="flex flex-col gap-1">
@@ -137,6 +152,7 @@ export const Signup = ({ onSignup, signupError, onLoginScreenOpen }: SignupProps
                         "
                     />
                 </div>
+                <ErrorHint message={getErrorMessageForSignUp(signupError)} toValidate={isPasswordError ? "" : "valid"} triggerCheck={isPasswordError} />
 
                 {/* Submit */}
                 <button
