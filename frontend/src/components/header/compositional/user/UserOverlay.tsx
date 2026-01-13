@@ -24,7 +24,7 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPass
 
             {/* Sidebar panel */}
             <div
-                className={`fixed top-0 right-0 h-full w-6/12 bg-[#1a1b26] shadow-2xl transform transition-transform duration-300 ${isOpen ? "translate-x-0" : "translate-x-full"
+                className={`fixed top-0 right-0 h-full w-4/12 bg-[#1a1b26] shadow-2xl transform transition-transform duration-300 slide-left ${isOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
                 <div className="p-6  flex justify-between items-center border-b border-[#2a2f47]">

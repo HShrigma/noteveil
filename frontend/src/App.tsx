@@ -7,8 +7,9 @@ import { signUpErrorType, signupValidationParams, UserData, UserType } from './t
 import { createTempId } from './utils/mathUtils';
 
 function App() {
-    const sampleUser = { id: 1, userName: "test", email: "sample@mail.com", password: "123!@#ABCabc" };
     const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
+
+    const sampleUser = { id: 1, userName: "test", email: "sample@mail.com", password: "123!@#ABCabc" };
     const [user, setUser] = useState<UserType>(null);
     const [tempUsers, setTempUsers] = useState<UserData[]>([sampleUser]);
     // PlaceHolder validation
