@@ -6,18 +6,20 @@ import { signUpErrorType } from "../../../types/userTypes";
 interface LoginScreenProps{
     onLogin: (email:string, password:string) => void;
     onSignup: (email:string, username: string, password:string) => void;
+    isLogin: boolean;
     loginError: boolean;
     signupError: signUpErrorType;
+    onLoginScreenOpen: () => void;
+    onSignupScreenOpen: () => void;
 }
 
-export const LoginScreen = ({ onLogin, onSignup, loginError, signupError }: LoginScreenProps) => {
-    const [isLogin, setIsLogin] = useState(true);
+export const LoginScreen = ({ onLogin, onSignup, onLoginScreenOpen, onSignupScreenOpen, isLogin, loginError, signupError }: LoginScreenProps) => {
 
     return ( 
            isLogin ? 
-           <Login onLogin={onLogin} loginError={loginError} onSignupScreenOpen={() => setIsLogin(false)}/>
+           <Login onLogin={onLogin} loginError={loginError} onSignupScreenOpen={onSignupScreenOpen}/>
            :
-           <Signup onSignup={onSignup} onLoginScreenOpen={() => setIsLogin(true)} signupError={signupError}/>
+           <Signup onSignup={onSignup} onLoginScreenOpen={onLoginScreenOpen} signupError={signupError}/>
            );
 };
 

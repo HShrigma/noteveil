@@ -4,9 +4,10 @@ import User from "./user/User";
 interface HeaderTopProps {
     user: UserType;
     onLogout: () => void;
+    onUserDelete: (id: number) => void;
 }
 
-const HeaderTop = ({user, onLogout }: HeaderTopProps) => {
+const HeaderTop = ({user, onLogout, onUserDelete }: HeaderTopProps) => {
     const isLogin = user === null;
 
     return (
@@ -17,7 +18,7 @@ const HeaderTop = ({user, onLogout }: HeaderTopProps) => {
             </h1>
 
             {/* User */}
-            {!isLogin && <User user={user} onLogout={onLogout} />}
+            {!isLogin && <User user={user} onLogout={onLogout} onUserDelete={onUserDelete} />}
         </div>
     );
 };

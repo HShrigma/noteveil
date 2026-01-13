@@ -7,8 +7,9 @@ import { UserData } from "../../../../types/userTypes";
 interface UserProps {
     user: UserData;
     onLogout: () => void;
+    onUserDelete: (id: number) => void;
 }
-export const User = ({ user, onLogout }: UserProps) => {
+export const User = ({ user, onLogout, onUserDelete }: UserProps) => {
     const [isUserActive, setIsUserActive] = useState(false);
     return (
         <>
@@ -18,6 +19,7 @@ export const User = ({ user, onLogout }: UserProps) => {
                 isOpen={isUserActive}
                 onClose={() => { setIsUserActive(false); triggerScreenBob(200); }}
                 onLogout={onLogout}
+                onUserDelete={onUserDelete}
             />
         </>
     );

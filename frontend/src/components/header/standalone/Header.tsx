@@ -8,9 +8,10 @@ interface DefaultHeaderProps {
     onScreenChange: (value: MainState) => void;
     onLogout: () => void;
     currentState: MainState; 
+    onUserDelete: (id: number) => void;
 }
 
-export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout}: DefaultHeaderProps) => {
+export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete}: DefaultHeaderProps) => {
     const ctx = useProjectsContext();
     const goToProjectsScreen = () => {
         if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
@@ -24,7 +25,7 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout}: D
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop user={user} onLogout={handleLogout} />
+            <HeaderTop user={user} onLogout={handleLogout} onUserDelete={onUserDelete} />
             {/* Projects row */}
             {user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
