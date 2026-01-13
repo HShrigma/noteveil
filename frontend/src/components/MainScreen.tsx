@@ -5,7 +5,7 @@ import { TaskProvider } from "../context/tasks/TaskProvider";
 import { NoteProvider } from "../context/notes/NoteProvider";
 import Projects from "./projects/standalone/Projects";
 import { useProjectsContext } from "../context/projects/projectsContext";
-import {Login} from "./login/Login";
+import {LoginScreen} from "./login/standalone/LoginScreen";
 import { UserData } from "../types/userTypes";
 import { useState } from "react";
 
@@ -17,11 +17,15 @@ interface MainSreenProps {
 export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
     const ctx = useProjectsContext();
     // PlaceHolder validation
-    const sampleUser = {id:1, email: "sample@mail.com", password: "123" };
+    const sampleUser = {id:1, userName:"test", email: "sample@mail.com", password: "123" };
     const [loginError, setLoginError] = useState(false);
 
     const handleLoginAttempt = ( email:string, password: string) => {
-        if (sampleUser.email === email && sampleUser.password === password) { onLogin(sampleUser); return;}
+        if (sampleUser.email === email && sampleUser.password === password) { 
+            setLoginError(false);
+            onLogin(sampleUser);
+            return;
+        }
         setLoginError(true);
     }
 
@@ -45,7 +49,7 @@ export const MainScreen = ({ state, onLogin }: MainSreenProps) => {
             case MAIN_STATES.PROJECTS_DISPLAY:
                 return (<Projects />);
             case MAIN_STATES.LOGIN_DISPLAY:
-                return (<Login 
+                return (<LoginScreen 
                     onLogin={handleLoginAttempt} 
                     loginError={loginError}/>);
             default:

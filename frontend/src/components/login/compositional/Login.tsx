@@ -1,21 +1,18 @@
 import { useState } from "react";
-import ErrorHint from "../shared/ErrorHint";
+import ErrorHint from "../../shared/ErrorHint";
 
 interface LoginProps{
     onLogin: (email:string, password:string) => void;
     loginError: boolean;
 }
-
 export const Login = ({ onLogin, loginError }: LoginProps) => {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
 
         onLogin(email,password);
     };
-
     return (
         <div className="min-h-[calc(100vh-5rem)] flex items-center justify-center">
             <form
@@ -113,7 +110,6 @@ export const Login = ({ onLogin, loginError }: LoginProps) => {
             </form>
 
         </div>
+ 
     );
-};
-
-export default Login;
+}

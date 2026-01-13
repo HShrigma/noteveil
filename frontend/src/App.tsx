@@ -17,7 +17,7 @@ function App() {
         handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
     }
     const handleOnLogin = (user: UserData) => {
-        
+        handleDisplayChange(MAIN_STATES.PROJECTS_DISPLAY);
     }
     return (
         <ProjectsProvider onProjectOpened={handleProjectOpened}>
