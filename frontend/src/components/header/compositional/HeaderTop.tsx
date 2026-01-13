@@ -3,11 +3,12 @@ import { MAIN_STATES, MainState } from "../../../utils/registries";
 import User from "./user/User";
 interface HeaderTopProps {
     user: UserType;
+    onUserPasswordChange: (newPass: string) => void;
     onLogout: (withMessage?: boolean) => void;
     onUserDelete: (id: number) => void;
 }
 
-const HeaderTop = ({user, onLogout, onUserDelete }: HeaderTopProps) => {
+const HeaderTop = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: HeaderTopProps) => {
     const isLogin = user === null;
 
     return (
@@ -18,7 +19,12 @@ const HeaderTop = ({user, onLogout, onUserDelete }: HeaderTopProps) => {
             </h1>
 
             {/* User */}
-            {!isLogin && <User user={user} onLogout={onLogout} onUserDelete={onUserDelete} />}
+            {!isLogin && <User
+                user={user}
+                onLogout={onLogout}
+                onUserDelete={onUserDelete}
+                onUserPasswordChange={onUserPasswordChange}
+            />}
         </div>
     );
 };

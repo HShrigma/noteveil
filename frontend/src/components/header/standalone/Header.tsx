@@ -1,17 +1,18 @@
 import { useProjectsContext } from '../../../context/projects/projectsContext';
 import { UserType } from '../../../types/userTypes';
-import { logoutMsg, MAIN_STATES,  type MainState } from '../../../utils/registries';
+import { logoutMsg, MAIN_STATES, type MainState } from '../../../utils/registries';
 import HeaderTop from '../compositional/HeaderTop';
 import ProjectView from '../compositional/ProjectView';
 interface DefaultHeaderProps {
     user: UserType;
     onScreenChange: (value: MainState) => void;
     onLogout: () => void;
-    currentState: MainState; 
+    currentState: MainState;
     onUserDelete: (id: number) => void;
+    onUserPasswordChange: (id:number, newPass: string) => void;
 }
 
-export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete}: DefaultHeaderProps) => {
+export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete, onUserPasswordChange, }: DefaultHeaderProps) => {
     const ctx = useProjectsContext();
     const goToProjectsScreen = () => {
         if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
@@ -19,29 +20,34 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
             ctx.selectProject(null);
         }
     }
-    const handleLogout = (withMessage?: boolean) =>{
-        if (!withMessage) onLogout(); 
-        if (withMessage && window.confirm(logoutMsg))  onLogout(); 
+    const handleLogout = (withMessage?: boolean) => {
+        if (!withMessage) onLogout();
+        if (withMessage && window.confirm(logoutMsg)) onLogout();
     }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop user={user} onLogout={handleLogout} onUserDelete={onUserDelete} />
+            <HeaderTop
+                user={user}
+                onLogout={handleLogout}
+                onUserDelete={onUserDelete}
+                onUserPasswordChange={(newPass) => { if (user !== null) onUserPasswordChange(user?.id, newPass); }}
+            />
             {/* Projects row */}
             {user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
                 <button
-                    onClick={ () => goToProjectsScreen()}
+                    onClick={() => goToProjectsScreen()}
                     className={
-                        currentState === MAIN_STATES.PROJECTS_DISPLAY ? 
-                        `px-4 py-1 rounded-sm border-2
+                        currentState === MAIN_STATES.PROJECTS_DISPLAY ?
+                            `px-4 py-1 rounded-sm border-2
                       bg-[#7aa2f7]
                       text-[#1a1b26]
                         fade-in
                         font-semibold tracking-wide
-                        ` 
-                        : 
-                        `flex-shrink-0 px-4 py-1 rounded-sm border-2 border-[#7aa2f7]
+                        `
+                            :
+                            `flex-shrink-0 px-4 py-1 rounded-sm border-2 border-[#7aa2f7]
                       text-[#7aa2f7] font-semibold tracking-wide
                         transition-all duration-150
                       hover:bg-[#7aa2f7] hover:text-[#1a1b26]
@@ -57,7 +63,7 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
                 <div className="h-6 w-px bg-[#2a2f47]" />
 
                 {/* Project buttons */}
-                { ctx.projects.map(project => (
+                {ctx.projects.map(project => (
                     <button
                         key={project.id}
                         onClick={() => { if (ctx.activeProject.id !== project.id) ctx.selectProject(project.id) }}
@@ -69,8 +75,8 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
                                 font-mono font-semibold tracking-wide
                                 transition-all duration-200
                                 cursor-default opacity-95
-                                shadow-[0_0_14px_rgba(187,154,247,0.55)] slide-left` 
-                            :
+                                shadow-[0_0_14px_rgba(187,154,247,0.55)] slide-left`
+                                :
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#2a2f47]
                               bg-[#16161e] text-[#c0caf5]
@@ -89,8 +95,8 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
                 ))}
             </div>
 
-}
-                        {/* Mode switch (Tasks / Notes) */}
+            }
+            {/* Mode switch (Tasks / Notes) */}
             {(currentState === MAIN_STATES.NOTES_DISPLAY || currentState === MAIN_STATES.TASK_DISPLAY) && <ProjectView currentState={currentState} onScreenChange={onScreenChange} />}
         </header>
     );

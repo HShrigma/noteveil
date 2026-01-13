@@ -7,9 +7,10 @@ import { UserData } from "../../../../types/userTypes";
 interface UserProps {
     user: UserData;
     onLogout: (withMessage?: boolean) => void;
+    onUserPasswordChange: (newPass: string) => void;
     onUserDelete: (id: number) => void;
 }
-export const User = ({ user, onLogout, onUserDelete }: UserProps) => {
+export const User = ({ user, onLogout, onUserDelete, onUserPasswordChange, }: UserProps) => {
     const [isUserActive, setIsUserActive] = useState(false);
     return (
         <>
@@ -20,6 +21,7 @@ export const User = ({ user, onLogout, onUserDelete }: UserProps) => {
                 onClose={() => { setIsUserActive(false); triggerScreenBob(200); }}
                 onLogout={onLogout}
                 onUserDelete={onUserDelete}
+                onUserPasswordChange={onUserPasswordChange}
             />
         </>
     );

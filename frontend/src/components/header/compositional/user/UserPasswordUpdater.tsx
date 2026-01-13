@@ -1,0 +1,140 @@
+import React, { useState, useEffect } from "react";
+import ErrorHint from "../../../shared/ErrorHint";
+import { UserData } from "../../../../types/userTypes";
+
+interface UserPasswordUpdaterProps {
+    user: UserData;
+    onPasswordChange: (newPassword: string) => void;
+    resetKey?: any;
+}
+
+const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordUpdaterProps) => {
+    const [isEditing, setIsEditing] = useState(false);
+    const [current, setCurrent] = useState("");
+    const [confirmCurrent, setConfirmCurrent] = useState("");
+    const [newPass, setNewPass] = useState("");
+    const [confirmNew, setConfirmNew] = useState("");
+    const [error, setError] = useState("");
+
+    useEffect(() => {
+        setIsEditing(false);
+        setCurrent("");
+        setConfirmCurrent("");
+        setNewPass("");
+        setConfirmNew("");
+        setError("");
+    }, [resetKey]);
+
+    const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+
+        // validation
+        if (current !== user.password) {
+            setError("Current password is incorrect");
+            return;
+        }
+        if (current !== confirmCurrent) {
+            setError("Current password confirmation does not match");
+            return;
+        }
+        if (!newPass) {
+            setError("New password cannot be empty");
+            return;
+        }
+        if (newPass !== confirmNew) {
+            setError("New password confirmation does not match");
+            return;
+        }
+
+        // all good
+        setIsEditing(false);
+        setCurrent("");
+        setConfirmCurrent("");
+        setNewPass("");
+        setConfirmNew("");
+        setError("");
+
+        onPasswordChange(newPass);
+    };
+
+    return (
+        <div className="mt-4">
+            {isEditing ? (
+                <form
+                    onSubmit={onFormSubmit}
+                    className="flex flex-col gap-3 p-4 border border-blue-500/40 rounded-md bg-[#16161e]"
+                >
+                    <input
+                        type="password"
+                        placeholder="Current Password"
+                        value={current}
+                        onChange={(e) => setCurrent(e.target.value)}
+                        autoComplete="current-password"
+                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                        autoFocus
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Confirm Current Password"
+                        value={confirmCurrent}
+                        onChange={(e) => setConfirmCurrent(e.target.value)}
+                        autoComplete="off"
+                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="New Password"
+                        value={newPass}
+                        onChange={(e) => setNewPass(e.target.value)}
+                        autoComplete="new-password"
+                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                    />
+
+                    <input
+                        type="password"
+                        placeholder="Confirm New Password"
+                        value={confirmNew}
+                        onChange={(e) => setConfirmNew(e.target.value)}
+                        autoComplete="new-password"
+                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                    />
+
+                    <div className="flex gap-2">
+                        <button
+                            type="button"
+                            onClick={() => setIsEditing(false)}
+                            className="flex-1 px-3 py-2 rounded-md border border-[#2a2f47] hover:bg-[#2a2f47]"
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            type="submit"
+                            disabled={!current || !confirmCurrent || !newPass || !confirmNew}
+                            className="flex-1 px-3 py-2 rounded-md bg-blue-500 text-[#1a1b26] font-semibold disabled:opacity-50"
+                        >
+                            Update
+                        </button>
+                    </div>
+
+                    <ErrorHint
+                        message={error}
+                        toValidate={error ? "" : "valid"}
+                        triggerCheck={!!error}
+                    />
+                </form>
+            ) : (
+                <button
+                    type="button"
+                    className="px-3 py-2 rounded-md border border-[#2a2f47] hover:bg-[#2a2f47]"
+                    onClick={() => setIsEditing(true)}
+                >
+                    Change Password
+                </button>)}
+        </div>
+    );
+};
+
+export default UserPasswordUpdater;

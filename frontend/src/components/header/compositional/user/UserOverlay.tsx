@@ -2,16 +2,18 @@ import { LogOutIcon, X } from "lucide-react";
 import UserTopIcon from "./UserTopIcon";
 import { UserData } from "../../../../types/userTypes";
 import UserAccountDeleter from "./UserAccountDeleter";
+import UserPasswordUpdater from "./UserPasswordUpdater";
 
 interface UserOverlayProps {
     user: UserData;
     isOpen: boolean;
     onClose: () => void;
     onLogout: (withMessage?: boolean) => void;
-    onUserDelete: (id:number) => void;
+    onUserPasswordChange: (newPass: string) => void;
+    onUserDelete: (id: number) => void;
 }
 
-const UserOverlay = ({ user, isOpen, onClose, onLogout , onUserDelete}: UserOverlayProps) => {
+const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPasswordChange, }: UserOverlayProps) => {
     return (
         <>
             {/* On/Off Background */}
@@ -34,18 +36,22 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout , onUserDelete}: UserOver
                     </button>
                 </div>
                 <div className="fade-in p-6 text-[#c0caf5] flex flex-col gap-3">
+                    <UserPasswordUpdater
+                        user={user}
+                        onPasswordChange={onUserPasswordChange}
+                        resetKey={isOpen} />
                     <button
                         onClick={() => onLogout(true)}
                         className=" flex items-center font-medium border-1 gap-2 p-2 rounded-md text-[#c0caf5] hover:bg-purple-400 hover:text-[#1a1b26] transition-colors cursor-pointer"
                     >
                         <LogOutIcon /> Logout
                     </button>
-                   <UserAccountDeleter 
+                    <UserAccountDeleter
                         user={user}
                         onUserDelete={onUserDelete}
-                        onLogout={onLogout} 
+                        onLogout={onLogout}
                         resetKey={isOpen}
-                    /> 
+                    />
                 </div>
             </div>
         </>

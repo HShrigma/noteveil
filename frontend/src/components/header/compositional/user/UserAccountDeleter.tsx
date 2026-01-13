@@ -16,7 +16,6 @@ const UserAccountDeleter = ({ user, onUserDelete, onLogout, resetKey }: UserAcco
     const [password, setPassword] = useState("");
     const [isError, setIsError] = useState(false);
 
-    // Reset when overlay opens or optional resetKey changes
     useEffect(() => {
         setIsDelete(false);
         setPassword("");

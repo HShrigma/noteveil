@@ -106,6 +106,22 @@ function App() {
         setIsLogin(false);
         setLoginError(false);
     } 
+    const handleOnUserPasswordChange = (id: number, newPass: string) => {
+        const newUsers = [...tempUsers];
+        const userIndex = newUsers.findIndex(user => user.id === id);
+        if(userIndex === -1) return;
+        
+        newUsers[userIndex].password = newPass;
+        setTempUsers(newUsers);
+    }
+    const handleOnUserNameChange = (id: number, newName: string) => {
+        const newUsers = [...tempUsers];
+        const userIndex = newUsers.findIndex(user => user.id === id);
+        if(userIndex === -1) return;
+        
+        newUsers[userIndex].userName = newName;
+        setTempUsers(newUsers);
+    }
     return (
         <ProjectsProvider onProjectOpened={handleProjectOpened}>
             <DefaultHeader 
@@ -113,7 +129,9 @@ function App() {
                 onScreenChange={handleDisplayChange}
                 currentState={state} 
                 onLogout={handleLogout}
-                onUserDelete={handleUserDelete}/>
+                onUserDelete={handleUserDelete}
+                onUserPasswordChange={handleOnUserPasswordChange}    
+            />
             <MainScreen 
                 state={state}
                 loginError={loginError}
