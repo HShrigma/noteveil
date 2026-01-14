@@ -1,7 +1,6 @@
 import { useState } from "react";
 import {
     signUpErrorType,
-    signupValidationParams,
     UserContextResult,
     UserData,
     UserType
