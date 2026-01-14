@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import ErrorHint from "../../../shared/ErrorHint";
 import { useUserContext } from "../../../../context/users/userContext";
+import { getErrorMessageForSignUp } from "../../../../hooks/users/userErrorHelper";
 
 
 interface UserPasswordUpdaterProps {
@@ -49,7 +50,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
 
         const passErr = await ctx.updatePassword(newPass);
         if(passErr !== null){
-            setError(passErr);
+            setError(getErrorMessageForSignUp(passErr));
             return;
         }
         // all good

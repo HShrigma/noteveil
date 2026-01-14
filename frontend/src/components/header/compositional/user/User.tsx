@@ -16,7 +16,6 @@ export const User = ({ onLogout}: UserProps ) => {
         ctx.user !== null && 
         <>
             <UserTopIcon 
-                userName={ctx.user.userName} 
                 OnIconClicked={() => { setIsUserActive(true); triggerScreenBob(200); }} 
                 isActive={isUserActive} 
             />

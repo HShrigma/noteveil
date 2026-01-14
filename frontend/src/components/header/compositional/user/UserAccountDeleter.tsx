@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import ConfirmDeleteButton from "../../../shared/ConfirmDeleteButton";
 import ErrorHint from "../../../shared/ErrorHint";
-import { UserData } from "../../../../types/userTypes";
+import { useUserContext } from "../../../../context/users/userContext";
 import { deleteAccountMsg } from "../../../../utils/registries";
 
 interface UserAccountDeleterProps {
-    user: UserData;
-    onUserDelete: (id: number) => void;
     onLogout: () => void;
     resetKey?: any;
 }
 
-const UserAccountDeleter = ({ user, onUserDelete, onLogout, resetKey }: UserAccountDeleterProps) => {
+const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => {
     const [isDelete, setIsDelete] = useState(false);
     const [password, setPassword] = useState("");
     const [isError, setIsError] = useState(false);
+
+    const ctx = useUserContext();
 
     useEffect(() => {
         setIsDelete(false);
@@ -24,16 +24,18 @@ const UserAccountDeleter = ({ user, onUserDelete, onLogout, resetKey }: UserAcco
 
     const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if(ctx.user === null) return;
 
-        if (password !== user.password) {
+        if (password !== ctx.user.password) {
             setIsError(true);
             return;
         }
+
         if (!window.confirm(deleteAccountMsg)) return;
         setIsDelete(false);
         setIsError(false);
         setPassword("");
-        onUserDelete(user.id);
+        ctx.deleteUser();
         onLogout();
     };
 

@@ -68,8 +68,9 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         onLogoutSuccess();
     };
 
-    const deleteUser = (id: number) => {
-        setTempUsers(prev => prev.filter(u => u.id !== id));
+    const deleteUser = () => {
+        if(user === null) return;
+        setTempUsers(prev => prev.filter(u => u.id !== user.id));
     };
 
     const updatePassword = async ( newPass: string) => {
