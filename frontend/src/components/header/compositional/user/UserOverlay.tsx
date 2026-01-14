@@ -27,11 +27,7 @@ const UserOverlay = ({ isOpen, onClose, onLogout, }: UserOverlayProps) => {
                     }`}
             >
                 <div className="p-6  flex justify-between items-center border-b border-[#2a2f47]">
-                    <UserTopIcon
-                        userName={ctx.user.userName}
-                        OnIconClicked={onClose}
-                        isActive={isOpen}
-                        onUsernameUpdate={ctx.updateUserName} />
+                    <UserTopIcon OnIconClicked={onClose} isActive={isOpen}/>
                     <button
                         className="cursor-pointer fade-in p-2 rounded-full border-2 border-purple-400 hover:shadow-[0_0_10px_rgba(157,124,216,0.35)] hover:bg-purple-400 hover:text-[#1a1b26] hover:font-extrabold"
                         onClick={onClose}
@@ -41,8 +37,6 @@ const UserOverlay = ({ isOpen, onClose, onLogout, }: UserOverlayProps) => {
                 </div>
                 <div className="fade-in p-6 text-[#c0caf5] flex flex-col gap-3">
                     <UserPasswordUpdater
-                        user={ctx.user}
-                        onPasswordChange={ctx.updatePassword}
                         resetKey={isOpen} />
                     <button
                         onClick={() => onLogout(true)}

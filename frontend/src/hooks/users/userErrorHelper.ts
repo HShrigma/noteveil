@@ -37,16 +37,35 @@ const getPasswordContainsHint = () => {
     return res;
 }
 
-export const getSignupLengthError = (userName: string, password: string) => {
-    if (userName.length < signupValidationParams.minUser) return "userTooShort";
-    if (userName.length > signupValidationParams.maxUser) return "userTooLong";
+export const getUserSignupLengthError = (username: string) => {
+    if (username.length < signupValidationParams.minUser) return "userTooShort";
+    if (username.length > signupValidationParams.maxUser) return "userTooLong";
+    return null;
+}
 
+export const getPasswordSignupLengthError = (password: string) => {
     if (password.length < signupValidationParams.minPassword) return "passwordTooShort";
     if (password.length > signupValidationParams.maxPassword) return "passwordTooLong";
+    return null;
+}
+
+export const getSignupLengthError = (username: string, password: string) => {
+    const userError = getUserSignupLengthError(username);
+    if(userError !== null) return userError;
+
+    const passError = getPasswordValidationError(password);
+    if(passError !== null) return passError;
 
     return null;
 };
 
+export const getPasswordValidationError = (password: string) => {
+    const lengthErr = getPasswordSignupLengthError(password);
+        if (lengthErr !== null) return lengthErr;
+        if (!isPasswordValid(password)) return "passwordContentsWrong";
+        return null;
+}
+    
 export const isPasswordValid = (password: string) => {
     const { upper, lower, number, symbol } = signupValidationParams.passwordRequires;
 

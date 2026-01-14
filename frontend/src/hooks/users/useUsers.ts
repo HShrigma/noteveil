@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { signUpErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid } from "./userErrorHelper";
+import { getPasswordSignupLengthError, getPasswordValidationError, getSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid } from "./userErrorHelper";
 
 const sampleUser: UserData = {
     id: 1,
@@ -18,12 +18,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [signupError, setSignupError] = useState<signUpErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
 
-    
-    const getSignupValidationError = (
-        email: string,
-        userName: string,
-        password: string
-    ): signUpErrorType => {
+    const getSignupValidationError = ( email: string, userName: string, password: string): signUpErrorType => {
         const lengthErr = getSignupLengthError(userName, password);
         if (lengthErr) return lengthErr;
 
@@ -33,6 +28,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         return null;
     };
+
 
     const login = (email: string, password: string) => {
         const foundUser = tempUsers.find(
@@ -76,14 +72,19 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setTempUsers(prev => prev.filter(u => u.id !== id));
     };
 
-    const updatePassword = ( newPass: string) => {
-        if(user === null) return;
+    const updatePassword = async ( newPass: string) => {
+        if(user === null) return "userNonExistent";
+        const passError = getPasswordValidationError(newPass);
+        if(passError !== null) return passError;
+
         const newUser = user;
         newUser.password = newPass;
         setTempUsers(prev =>
             prev.map(u => (u.id === newUser.id ? { ...u, password: newPass } : u))
         );
         setUser(newUser);
+
+        return null;
     };
 
     const updateUserName = async (newName: string) => {

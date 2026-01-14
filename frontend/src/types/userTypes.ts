@@ -14,14 +14,15 @@ export const signupValidationParams = {
 };
 
 export type signUpErrorType =
-    "userTooShort"
+    null
     | "userTooLong"
     | "passwordTooShort" 
     | "passwordTooLong" 
     | "passwordContentsWrong"
     | "emailExists"
     | "emailFalse"
-    | null;
+    | "userTooShort"
+    | "userNonExistent";
 
 export type UserType = UserData | null;
 
@@ -45,7 +46,7 @@ export type UserContextResult = {
     logout: () => void,
 
     deleteUser: (id: number) => void,
-    updatePassword: (newPass: string) => void,
+    updatePassword: (newPass: string) => Promise<signUpErrorType>,
     updateUserName:(newName: string) => Promise<void>,
 
     openLoginScreen: () => void,

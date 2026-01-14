@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from "react";
 import ErrorHint from "../../../shared/ErrorHint";
-import { UserData } from "../../../../types/userTypes";
+import { useUserContext } from "../../../../context/users/userContext";
+
 
 interface UserPasswordUpdaterProps {
-    user: UserData;
-    onPasswordChange: (newPassword: string) => void;
     resetKey?: any;
 }
 
-const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordUpdaterProps) => {
+const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
     const [isEditing, setIsEditing] = useState(false);
     const [current, setCurrent] = useState("");
     const [confirmCurrent, setConfirmCurrent] = useState("");
@@ -16,6 +15,7 @@ const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordU
     const [confirmNew, setConfirmNew] = useState("");
     const [error, setError] = useState("");
 
+    const ctx = useUserContext();
     useEffect(() => {
         setIsEditing(false);
         setCurrent("");
@@ -25,11 +25,12 @@ const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordU
         setError("");
     }, [resetKey]);
 
-    const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
+        if(ctx.user === null) return;
         // validation
-        if (current !== user.password) {
+        if (current !== ctx.user.password) {
             setError("Current password is incorrect");
             return;
         }
@@ -46,6 +47,11 @@ const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordU
             return;
         }
 
+        const passErr = await ctx.updatePassword(newPass);
+        if(passErr !== null){
+            setError(passErr);
+            return;
+        }
         // all good
         setIsEditing(false);
         setCurrent("");
@@ -53,8 +59,6 @@ const UserPasswordUpdater = ({ user, onPasswordChange, resetKey }: UserPasswordU
         setNewPass("");
         setConfirmNew("");
         setError("");
-
-        onPasswordChange(newPass);
     };
 
     return (
