@@ -1,6 +1,5 @@
 import { useProjectsContext } from '../../../context/projects/projectsContext';
 import { useUserContext } from '../../../context/users/userContext';
-import { UserType } from '../../../types/userTypes';
 import { logoutMsg, MAIN_STATES, type MainState } from '../../../utils/registries';
 import HeaderTop from '../compositional/HeaderTop';
 import ProjectView from '../compositional/ProjectView';

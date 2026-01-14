@@ -1,21 +1,20 @@
 import { LogOutIcon, X } from "lucide-react";
 import UserTopIcon from "./UserTopIcon";
-import { UserData } from "../../../../types/userTypes";
 import UserAccountDeleter from "./UserAccountDeleter";
 import UserPasswordUpdater from "./UserPasswordUpdater";
+import { useUserContext } from "../../../../context/users/userContext";
 
 interface UserOverlayProps {
-    user: UserData;
     isOpen: boolean;
     onClose: () => void;
     onLogout: (withMessage?: boolean) => void;
-    onUserPasswordChange: (newPass: string) => void;
-    onUsernameUpdate: (newName:string)=> void;
-    onUserDelete: (id: number) => void;
 }
 
-const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate }: UserOverlayProps) => {
+const UserOverlay = ({ isOpen, onClose, onLogout, }: UserOverlayProps) => {
+    const ctx = useUserContext();
+
     return (
+        ctx.user !== null &&
         <>
             {/* On/Off Background */}
             <div
@@ -28,11 +27,11 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPass
                     }`}
             >
                 <div className="p-6  flex justify-between items-center border-b border-[#2a2f47]">
-                    <UserTopIcon 
-                        userName={user.userName}
+                    <UserTopIcon
+                        userName={ctx.user.userName}
                         OnIconClicked={onClose}
                         isActive={isOpen}
-                        onUsernameUpdate={onUsernameUpdate} />
+                        onUsernameUpdate={ctx.updateUserName} />
                     <button
                         className="cursor-pointer fade-in p-2 rounded-full border-2 border-purple-400 hover:shadow-[0_0_10px_rgba(157,124,216,0.35)] hover:bg-purple-400 hover:text-[#1a1b26] hover:font-extrabold"
                         onClick={onClose}
@@ -42,8 +41,8 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPass
                 </div>
                 <div className="fade-in p-6 text-[#c0caf5] flex flex-col gap-3">
                     <UserPasswordUpdater
-                        user={user}
-                        onPasswordChange={onUserPasswordChange}
+                        user={ctx.user}
+                        onPasswordChange={ctx.updatePassword}
                         resetKey={isOpen} />
                     <button
                         onClick={() => onLogout(true)}
@@ -52,8 +51,8 @@ const UserOverlay = ({ user, isOpen, onClose, onLogout, onUserDelete, onUserPass
                         <LogOutIcon /> Logout
                     </button>
                     <UserAccountDeleter
-                        user={user}
-                        onUserDelete={onUserDelete}
+                        user={ctx.user}
+                        onUserDelete={ctx.deleteUser}
                         onLogout={onLogout}
                         resetKey={isOpen}
                     />

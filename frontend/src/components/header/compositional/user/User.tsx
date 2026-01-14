@@ -18,15 +18,12 @@ export const User = ({ onLogout}: UserProps ) => {
             <UserTopIcon 
                 userName={ctx.user.userName} 
                 OnIconClicked={() => { setIsUserActive(true); triggerScreenBob(200); }} 
-                isActive={isUserActive} />
+                isActive={isUserActive} 
+            />
             <UserOverlay
-                user={ctx.user}
                 isOpen={isUserActive}
                 onClose={() => { setIsUserActive(false); triggerScreenBob(200); }}
                 onLogout={onLogout}
-                onUserDelete={ctx.deleteUser}
-                onUserPasswordChange={ctx.updatePassword}
-                onUsernameUpdate={ctx.updateUserName}
             />
         </>
     );
