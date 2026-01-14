@@ -1,4 +1,4 @@
-import { userErrorType, signupValidationParams } from "../../types/userTypes";
+import { userErrorType, signupValidationParams, UserData } from "../../types/userTypes";
 
 const getLengthHint = (isPassword: boolean) => {
     const min = isPassword ? signupValidationParams.minPassword : signupValidationParams.minUser;
@@ -51,21 +51,21 @@ export const getPasswordSignupLengthError = (password: string) => {
 
 export const getSignupLengthError = (username: string, password: string) => {
     const userError = getUserSignupLengthError(username);
-    if(userError !== null) return userError;
+    if (userError !== null) return userError;
 
     const passError = getPasswordValidationError(password);
-    if(passError !== null) return passError;
+    if (passError !== null) return passError;
 
     return null;
 };
 
 export const getPasswordValidationError = (password: string) => {
     const lengthErr = getPasswordSignupLengthError(password);
-        if (lengthErr !== null) return lengthErr;
-        if (!isPasswordValid(password)) return "passwordContentsWrong";
-        return null;
+    if (lengthErr !== null) return lengthErr;
+    if (!isPasswordValid(password)) return "passwordContentsWrong";
+    return null;
 }
-    
+
 export const isPasswordValid = (password: string) => {
     const { upper, lower, number, symbol } = signupValidationParams.passwordRequires;
 
@@ -89,7 +89,15 @@ export const getErrorMessageForSignUp = (err: userErrorType) => {
         default: return ""
     }
 }
-export const isErrorTypeEmail = (err: userErrorType) => 
+
+export const getSignupValidationError = async (email: string, userName: string, password: string, users: UserData[]): Promise<userErrorType> => {
+    const lengthErr = getSignupLengthError(userName, password);
+    if (lengthErr) return lengthErr;
+    if (users.some(u => u.email === email)) return "emailExists";
+    if (!isPasswordValid(password)) return "passwordContentsWrong";
+    return null;
+};
+export const isErrorTypeEmail = (err: userErrorType) =>
     err === "emailExists" || err === "emailFalse";
 
 export const isErrorTypeUser = (err: userErrorType) =>
