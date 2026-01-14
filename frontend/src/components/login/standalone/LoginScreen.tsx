@@ -1,24 +1,22 @@
 import { Login } from "../compositional/Login";
 import { Signup } from "../compositional/Signup";
 import { signUpErrorType } from "../../../types/userTypes";
+import { useUserContext } from "../../../context/users/userContext";
 
-interface LoginScreenProps{
-    onLogin: (email:string, password:string) => void;
-    onSignup: (email:string, username: string, password:string) => void;
-    isLogin: boolean;
-    loginError: boolean;
-    signupError: signUpErrorType;
-    onLoginScreenOpen: () => void;
-    onSignupScreenOpen: () => void;
-}
 
-export const LoginScreen = ({ onLogin, onSignup, onLoginScreenOpen, onSignupScreenOpen, isLogin, loginError, signupError }: LoginScreenProps) => {
-
+export const LoginScreen = () => {
+    const userCtx = useUserContext();
     return ( 
-           isLogin ? 
-           <Login onLogin={onLogin} loginError={loginError} onSignupScreenOpen={onSignupScreenOpen}/>
+           userCtx.isLogin ? 
+           <Login 
+                onLogin={userCtx.login}
+                loginError={userCtx.loginError}
+                onSignupScreenOpen={userCtx.openSignupScreen} />
            :
-           <Signup onSignup={onSignup} onLoginScreenOpen={onLoginScreenOpen} signupError={signupError}/>
+            <Signup
+                onSignup={userCtx.signup}
+                signupError={userCtx.signupError}
+                onLoginScreenOpen={userCtx.openLoginScreen} />
            );
 };
 
