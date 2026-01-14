@@ -27,8 +27,9 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isAct
             return;
         }
     }
-    const onSubmit = (newValue:string) => {
+    const handleSubmit = (newValue:string) => {
         onUsernameUpdate?.(newValue);
+        setIsEditing(false);
     }
     const initials = userName
         .split(" ")
@@ -52,7 +53,7 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isAct
                     isActive={isEditing} 
                     discardMsg={discardMsgUsername}
                     onActivityRequest={onActivityRequest}
-                    onSubmit={onSubmit} />
+                    onSubmit={handleSubmit} />
             </div>
             :
             <div
