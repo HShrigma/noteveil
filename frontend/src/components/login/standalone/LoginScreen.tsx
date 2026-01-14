@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Login } from "../compositional/Login";
 import { Signup } from "../compositional/Signup";
 import { signUpErrorType } from "../../../types/userTypes";

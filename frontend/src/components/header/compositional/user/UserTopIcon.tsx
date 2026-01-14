@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import EditableTitle from "../../../shared/title/EditableTitle";
 import { discardMsgUsername } from "../../../../utils/registries";
+import ErrorHint from "../../../shared/ErrorHint";
 
 interface UserTopIconProps {
     isActive: boolean;

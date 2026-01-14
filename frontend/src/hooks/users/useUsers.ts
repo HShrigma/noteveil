@@ -2,10 +2,12 @@ import { useState } from "react";
 import {
     signUpErrorType,
     signupValidationParams,
+    UserContextResult,
     UserData,
     UserType
 } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
+import { getSignupLengthError, isPasswordValid } from "./userErrorHelper";
 
 const sampleUser: UserData = {
     id: 1,
@@ -22,27 +24,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [signupError, setSignupError] = useState<signUpErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
 
-    const getSignupLengthError = (userName: string, password: string) => {
-        if (userName.length < signupValidationParams.minUser) return "userTooShort";
-        if (userName.length > signupValidationParams.maxUser) return "userTooLong";
-
-        if (password.length < signupValidationParams.minPassword) return "passwordTooShort";
-        if (password.length > signupValidationParams.maxPassword) return "passwordTooLong";
-
-        return null;
-    };
-
-    const isPasswordValid = (password: string) => {
-        const { upper, lower, number, symbol } = signupValidationParams.passwordRequires;
-
-        if (upper && !/[A-Z]/.test(password)) return false;
-        if (lower && !/[a-z]/.test(password)) return false;
-        if (number && !/[0-9]/.test(password)) return false;
-        if (symbol && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
-
-        return true;
-    };
-
+    
     const getSignupValidationError = (
         email: string,
         userName: string,
@@ -149,5 +131,5 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         openLoginScreen,
         openSignupScreen
-    };
+    } as UserContextResult;
 }

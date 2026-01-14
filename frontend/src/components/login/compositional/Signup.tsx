@@ -1,7 +1,7 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
-import { invalidSignupMsg } from "../../../utils/registries";
-import { getErrorMessageForSignUp, signUpErrorType } from "../../../types/userTypes";
+import { signUpErrorType } from "../../../types/userTypes";
+import {getErrorMessageForSignUp} from "../../../hooks/users/userErrorHelper";
 
 interface SignupProps {
     onSignup: (email: string, username: string, password: string) => void;
