@@ -37,13 +37,15 @@ export type UserContextResult = {
     isUserError: () => boolean,
     isPasswordError: () => boolean,
 
+    isUserLoggedIn: () => boolean;
+
     login: (email: string, password: string) => void,
     signup: (email: string, userName: string, password: string) => void,
     logout: () => void,
 
     deleteUser: (id: number) => void,
-    updatePassword: (id: number, newPass: string) => void,
-    updateUserName:(id: number, newName: string) => void,
+    updatePassword: (newPass: string) => void,
+    updateUserName:(newName: string) => void,
 
     openLoginScreen: () => void,
     openSignupScreen: () => void

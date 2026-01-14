@@ -9,7 +9,6 @@ export const Signup = () => {
     const [password, setPassword] = useState("");
     
     const ctx = useUserContext();
-
    
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

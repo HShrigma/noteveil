@@ -25,15 +25,10 @@ export const DefaultHeader = ({ currentState, onScreenChange,  }: DefaultHeaderP
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
-            <HeaderTop
-                user={userCtx.user}
-                onLogout={handleLogout}
-                onUserDelete={userCtx.deleteUser}
-                onUserPasswordChange={(newPass) => { if (userCtx.user !== null) userCtx.updatePassword(userCtx.user.id, newPass); }}
-                onUsernameUpdate={(newName) => {if (userCtx.user !== null) userCtx.updateUserName(userCtx.user.id, newName)}}
-            />
+            <HeaderTop onLogout={handleLogout} />
             {/* Projects row */}
-            {userCtx.user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
+            {userCtx.user !== null && 
+            <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
                 <button
                     onClick={() => goToProjectsScreen()}

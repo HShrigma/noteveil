@@ -76,25 +76,25 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setTempUsers(prev => prev.filter(u => u.id !== id));
     };
 
-    const updatePassword = (id: number, newPass: string) => {
+    const updatePassword = ( newPass: string) => {
+        if(user === null) return;
+        const newUser = user;
+        newUser.password = newPass;
         setTempUsers(prev =>
-            prev.map(u => (u.id === id ? { ...u, password: newPass } : u))
+            prev.map(u => (u.id === newUser.id ? { ...u, password: newPass } : u))
         );
-        setUser(prev =>
-            prev && prev.id === id
-                ? { ...prev, password: newPass }
-                : prev);
+        setUser(newUser);
     };
 
-    const updateUserName = (id: number, newName: string) => {
-        console.log(`id: ${id}, newName: ${newName}`);
+    const updateUserName = ( newName: string) => {
+        if(user === null) return;
+        const newUser = user;
+        newUser.userName = newName;
+
         setTempUsers(prev =>
-            prev.map(u => (u.id === id ? { ...u, userName: newName } : u))
+            prev.map(u => (u.id === newUser.id ? { ...u, userName: newName } : u))
         );
-        setUser(prev =>
-            prev && prev.id === id
-                ? { ...prev, userName: newName }
-                : prev);
+        setUser(newUser);
     };
 
     const openLoginScreen = () => {
@@ -111,6 +111,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const isUserError = () => isErrorTypeUser(signupError);
     const isPasswordError = () => isErrorTypePassword(signupError);
 
+    const isUserLoggedIn = () => user !== null;
     return {
         user, tempUsers,
 
@@ -118,6 +119,8 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         isEmailError, isUserError, isPasswordError, 
         
+        isUserLoggedIn,
+
         login, signup, logout,
 
         deleteUser, updatePassword, updateUserName,
