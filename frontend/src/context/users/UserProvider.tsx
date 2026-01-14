@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { UserContext, useUserContext } from "./userContext";
+import { UserContext} from "./userContext";
 import { useUsers } from "../../hooks/users/useUsers";
 
 export function UserProvider({ children, onLoginSuccess, onLogoutSuccess }: { children: ReactNode, onLoginSuccess: () => void, onLogoutSuccess: () => void }) {

@@ -1,42 +1,39 @@
 import { useProjectsContext } from '../../../context/projects/projectsContext';
+import { useUserContext } from '../../../context/users/userContext';
 import { UserType } from '../../../types/userTypes';
 import { logoutMsg, MAIN_STATES, type MainState } from '../../../utils/registries';
 import HeaderTop from '../compositional/HeaderTop';
 import ProjectView from '../compositional/ProjectView';
 interface DefaultHeaderProps {
-    user: UserType;
     onScreenChange: (value: MainState) => void;
-    onLogout: () => void;
     currentState: MainState;
-    onUserDelete: (id: number) => void;
-    onUserPasswordChange: (id:number, newPass: string) => void;
-    onUsernameUpdate: (id:number, newName:string)=> void;
 }
 
-export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, onUserDelete, onUserPasswordChange, onUsernameUpdate }: DefaultHeaderProps) => {
-    const ctx = useProjectsContext();
+export const DefaultHeader = ({ currentState, onScreenChange,  }: DefaultHeaderProps) => {
+    const userCtx = useUserContext();
+    const projectCtx = useProjectsContext();
     const goToProjectsScreen = () => {
         if (currentState !== MAIN_STATES.PROJECTS_DISPLAY) {
             onScreenChange(MAIN_STATES.PROJECTS_DISPLAY);
-            ctx.selectProject(null);
+            projectCtx.selectProject(null);
         }
     }
     const handleLogout = (withMessage?: boolean) => {
-        if (!withMessage) onLogout();
-        if (withMessage && window.confirm(logoutMsg)) onLogout();
+        if (!withMessage) userCtx.logout();
+        if (withMessage && window.confirm(logoutMsg)) userCtx.logout();
     }
     return (
         <header className="p-5 bg-[#1a1b26] border-b border-[#2a2f47] shadow-lg font-mono">
             {/* Header top section */}
             <HeaderTop
-                user={user}
+                user={userCtx.user}
                 onLogout={handleLogout}
-                onUserDelete={onUserDelete}
-                onUserPasswordChange={(newPass) => { if (user !== null) onUserPasswordChange(user.id, newPass); }}
-                onUsernameUpdate={(newName) => {if (user !== null) onUsernameUpdate(user.id, newName)}}
+                onUserDelete={userCtx.deleteUser}
+                onUserPasswordChange={(newPass) => { if (userCtx.user !== null) userCtx.updatePassword(userCtx.user.id, newPass); }}
+                onUsernameUpdate={(newName) => {if (userCtx.user !== null) userCtx.updateUserName(userCtx.user.id, newName)}}
             />
             {/* Projects row */}
-            {user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
+            {userCtx.user !== null && <div className="mt-4 flex items-center gap-3 overflow-x-auto pb-2 w-full">
                 {/* Projects home button */}
                 <button
                     onClick={() => goToProjectsScreen()}
@@ -65,12 +62,12 @@ export const DefaultHeader = ({ user, currentState, onScreenChange, onLogout, on
                 <div className="h-6 w-px bg-[#2a2f47]" />
 
                 {/* Project buttons */}
-                {ctx.projects.map(project => (
+                {projectCtx.projects.map(project => (
                     <button
                         key={project.id}
-                        onClick={() => { if (ctx.activeProject.id !== project.id) ctx.selectProject(project.id) }}
+                        onClick={() => { if (projectCtx.activeProject.id !== project.id) projectCtx.selectProject(project.id) }}
                         className={
-                            ctx.activeProject.id === project.id ?
+                            projectCtx.activeProject.id === project.id ?
                                 `flex-shrink-0 px-4 py-1 rounded-sm
                                 border border-[#9d7cd8]
                               bg-[#bb9af7] text-[#1f2335]

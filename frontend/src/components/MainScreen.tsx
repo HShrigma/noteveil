@@ -6,36 +6,30 @@ import { NoteProvider } from "../context/notes/NoteProvider";
 import Projects from "./projects/standalone/Projects";
 import { useProjectsContext } from "../context/projects/projectsContext";
 import { LoginScreen } from "./login/standalone/LoginScreen";
-import { signUpErrorType  } from "../types/userTypes";
+import { useUserContext } from "../context/users/userContext";
 
 interface MainSreenProps {
     state: MainState;
-    isLogin: boolean;
-    onLoginScreenOpen: () => void;
-    onSignupScreenOpen: () => void;
-    onSignUpAttempt: (email: string, userName: string, password: string) => void;
-    onLoginAttempt: (email: string, password: string) => void;
-    loginError: boolean;
-    signupError: signUpErrorType;
 };
 
-export const MainScreen = ({ state, isLogin, loginError, signupError, onLoginAttempt, onSignUpAttempt, onLoginScreenOpen, onSignupScreenOpen }: MainSreenProps) => {
-    const ctx = useProjectsContext();
+export const MainScreen = ({ state, }: MainSreenProps) => {
+    const userCtx = useUserContext();
+    const projectCtx = useProjectsContext();
     
     const getScreen = () => {
         switch (state) {
             case MAIN_STATES.TASK_DISPLAY:
                 return (
                     <TaskProvider
-                        key={ctx.activeProject.id ?? "no-project"}
-                        activeProjectId={ctx.activeProject.id}>
+                        key={projectCtx.activeProject.id ?? "no-project"}
+                        activeProjectId={projectCtx.activeProject.id}>
                         <TasksHolder />
                     </TaskProvider>);
             case MAIN_STATES.NOTES_DISPLAY:
                 return (
                     <NoteProvider
-                        key={ctx.activeProject.id ?? "no-project"}
-                        activeProjectId={ctx.activeProject.id}>
+                        key={projectCtx.activeProject.id ?? "no-project"}
+                        activeProjectId={projectCtx.activeProject.id}>
                         <NotesHolder />
                     </NoteProvider>
                 );
@@ -43,13 +37,13 @@ export const MainScreen = ({ state, isLogin, loginError, signupError, onLoginAtt
                 return (<Projects />);
             case MAIN_STATES.LOGIN_DISPLAY:
                 return (<LoginScreen
-                    isLogin={isLogin}
-                    onLogin={onLoginAttempt}
-                    onSignup={onSignUpAttempt}
-                    loginError={loginError}
-                    signupError={signupError}
-                    onLoginScreenOpen={onLoginScreenOpen}
-                    onSignupScreenOpen={onSignupScreenOpen} />);
+                    isLogin={userCtx.isLogin}
+                    onLogin={userCtx.login}
+                    onSignup={userCtx.signup}
+                    loginError={userCtx.loginError}
+                    signupError={userCtx.signupError}
+                    onLoginScreenOpen={userCtx.openLoginScreen}
+                    onSignupScreenOpen={userCtx.openSignupScreen} />);
             default:
                 console.error(`Unknown State: ${state}`);
                 return <div>An Error Occurred</div>

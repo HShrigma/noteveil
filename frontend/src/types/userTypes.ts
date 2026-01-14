@@ -31,6 +31,7 @@ export type UserContextResult = {
 
     loginError: boolean,
     signupError: signUpErrorType,
+    isLogin: boolean,
 
     login: (email: string, password: string) => void,
     signup: (email: string, userName: string, password: string) => void,
