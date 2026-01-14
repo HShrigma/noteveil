@@ -86,7 +86,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setUser(newUser);
     };
 
-    const updateUserName = ( newName: string) => {
+    const updateUserName = async (newName: string) => {
         if(user === null) return;
         const newUser = user;
         newUser.userName = newName;
@@ -110,6 +110,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const isEmailError = () => isErrorTypeEmail(signupError);
     const isUserError = () => isErrorTypeUser(signupError);
     const isPasswordError = () => isErrorTypePassword(signupError);
+    const getUserName = () => user  === null ? "User" : user.userName;
 
     const isUserLoggedIn = () => user !== null;
     return {
@@ -119,7 +120,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         isEmailError, isUserError, isPasswordError, 
         
-        isUserLoggedIn,
+        isUserLoggedIn, getUserName,
 
         login, signup, logout,
 

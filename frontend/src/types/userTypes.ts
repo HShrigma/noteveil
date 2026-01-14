@@ -33,6 +33,7 @@ export type UserContextResult = {
     signupError: signUpErrorType,
     isLogin: boolean,
 
+    getUserName: () => string;
     isEmailError: () => boolean,
     isUserError: () => boolean,
     isPasswordError: () => boolean,
@@ -45,7 +46,7 @@ export type UserContextResult = {
 
     deleteUser: (id: number) => void,
     updatePassword: (newPass: string) => void,
-    updateUserName:(newName: string) => void,
+    updateUserName:(newName: string) => Promise<void>,
 
     openLoginScreen: () => void,
     openSignupScreen: () => void

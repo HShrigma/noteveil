@@ -1,20 +1,22 @@
 import { useEffect, useState } from "react";
 import EditableTitle from "../../../shared/title/EditableTitle";
 import { discardMsgUsername } from "../../../../utils/registries";
-import ErrorHint from "../../../shared/ErrorHint";
+import { useUserContext } from "../../../../context/users/userContext";
 
 interface UserTopIconProps {
     isActive: boolean;
-    userName?: string;
     OnIconClicked: () => void;
-    onUsernameUpdate?: (newName:string)=> void;
 }
 
-const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isActive, }: UserTopIconProps) => {
+const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
+    const ctx = useUserContext();
+
     const [isEditing,setIsEditing] = useState(false);
-    const [userField,setUserField] = useState(userName);
+    const [userField,setUserField] = useState(ctx.getUserName());
+
+
     useEffect(()=>{
-        setUserField(userName);
+        setUserField(ctx.getUserName());
     },[isActive,isEditing])
 
     const onActivityRequest = (wantsActive:boolean, value:string) => {
@@ -24,15 +26,15 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isAct
         }
         if (!wantsActive && isEditing) {
             setIsEditing(false);
-            setUserField(userName);
+            setUserField(ctx.getUserName());
             return;
         }
     }
-    const handleSubmit = (newValue:string) => {
-        onUsernameUpdate?.(newValue);
+    const handleSubmit = async (newValue:string) => {
+        await ctx.updateUserName(newValue);
         setIsEditing(false);
     }
-    const initials = userName
+    const initials = ctx.getUserName()
         .split(" ")
         .map(n => n[0])
         .join("")
@@ -45,7 +47,7 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isAct
             >
                 <div
                     className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold  select-none"
-                    title={userName}
+                    title={ctx.getUserName()}
                 >
                     {initials || "U"}
                 </div>
@@ -63,12 +65,12 @@ const UserTopIcon = ({ userName = "User", OnIconClicked, onUsernameUpdate, isAct
             >
                 <div
                     className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer select-none"
-                    title={userName}
+                    title={ctx.getUserName()}
                 >
                     {initials || "U"}
                 </div>
                 <span className="text-[#c0caf5] font-semibold hidden sm:inline">
-                    {userName}
+                    {ctx.getUserName()}
                 </span>
             </div>
     );
