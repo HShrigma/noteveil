@@ -1,11 +1,11 @@
 import { useState } from "react";
-import { signUpErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
+import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getPasswordSignupLengthError, getPasswordValidationError, getSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid } from "./userErrorHelper";
+import { getPasswordSignupLengthError, getPasswordValidationError, getSignupLengthError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid } from "./userErrorHelper";
 
 const sampleUser: UserData = {
     id: 1,
-    userName: "test",
+    userName: "testUser",
     email: "sample@mail.com",
     password: "123!@#ABCabc"
 };
@@ -15,10 +15,10 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [tempUsers, setTempUsers] = useState<UserData[]>([sampleUser]);
 
     const [loginError, setLoginError] = useState(false);
-    const [signupError, setSignupError] = useState<signUpErrorType>(null);
+    const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
 
-    const getSignupValidationError = ( email: string, userName: string, password: string): signUpErrorType => {
+    const getSignupValidationError = ( email: string, userName: string, password: string): userErrorType => {
         const lengthErr = getSignupLengthError(userName, password);
         if (lengthErr) return lengthErr;
 
@@ -89,7 +89,11 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     };
 
     const updateUserName = async (newName: string) => {
-        if(user === null) return;
+        if(user === null) return "userNonExistent";
+
+        const userError = getUserSignupLengthError(newName);
+        if(userError !== null) return userError;
+
         const newUser = user;
         newUser.userName = newName;
 
@@ -97,6 +101,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
             prev.map(u => (u.id === newUser.id ? { ...u, userName: newName } : u))
         );
         setUser(newUser);
+        return null;
     };
 
     const openLoginScreen = () => {

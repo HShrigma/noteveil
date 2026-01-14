@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import EditableTitle from "../../../shared/title/EditableTitle";
 import { discardMsgUsername } from "../../../../utils/registries";
 import { useUserContext } from "../../../../context/users/userContext";
+import ErrorHint from "../../../shared/ErrorHint";
+import { getErrorMessageForSignUp } from "../../../../hooks/users/userErrorHelper";
 
 interface UserTopIconProps {
     isActive: boolean;
@@ -11,27 +13,40 @@ interface UserTopIconProps {
 const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
     const ctx = useUserContext();
 
-    const [isEditing,setIsEditing] = useState(false);
-    const [userField,setUserField] = useState(ctx.getUserName());
+    const [isEditing, setIsEditing] = useState(false);
+    const [userField, setUserField] = useState(ctx.getUserName());
+    const [error, setError] = useState("");
 
-
-    useEffect(()=>{
+    useEffect(() => {
         setUserField(ctx.getUserName());
-    },[isActive,isEditing])
+        setError("");
+        setIsEditing(false);
+    },[isActive]);
 
-    const onActivityRequest = (wantsActive:boolean, value:string) => {
+    useEffect(() => {
+        setUserField(ctx.getUserName());
+        setError("");
+    }, [ isEditing])
+
+    const onActivityRequest = (wantsActive: boolean, value: string) => {
         if (wantsActive && !isEditing) {
-            setIsEditing(true); 
+            setIsEditing(true);
+            setError("");
             return;
         }
         if (!wantsActive && isEditing) {
             setIsEditing(false);
+            setError("");
             setUserField(ctx.getUserName());
             return;
         }
     }
-    const handleSubmit = async (newValue:string) => {
-        await ctx.updateUserName(newValue);
+    const handleSubmit = async (newValue: string) => {
+        const err = await ctx.updateUserName(newValue);
+        if (err !== null){
+            setError(getErrorMessageForSignUp(err));
+            return;
+        }
         setIsEditing(false);
     }
     const initials = ctx.getUserName()
@@ -43,7 +58,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
     return (
         isActive ?
             <div
-                className={`fade-in flex items-center gap-2 duration-150`} 
+                className={`fade-in flex items-start gap-2 duration-150`}
             >
                 <div
                     className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold  select-none"
@@ -51,12 +66,20 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
                 >
                     {initials || "U"}
                 </div>
-                <EditableTitle 
-                    title={userField}
-                    isActive={isEditing} 
-                    discardMsg={discardMsgUsername}
-                    onActivityRequest={onActivityRequest}
-                    onSubmit={handleSubmit} />
+                <div className="min-w-0 max-w-1/2 flex flex-col">
+                    <EditableTitle
+                        title={userField}
+                        isActive={isEditing}
+                        discardMsg={discardMsgUsername}
+                        onActivityRequest={onActivityRequest}
+                        onSubmit={handleSubmit} />
+                    <ErrorHint
+                        message={error}
+                        toValidate={error ? "" : "valid"}
+                        triggerCheck={!!error}
+                    />
+
+                </div>
             </div>
             :
             <div

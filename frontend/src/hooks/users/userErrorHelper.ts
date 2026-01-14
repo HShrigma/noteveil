@@ -1,4 +1,4 @@
-import { signUpErrorType, signupValidationParams } from "../../types/userTypes";
+import { userErrorType, signupValidationParams } from "../../types/userTypes";
 
 const getLengthHint = (isPassword: boolean) => {
     const min = isPassword ? signupValidationParams.minPassword : signupValidationParams.minUser;
@@ -77,7 +77,7 @@ export const isPasswordValid = (password: string) => {
     return true;
 };
 
-export const getErrorMessageForSignUp = (err: signUpErrorType) => {
+export const getErrorMessageForSignUp = (err: userErrorType) => {
     switch (err) {
         case "emailExists": return "This email already exists on Noteveil. Please provide a valid email.";
         case "emailFalse": return "This email does not exist. Please provide a valid email.";
@@ -89,14 +89,14 @@ export const getErrorMessageForSignUp = (err: signUpErrorType) => {
         default: return ""
     }
 }
-export const isErrorTypeEmail = (err: signUpErrorType) => 
+export const isErrorTypeEmail = (err: userErrorType) => 
     err === "emailExists" || err === "emailFalse";
 
-export const isErrorTypeUser = (err: signUpErrorType) =>
+export const isErrorTypeUser = (err: userErrorType) =>
     err === "userTooShort" ||
     err === "userTooLong";
 
-export const isErrorTypePassword = (err: signUpErrorType) =>
+export const isErrorTypePassword = (err: userErrorType) =>
     err === "passwordTooShort" ||
     err === "passwordTooLong" ||
     err === "passwordContentsWrong";

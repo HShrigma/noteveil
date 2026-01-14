@@ -13,7 +13,7 @@ export const signupValidationParams = {
     passwordRequires: { upper: true, lower: true, number: true, symbol: true }
 };
 
-export type signUpErrorType =
+export type userErrorType =
     null
     | "userTooLong"
     | "passwordTooShort" 
@@ -31,7 +31,7 @@ export type UserContextResult = {
     tempUsers: UserData[],
 
     loginError: boolean,
-    signupError: signUpErrorType,
+    signupError: userErrorType,
     isLogin: boolean,
 
     getUserName: () => string;
@@ -46,8 +46,8 @@ export type UserContextResult = {
     logout: () => void,
 
     deleteUser: () => void,
-    updatePassword: (newPass: string) => Promise<signUpErrorType>,
-    updateUserName:(newName: string) => Promise<void>,
+    updatePassword: (newPass: string) => Promise<userErrorType>,
+    updateUserName:(newName: string) => Promise<userErrorType>,
 
     openLoginScreen: () => void,
     openSignupScreen: () => void
