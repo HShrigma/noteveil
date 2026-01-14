@@ -1,12 +1,7 @@
 import { useState } from "react";
-import {
-    signUpErrorType,
-    UserContextResult,
-    UserData,
-    UserType
-} from "../../types/userTypes";
+import { signUpErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getSignupLengthError, isPasswordValid } from "./userErrorHelper";
+import { getSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid } from "./userErrorHelper";
 
 const sampleUser: UserData = {
     id: 1,
@@ -112,23 +107,21 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setLoginError(false);
     };
 
+    const isEmailError = () => isErrorTypeEmail(signupError);
+    const isUserError = () => isErrorTypeUser(signupError);
+    const isPasswordError = () => isErrorTypePassword(signupError);
+
     return {
-        user,
-        tempUsers,
+        user, tempUsers,
 
-        loginError,
-        signupError,
-        isLogin,
+        loginError, signupError, isLogin,
 
-        login,
-        signup,
-        logout,
+        isEmailError, isUserError, isPasswordError, 
+        
+        login, signup, logout,
 
-        deleteUser,
-        updatePassword,
-        updateUserName,
+        deleteUser, updatePassword, updateUserName,
 
-        openLoginScreen,
-        openSignupScreen
+        openLoginScreen, openSignupScreen
     } as UserContextResult;
 }
