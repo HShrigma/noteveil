@@ -20,7 +20,7 @@ export class UserController {
         const result = UserService.deleteUser(id);
 
         if (result === null) return sendError(res, 500, "Could not delete User");
-        // if (!result.deleted) return sendNotFoundError(res, "User");
+        if (!result.deleted) return sendNotFoundError(res, "User");
 
         res.json(sendSuccess(result));
     }
@@ -40,7 +40,7 @@ export class UserController {
         const result = UserService.updateUser(id, key, value);
 
         if (result === null) return sendError(res, 500, "Could not update User");
-        // if (!result.updated) return sendNotFoundError(res, "User");
+        if (!result.updated) return sendNotFoundError(res, "User");
 
         res.json(sendSuccess(result));
     }

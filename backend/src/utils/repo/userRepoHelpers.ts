@@ -1,6 +1,7 @@
 import { Database } from "better-sqlite3";
 import { tableType } from "../../config/schema";
 import { runDelete, runInsertSingle, runUpdate } from "./repository";
+import { runProjectDelete } from "./projectRepoHelpers";
 
 const usersTable = tableType.users;
 
@@ -23,6 +24,7 @@ export const runUserDelete = (db: Database, id: number) => {
         predicateNames: ["id"],
         predicateValues: [id]
     }
+    runProjectDelete(db, id, ["user_id"]);
     return runDelete(obj);
 }
 

@@ -18,11 +18,11 @@ export const runProjectTitleUpdate = (db: Database, title: string, id: number) =
     return runUpdate(obj);
 }
 
-export const runProjectDelete = (db: Database, id: number) => {
+export const runProjectDelete = (db: Database, id: number, predicateNames = ["id"]) => {
     const obj = {
         db: db,
         tableName: projectsTable, 
-        predicateNames: ["id"],
+        predicateNames: predicateNames,
         predicateValues: [id]
     }
     runTaskListDelete(db,id, ["project_id"] );
@@ -30,12 +30,12 @@ export const runProjectDelete = (db: Database, id: number) => {
     return runDelete(obj);
 }
 
-export const runProjectInsertSingle = (db: Database, title: string) => {
+export const runProjectInsertSingle = (db: Database, userId: number, title: string) => {
     const obj = {
         db:db,
         tableName: projectsTable,
-        fieldNames: ["title"],
-        fieldValues: [title]
+        fieldNames: ["title", "user_id"],
+        fieldValues: [title, userId]
     }
     return runInsertSingle(obj)
 }

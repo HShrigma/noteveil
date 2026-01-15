@@ -9,7 +9,9 @@ export class ProjectController {
     { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
     ];
     public getProjects = (req:Request, res:Response) => {
-        const result = ProjectService.getAllProjects();
+        const userId = Number(req.params.id);
+        const result = ProjectService.getProjectsForUser(userId);
+
         if (result === null) return sendError(res, 500, "Could not fetch Projects");
         res.json(result);
     }
@@ -25,8 +27,10 @@ export class ProjectController {
     }
 
     public addProject = (req:Request, res:Response) => {
+        const userId = Number(req.params.id);
         const {title} = req.body;
-        const result = ProjectService.addProject(title);
+
+        const result = ProjectService.addProject(userId, title);
         if (result === null) return sendError(res, 500, "Could not add Project");
         res.json(sendSuccess(result));
     }

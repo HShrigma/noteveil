@@ -4,8 +4,8 @@ import { runService } from "../utils/service";
 export class ProjectService {
     repo = new ProjectRepository();
 
-    getAllProjects() {
-        return runService(() => this.repo.getProjects(),'Error fetching projects:');
+    getProjectsForUser(userId: number) {
+        return runService(() => this.repo.getProjects(userId),'Error fetching projects:');
     }
 
     deleteProject(id: number) {
@@ -13,8 +13,8 @@ export class ProjectService {
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
-    addProject(title:string) {
-        const res = runService(() => this.repo.addProject(title), 'Error adding project:');
+    addProject(userId:number, title:string) {
+        const res = runService(() => this.repo.addProject(userId, title), 'Error adding project:');
         return res ? {id: res.lastInsertRowid as number} : null;
     }
 
