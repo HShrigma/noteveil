@@ -14,6 +14,7 @@ app.use(cors({ origin: "http://localhost:5173"}));
 app.use(express.json());
 
 // Routes
+app.use("/api/user", projectsRouter);
 app.use("/api/projects", projectsRouter);
 app.use("/api/tasks", tasksRouter);
 app.use("/api/notes", notesRouter);

@@ -11,13 +11,13 @@ const router = Router();
 router.get("/", runMiddleware({}), (_req, res) => ProjectController.getProjects(_req, res));
 
 // Delete Project
-router.delete("/:id", runMiddleware({}), (_req, res) => ProjectController.deleteProject(_req, res));
+router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => ProjectController.deleteProject(_req, res));
 
 // Add Project
-router.post("/", runMiddleware({}), (_req, res) =>  ProjectController.addProject(_req,res) );
+router.post("/", runMiddleware({ bodyFields: ["title"] }), (_req, res) =>  ProjectController.addProject(_req,res) );
 
 // Update Project title
-router.patch("/:id", runMiddleware({}), (_req, res) => ProjectController.updateProjectTitle(_req,res));
+router.patch("/:id", runMiddleware({bodyFields:["title"]}), (_req, res) => ProjectController.updateProjectTitle(_req,res));
 
 // ------------------ SHARED ---------------
 
