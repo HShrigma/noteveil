@@ -1,22 +1,21 @@
 import { Router } from "express";
-import TaskController from "../controllers/taskController";
-import NoteController from "../controllers/noteController";
 import { runMiddleware } from "../utils/middleware";
-import  UserController  from "../controllers/projectController";
+import  UserController  from "../controllers/userController";
 
 const router = Router();
 // ------------------ OWN ---------------
-
 // Get Users
-// router.get("/", runMiddleware({}), (_req, res) => UserController.getUsers(_req, res));
+router.get("/:id", runMiddleware({idFields:["id"]}), (_req, res) => UserController.getUser(_req, res));
 
 // Delete User
-// router.delete("/:id", runMiddleware({}), (_req, res) => UserController.deleteUser(_req, res));
+router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => UserController.deleteUser(_req, res));
 
 // Add User
-// router.post("/", runMiddleware({}), (_req, res) =>  UserController.addUser(_req,res) );
+router.post("/", runMiddleware({ bodyFields: ["email", "userName", "password"] }), (_req, res) => UserController.addUser(_req, res));
 
 // Patch User
-// router.patch("/:id", runMiddleware({}), (_req, res) => UserController.updateUserTitle(_req,res));
+router.patch("/:id", runMiddleware({}), (_req, res) => UserController.updateUser(_req,res));
+
+// ------------------ SHARED ---------------
 
 export default router;
