@@ -1,9 +1,9 @@
-import { CORE_URL } from "./apiUtils"
+import { CORE_URL, USERS_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/projects`;
 
 // Get Projects
-export const fetchProjects = async () => {
-    const res = await fetch(BASE_URL);
+export const fetchProjects = async (userId: number) => {
+    const res = await fetch(`${USERS_URL}/${userId}/projects`);
     return res.json();
 }
 
@@ -19,8 +19,8 @@ export const deleteProject = async (id: number) => {
 
 
 // Add Project
-export const addProject = async (title: string) => {
-    const res = await fetch(BASE_URL, {
+export const addProject = async (userId: number, title: string) => {
+    const res = await fetch(`${USERS_URL}/${userId}/projects`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
