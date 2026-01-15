@@ -1,9 +1,11 @@
 import { CORE_URL, USERS_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/projects`;
+const getUserUrl = (userId: number) => `${USERS_URL}/${userId}/projects`;
 
 // Get Projects
 export const fetchProjects = async (userId: number) => {
-    const res = await fetch(`${USERS_URL}/${userId}/projects`);
+    const res = await fetch(getUserUrl(userId));
+    if (!res.ok) throw new Error("Failed to fetch projects");
     return res.json();
 }
 
@@ -20,7 +22,7 @@ export const deleteProject = async (id: number) => {
 
 // Add Project
 export const addProject = async (userId: number, title: string) => {
-    const res = await fetch(`${USERS_URL}/${userId}/projects`, {
+    const res = await fetch(getUserUrl(userId), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })

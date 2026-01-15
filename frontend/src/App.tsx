@@ -4,6 +4,7 @@ import MainScreen from './components/MainScreen';
 import { MAIN_STATES, MainState } from './utils/registries';
 import { ProjectsProvider } from './context/projects/ProjectsProvider';
 import { UserProvider } from './context/users/UserProvider';
+import { useUserContext } from './context/users/userContext';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
@@ -19,7 +20,7 @@ function App() {
     }
     return (
         <UserProvider onLoginSuccess={handleLoginSuccess} onLogoutSuccess={handleLogoutSuccess}>
-            <ProjectsProvider onProjectOpened={handleProjectOpened}>
+            <ProjectsProvider user={useUserContext().user} onProjectOpened={handleProjectOpened}>
                 <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
                 <MainScreen state={state} />
             </ProjectsProvider>
