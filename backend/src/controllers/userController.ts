@@ -3,15 +3,20 @@ import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import UserService from "../services/userService";
 
 export class UserController {
-
-    sampleUsers = [
-    { id: 1, title: "Sample", taskCount: 20, noteCount: 10 },
-    { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
-    ];
-    public getUser = (req:Request, res:Response) => {
+    public fetchUser = (req:Request, res:Response) => {
         const {email, password} = req.body;
-        const result = UserService.getUser(email, password);
-        if (result === null) return sendError(res, 500, "Could not fetch Users");
+        let result, err;
+
+        if (!password) {
+            result = { exists: UserService.getHasEmail(email) };
+            err = "Could not fetch email verification";
+        }
+        else {
+            result = UserService.getUser(email, password); 
+            err = "Could not fetch Users";
+        }
+        if (result === null) return sendError(res, 500, err);
+
         res.json(result);
     }
 
@@ -26,8 +31,8 @@ export class UserController {
     }
 
     public addUser = (req:Request, res:Response) => {
-        const {email, userName, password} = req.body;
-        const result = UserService.addUser(email, userName, password);
+        const {email, name, password} = req.body;
+        const result = UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
         res.json(sendSuccess(result));

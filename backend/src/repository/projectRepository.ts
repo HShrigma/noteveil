@@ -13,7 +13,6 @@ class ProjectRepository {
             COALESCE(tl.taskListCount, 0) AS taskListCount,
             COALESCE(n.noteCount, 0) AS noteCount
         FROM projects p
-        WHERE p.user_id = ?
         LEFT JOIN (
             SELECT project_id, COUNT(*) AS taskListCount
             FROM task_lists
@@ -24,6 +23,7 @@ class ProjectRepository {
             FROM notes
             GROUP BY project_id
         ) n ON n.project_id = p.id
+        WHERE p.user_id = ?
         ORDER BY p.created_at
     `);
         const rows = stmt.all(userId) as Project[];

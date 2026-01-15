@@ -1,41 +1,48 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser} from "./userErrorHelper";
-
-const sampleUser: UserData = { id: 1, userName: "testUser", email: "sample@mail.com", password: "123!@#ABCabc" };
+import { addUser, deleteUser, fetchUser, patchUser } from "../../api/userApi";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
     const [user, setUser] = useState<UserType>(null);
-    const [tempUsers, setTempUsers] = useState<UserData[]>([sampleUser]);
     const [loginError, setLoginError] = useState(false);
     const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
 
-    const login = (email: string, password: string) => {
-        const foundUser = tempUsers.find(u => u.email === email && u.password === password);
+    const login = async (email: string, password: string) => {
+        const foundUser = await fetchUser(email, password);
         if (!foundUser) { setLoginError(true); return; }
 
         setLoginError(false);
-        setUser(foundUser);
+        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email, password: foundUser.password });
         onLoginSuccess();
     };
 
-    const signup = async (email: string, userName: string, password: string) => {
-        const err = await getSignupValidationError(email, userName, password, tempUsers);
+    const signup = async (email: string, name: string, password: string) => {
+        const err = await getSignupValidationError(email, name, password);
         setSignupError(err);
 
         if (err !== null) return;
 
-        const newUser: UserData = { id: createTempId(), email, userName, password };
-        setTempUsers(prev => [...prev, newUser]);
+        const newUser: UserData = { id: createTempId(), email, name: name, password };
+        const res = await addUser(newUser.email, newUser.name, newUser.password);
+        console.log(res);
+        if(!res.success) {
+            console.log(" no success " + res.body.success);
+            return;
+        }
+        console.log("res is OK");
+        const realId = Number(res.body.id);
+        newUser.id = realId;
+        console.log(`New User: ${newUser}`);
         setUser(newUser);
         onLoginSuccess();
     };
 
-    const deleteUser = () => {
+    const removeUser = async () => {
         if(user === null) return;
-        setTempUsers(prev => prev.filter(u => u.id !== user.id));
+        await deleteUser(user.id);
     };
 
     const updateUserField = async <K extends keyof UserData>( key: K,  value: UserData[K], validate?: () => userErrorType): Promise<userErrorType> => {
@@ -43,13 +50,13 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         const err = validate?.();
         if(err) return err;
 
-        setTempUsers(prev => prev.map(u => u.id === user.id? {...u, [key]:value} : u));
         setUser(prev => prev === null ? null : {...prev,[key]:value });
+        await patchUser(user.id, key, String(value));
         return null;
     }
 
     return {
-        user, tempUsers,
+        user,
         loginError, signupError, isLogin,
 
         isEmailError: () => isErrorTypeEmail(signupError),
@@ -57,13 +64,13 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         isPasswordError: () => isErrorTypePassword(signupError), 
         isUserLoggedIn: () => user !== null,
 
-        getUserName: () => user === null ? "User" : user.userName,
+        getUsername: () => user === null ? "User" : user.name,
         login, signup, 
         logout:() => { setUser(null); onLogoutSuccess(); },
 
-        deleteUser, 
+        deleteUser: removeUser, 
         updatePassword:(newPass: string) => updateUserField("password", newPass, () => getPasswordValidationError(newPass)),
-        updateUserName:(newName: string) => updateUserField("userName", newName, () => getUserSignupLengthError(newName)),
+        updateUserName:(newName: string) => updateUserField("name", newName, () => getUserSignupLengthError(newName)),
 
         openLoginScreen: () => { setIsLogin(true); setSignupError(null); },
         openSignupScreen: () => { setIsLogin(false); setLoginError(false); }

@@ -1,6 +1,6 @@
 export interface UserData{
     id: number;
-    userName: string;
+    name: string;
     email: string; 
     password: string;
 }
@@ -28,13 +28,12 @@ export type UserType = UserData | null;
 
 export type UserContextResult = {
     user: UserType,
-    tempUsers: UserData[],
 
     loginError: boolean,
     signupError: userErrorType,
     isLogin: boolean,
 
-    getUserName: () => string;
+    getUsername: () => string;
     isEmailError: () => boolean,
     isUserError: () => boolean,
     isPasswordError: () => boolean,

@@ -67,7 +67,6 @@ export const useTask = (activeProjectId: number | null): UseTaskResult => {
         setTasks(lists);
 
         const res = await addList(activeProjectId, title);
-
         if (!res.success) {
             setTasks(prev => getRemovedLists(tempId, prev));
             return;

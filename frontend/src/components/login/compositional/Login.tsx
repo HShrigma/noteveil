@@ -9,9 +9,9 @@ export const Login = () => {
 
     const ctx = useUserContext();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        ctx.login(email, password);
+        await ctx.login(email, password);
     };
 
 

@@ -18,10 +18,12 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
     const [activeProjectElement, setActiveProjectElement] =
         useState<ProjectElementActivity>(null);
 
-    useEffect(() => {
-         if(user === null) return;
+    const  fetch = () => {
+        if (user === null) return;
         fetchProjects(user.id).then((fetched) => setProjects(fetched))
-    }, []);
+    }
+    useEffect(() => fetch(), [user]);
+    useEffect(() => fetch(), []);
 
     const selectProject = (id: number | null) => {
         if (tryCancelDiscard(activeProjectElement !== null, activeProjectElement?.type === "title" ? discardMsgProjectTitle : discardMsgProjectAdder)) return;

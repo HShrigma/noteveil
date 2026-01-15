@@ -4,10 +4,6 @@ import ProjectService from "../services/projectService";
 
 export class ProjectController {
 
-    sampleProjects = [
-    { id: 1, title: "Sample", taskCount: 20, noteCount: 10 },
-    { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
-    ];
     public getProjects = (req:Request, res:Response) => {
         const userId = Number(req.params.id);
         const result = ProjectService.getProjectsForUser(userId);

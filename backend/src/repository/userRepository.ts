@@ -5,6 +5,15 @@ import { runUserDelete, runUserInsertSingle, runUserUpdate } from "../utils/repo
 class UserRepository {
     db = DB.getInstance().getConnection();
 
+    getHasEmail(email: string) {
+        const stmt = this.db.prepare(`
+        SELECT email 
+        FROM users
+        WHERE email = ?
+    `);
+        const rows = stmt.all(email) as String[];
+        return rows.length > 0;
+    }
     getUser(email: string, password: string) {
         const stmt = this.db.prepare(`
         SELECT * 
@@ -13,7 +22,7 @@ class UserRepository {
         AND password = ?
     `);
         const rows = stmt.all(email, password) as User[];
-        return rows;
+        return rows[0];
     }
 
     deleteUser(id: number) { return runUserDelete(this.db, id) }

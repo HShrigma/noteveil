@@ -7,6 +7,10 @@ export class UserService {
     dummyUser: User = { id: 0, email: '', name: '', password: '' }
     repo = new UserRepository();
 
+    getHasEmail(email: string) {
+        return runService(() => this.repo.getHasEmail(email), 'Error verifying email');
+    }
+
     getUser(email: string, password: string) {
         return runService(() => this.repo.getUser(email, password), 'Error fetching users:');
     }
@@ -16,8 +20,8 @@ export class UserService {
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
-    addUser(email:string, userName:string, password: string) {
-        const res = runService(() => this.repo.addUser(email, userName, password), 'Error adding user:');
+    addUser(email:string, name:string, password: string) {
+        const res = runService(() => this.repo.addUser(email, name, password), 'Error adding user:');
         return res ? {id: res.lastInsertRowid as number} : null;
     }
 

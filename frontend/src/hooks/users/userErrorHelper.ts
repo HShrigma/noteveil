@@ -1,3 +1,4 @@
+import { fetchIfEmailExists } from "../../api/userApi";
 import { userErrorType, signupValidationParams, UserData } from "../../types/userTypes";
 
 const getLengthHint = (isPassword: boolean) => {
@@ -90,10 +91,11 @@ export const getErrorMessageForSignUp = (err: userErrorType) => {
     }
 }
 
-export const getSignupValidationError = async (email: string, userName: string, password: string, users: UserData[]): Promise<userErrorType> => {
+export const getSignupValidationError = async (email: string, userName: string, password: string): Promise<userErrorType> => {
     const lengthErr = getSignupLengthError(userName, password);
     if (lengthErr) return lengthErr;
-    if (users.some(u => u.email === email)) return "emailExists";
+    const hasEmail= await fetchIfEmailExists(email);
+    if (hasEmail.exists) return "emailExists";
     if (!isPasswordValid(password)) return "passwordContentsWrong";
     return null;
 };

@@ -1,10 +1,7 @@
 import { useState } from 'react';
-import DefaultHeader from './components/header/standalone/Header';
-import MainScreen from './components/MainScreen';
 import { MAIN_STATES, MainState } from './utils/registries';
-import { ProjectsProvider } from './context/projects/ProjectsProvider';
 import { UserProvider } from './context/users/UserProvider';
-import { useUserContext } from './context/users/userContext';
+import { AppWithUser } from './components/AppWithUser';
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
@@ -18,12 +15,14 @@ function App() {
     const handleProjectOpened = (id: number) => {
         handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
     }
+
     return (
         <UserProvider onLoginSuccess={handleLoginSuccess} onLogoutSuccess={handleLogoutSuccess}>
-            <ProjectsProvider user={useUserContext().user} onProjectOpened={handleProjectOpened}>
-                <DefaultHeader onScreenChange={handleDisplayChange} currentState={state} />
-                <MainScreen state={state} />
-            </ProjectsProvider>
+            <AppWithUser 
+                state={state}
+                onProjectOpened={handleProjectOpened}
+                onScreenChange={handleDisplayChange}
+            />
         </UserProvider>
     );
 }

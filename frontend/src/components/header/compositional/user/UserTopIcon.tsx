@@ -14,17 +14,17 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
     const ctx = useUserContext();
 
     const [isEditing, setIsEditing] = useState(false);
-    const [userField, setUserField] = useState(ctx.getUserName());
+    const [userField, setUserField] = useState(ctx.getUsername());
     const [error, setError] = useState("");
 
     useEffect(() => {
-        setUserField(ctx.getUserName());
+        if(isActive) setUserField(ctx.getUsername());
         setError("");
         setIsEditing(false);
     },[isActive]);
 
     useEffect(() => {
-        setUserField(ctx.getUserName());
+        setUserField(ctx.getUsername());
         setError("");
     }, [ isEditing])
 
@@ -37,7 +37,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
         if (!wantsActive && isEditing) {
             setIsEditing(false);
             setError("");
-            setUserField(ctx.getUserName());
+            setUserField(ctx.getUsername());
             return;
         }
     }
@@ -49,7 +49,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
         }
         setIsEditing(false);
     }
-    const initials = ctx.getUserName()
+    const initials = ctx.getUsername()
         .split(" ")
         .map(n => n[0])
         .join("")
@@ -62,7 +62,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
             >
                 <div
                     className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold  select-none"
-                    title={ctx.getUserName()}
+                    title={ctx.getUsername()}
                 >
                     {initials || "U"}
                 </div>
@@ -88,12 +88,12 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
             >
                 <div
                     className="w-11 h-11 rounded-full bg-[#7aa2f7] flex items-center justify-center text-[#1a1b26] font-bold cursor-pointer select-none"
-                    title={ctx.getUserName()}
+                    title={ctx.getUsername()}
                 >
                     {initials || "U"}
                 </div>
                 <span className="text-[#c0caf5] font-semibold hidden sm:inline">
-                    {ctx.getUserName()}
+                    {ctx.getUsername()}
                 </span>
             </div>
     );
