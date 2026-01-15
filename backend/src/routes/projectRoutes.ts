@@ -7,14 +7,9 @@ import  ProjectController  from "../controllers/projectController";
 const router = Router();
 // ------------------ OWN ---------------
 
-// Get Projects
-router.get("/", runMiddleware({}), (_req, res) => ProjectController.getProjects(_req, res));
-
 // Delete Project
 router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => ProjectController.deleteProject(_req, res));
 
-// Add Project
-router.post("/", runMiddleware({ bodyFields: ["title"] }), (_req, res) =>  ProjectController.addProject(_req,res) );
 
 // Update Project title
 router.patch("/:id", runMiddleware({ idFields: ["id"], bodyFields: ["title"] }), (_req, res) => ProjectController.updateProjectTitle(_req, res));

@@ -36,6 +36,8 @@ export class dbSchema {
                 return dbSchema.createTaskLists();
             case PROJECTS:
                 return dbSchema.createProjects();
+            case USERS:
+                return dbSchema.createUsers();
             default:
                 throw error(`No such table named: ${table}`);
         }
@@ -55,11 +57,23 @@ export class dbSchema {
         return `DROP TABLE IF EXISTS ${tableName}`;
     }
 
+    static createUsers() {
+        return `CREATE TABLE IF NOT EXISTS users (
+        id          INTEGER PRIMARY KEY AUTOINCREMENT,
+        email       TEXT NOT NULL,
+        name        TEXT NOT NULL,
+        password    TEXT NOT NULL,
+        created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
+        )`;
+    }
+
     static createProjects() {
         return `CREATE TABLE IF NOT EXISTS projects (
         id           INTEGER PRIMARY KEY AUTOINCREMENT,
         title        TEXT NOT NULL,
-        created_at   DATETIME DEFAULT CURRENT_TIMESTAMP
+        created_at   DATETIME DEFAULT CURRENT_TIMESTAMP,
+        user_id      INTEGER NOT NULL,
+        FOREIGN KEY  (user_id) REFERENCES users(id) ON DELETE CASCADE
         )`;
     }
 
@@ -74,6 +88,7 @@ export class dbSchema {
       )
         `;
     };
+
     static createNotes(){
         return `CREATE TABLE IF NOT EXISTS notes (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -86,6 +101,7 @@ export class dbSchema {
     `;
 
     };
+
     static createTaskLists(){
         return `CREATE TABLE IF NOT EXISTS task_lists (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,6 +113,5 @@ export class dbSchema {
         FOREIGN KEY (project_id) REFERENCES projects(id) ON DELETE SET NULL
       )
     `;
-
     };
 }
