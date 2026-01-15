@@ -5,12 +5,14 @@ const TASKS: string = "tasks";
 const NOTES: string = "notes";
 const TASK_LISTS: string = "task_lists";
 const PROJECTS: string = "projects";
+const USERS: string = "users";
 
 export const tableType = {
     notes: NOTES,
     tasks: TASKS,
     taskLists: TASK_LISTS,
     projects: PROJECTS,
+    users: USERS
 }
 
 export class dbSchema {

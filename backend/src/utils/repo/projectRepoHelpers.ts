@@ -1,7 +1,7 @@
 import { Database } from "better-sqlite3";
 import { tableType } from "../../config/schema";
 import { runDelete, runInsertSingle, runUpdate } from "./repository";
-import { runTaskDelete, runTaskListDelete } from "./taskRepoHelpers";
+import { runTaskListDelete } from "./taskRepoHelpers";
 import { runNoteDelete } from "./noteRepoHelpers";
 
 const projectsTable = tableType.projects;

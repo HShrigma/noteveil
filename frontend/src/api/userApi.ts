@@ -2,8 +2,12 @@ import { CORE_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/user`;
 
 // Get User
-export const fetchUser = async (id: number) => {
-    const res = await fetch(`${BASE_URL}/${id}`);
+export const fetchUser = async (email: string, password:string) => {
+    const res = await fetch(`${BASE_URL}/`, {
+        method:"GET",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: email, password: password })
+    });
     return res.json();
 }
 

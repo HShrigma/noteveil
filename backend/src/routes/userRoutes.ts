@@ -4,8 +4,8 @@ import  UserController  from "../controllers/userController";
 
 const router = Router();
 // ------------------ OWN ---------------
-// Get Users
-router.get("/:id", runMiddleware({idFields:["id"]}), (_req, res) => UserController.getUser(_req, res));
+// Get User
+router.get("/", runMiddleware({bodyFields:["email", "password"]}), (_req, res) => UserController.getUser(_req, res));
 
 // Delete User
 router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => UserController.deleteUser(_req, res));

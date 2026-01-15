@@ -4,11 +4,11 @@ import {User} from "../models/users";
 import UserRepository from "../repository/userRepository";
 
 export class UserService {
-    dummyUser: User = { id: 0, email: '', userName: '', password: '' }
+    dummyUser: User = { id: 0, email: '', name: '', password: '' }
     repo = new UserRepository();
 
-    getUser(id:number) {
-        return runService(() => this.repo.getUser(id), 'Error fetching users:');
+    getUser(email: string, password: string) {
+        return runService(() => this.repo.getUser(email, password), 'Error fetching users:');
     }
 
     deleteUser(id: number) {

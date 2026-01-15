@@ -9,8 +9,8 @@ export class UserController {
     { id: 2, title: "Sample 2", taskCount: 20, noteCount: 10 },
     ];
     public getUser = (req:Request, res:Response) => {
-        const id = Number(req.params.id);
-        const result = UserService.getUser(id);
+        const {email, password} = req.body;
+        const result = UserService.getUser(email, password);
         if (result === null) return sendError(res, 500, "Could not fetch Users");
         res.json(result);
     }
