@@ -17,24 +17,24 @@ router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => ProjectCo
 router.post("/", runMiddleware({ bodyFields: ["title"] }), (_req, res) =>  ProjectController.addProject(_req,res) );
 
 // Update Project title
-router.patch("/:id", runMiddleware({bodyFields:["title"]}), (_req, res) => ProjectController.updateProjectTitle(_req,res));
+router.patch("/:id", runMiddleware({ idFields: ["id"], bodyFields: ["title"] }), (_req, res) => ProjectController.updateProjectTitle(_req, res));
 
 // ------------------ SHARED ---------------
 
 // Get notes
-router.get("/:id/notes", runMiddleware({}), (_req, res) => NoteController.getNotes(_req, res));
+router.get("/:id/notes", runMiddleware({idFields:["id"]}), (_req, res) => NoteController.getNotes(_req, res));
 
 // Get tasks
-router.get("/:id/tasks", runMiddleware({}), (_req, res) => TaskController.getTasks(_req, res));
+router.get("/:id/tasks", runMiddleware({idFields:["id"]}), (_req, res) => TaskController.getTasks(_req, res));
 
 // Add list
 router.post(
     "/:id/tasks",
-    runMiddleware({ bodyFields: ["title"] }),
+    runMiddleware({ idFields: ["id"], bodyFields: ["title"] }),
     (req, res) => TaskController.addTaskList(req, res)
 );
 
 // Add note
-router.post("/:id/notes", runMiddleware({}), (req, res) => NoteController.addNote(req, res));
+router.post("/:id/notes", runMiddleware({idFields:["id"]}), (req, res) => NoteController.addNote(req, res));
 
 export default router;

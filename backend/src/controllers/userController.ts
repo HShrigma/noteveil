@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
-// import UserService from "../services/userService";
+import UserService from "../services/userService";
 
 export class UserController {
 
@@ -10,16 +10,14 @@ export class UserController {
     ];
     public getUser = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const result = null;
-        // const result = UserService.getUser();
+        const result = UserService.getUser(id);
         if (result === null) return sendError(res, 500, "Could not fetch Users");
         res.json(result);
     }
 
     public deleteUser = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const result = null;
-        // const result = UserService.deleteUser(id);
+        const result = UserService.deleteUser(id);
 
         if (result === null) return sendError(res, 500, "Could not delete User");
         // if (!result.deleted) return sendNotFoundError(res, "User");
@@ -28,19 +26,18 @@ export class UserController {
     }
 
     public addUser = (req:Request, res:Response) => {
-        const {title} = req.body;
-        const result = null;
-        // const result = UserService.addUser(title);
+        const {email, userName, password} = req.body;
+        const result = UserService.addUser(email, userName, password);
         if (result === null) return sendError(res, 500, "Could not add User");
+
         res.json(sendSuccess(result));
     }
 
     public updateUser = (req:Request, res:Response) => {
         const id = Number(req.params.id);
-        const {title} = req.body;
+        const {key,value} = req.body;
         
-        const result = null;
-        // const result = UserService.updateUserTitle(id,title);
+        const result = UserService.updateUser(id, key, value);
 
         if (result === null) return sendError(res, 500, "Could not update User");
         // if (!result.updated) return sendNotFoundError(res, "User");
