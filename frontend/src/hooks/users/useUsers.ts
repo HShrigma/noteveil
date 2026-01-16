@@ -12,8 +12,11 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
     const login = async (email: string, password: string) => {
         const foundUser = await fetchUser(email, password);
-        if (!foundUser || !foundUser.success) { setLoginError(true); return; }
-
+        if (!foundUser || foundUser.error) { 
+            setLoginError(true); 
+            return;
+        }
+        console.log("Logged in");
         setLoginError(false);
         setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
         onLoginSuccess();
@@ -27,11 +30,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         const newUser: UserData = { id: createTempId(), email, name: name };
         const res = await addUser(newUser.email, newUser.name, password);
-        if(!res.success) {
-            console.log(" no success " + res.body.success);
-            return;
-        }
-        console.log(res);
+        if(!res.success) { return;}
         const realId = Number(res.body.id);
         newUser.id = realId;
 
@@ -42,7 +41,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const removeUser = async (password: string) => {
         if(user === null) return "userNonExistent";
         const res = await deleteUser(user.id, password);
-        console.log(res);
         if(!res.success) return "currentPWIncorrect";
         return null;
     };
@@ -56,7 +54,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         const res = await patchUser(user.id,"name",[newName]);
         if(!res.success){
-            console.log("Couldn't update username");
             newUser.name = oldName;
             setUser(newUser);
             return "userNonExistent";
