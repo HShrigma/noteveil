@@ -28,27 +28,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
 
     const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-
-        if(ctx.user === null) return;
-        // validation
-        if (current !== ctx.user.password) {
-            setError("Current password is incorrect");
-            return;
-        }
-        if (current !== confirmCurrent) {
-            setError("Current password confirmation does not match");
-            return;
-        }
-        if (!newPass) {
-            setError("New password cannot be empty");
-            return;
-        }
-        if (newPass !== confirmNew) {
-            setError("New password confirmation does not match");
-            return;
-        }
-
-        const passErr = await ctx.updatePassword(newPass);
+        const passErr = await ctx.updatePassword(current, confirmCurrent, newPass, confirmNew);
         if(passErr !== null){
             setError(getErrorMessageForSignUp(passErr));
             return;

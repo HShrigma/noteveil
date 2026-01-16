@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser} from "./userErrorHelper";
+import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, verifyPasswordUpdate} from "./userErrorHelper";
 import { addUser, deleteUser, fetchUser, patchUser } from "../../api/userApi";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -55,6 +55,12 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         return null;
     }
 
+    const updatePassword = async (current: string, confirmCurrent: string, newPass: string, confirmNew: string) => {
+        const err = verifyPasswordUpdate(user,current, confirmCurrent, newPass, confirmNew);
+        if(err !== null) return err;
+        return await updateUserField("password", newPass, () => getPasswordValidationError(newPass));
+    }
+
     return {
         user,
         loginError, signupError, isLogin,
@@ -69,9 +75,8 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         logout:() => { setUser(null); onLogoutSuccess(); },
 
         deleteUser: removeUser, 
-        updatePassword:(newPass: string) => updateUserField("password", newPass, () => getPasswordValidationError(newPass)),
+        updatePassword,
         updateUserName:(newName: string) => updateUserField("name", newName, () => getUserSignupLengthError(newName)),
-
         openLoginScreen: () => { setIsLogin(true); setSignupError(null); },
         openSignupScreen: () => { setIsLogin(false); setLoginError(false); }
     } as UserContextResult;

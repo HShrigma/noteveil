@@ -22,7 +22,11 @@ export type userErrorType =
     | "emailExists"
     | "emailFalse"
     | "userTooShort"
-    | "userNonExistent";
+    | "userNonExistent"
+    | "currentPWIncorrect"
+    | "currentPWNotConfirmed"
+    | "newPWEmpty"
+    | "newPWNotConfirmed";
 
 export type UserType = UserData | null;
 
@@ -45,7 +49,13 @@ export type UserContextResult = {
     logout: () => void,
 
     deleteUser: () => void,
-    updatePassword: (newPass: string) => Promise<userErrorType>,
+    updatePassword: (
+        current: string, 
+        confirmCurrent: string,
+        newPass: string,
+        confirmNew: string
+    ) => Promise<userErrorType>,
+
     updateUserName:(newName: string) => Promise<userErrorType>,
 
     openLoginScreen: () => void,

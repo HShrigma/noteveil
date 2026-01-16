@@ -1,5 +1,5 @@
 import { fetchIfEmailExists } from "../../api/userApi";
-import { userErrorType, signupValidationParams, UserData } from "../../types/userTypes";
+import { userErrorType, signupValidationParams, UserData, UserType } from "../../types/userTypes";
 
 const getLengthHint = (isPassword: boolean) => {
     const min = isPassword ? signupValidationParams.minPassword : signupValidationParams.minUser;
@@ -87,6 +87,11 @@ export const getErrorMessageForSignUp = (err: userErrorType) => {
         case "passwordTooShort": return getLengthError(true, false);
         case "userTooLong": return getLengthError(false, true);
         case "userTooShort": return getLengthError(false, false);
+        case "currentPWIncorrect": return "Current password is incorrect";
+        case "currentPWNotConfirmed": return "Current password confirmation does not match";
+        case "newPWEmpty": return "New password cannot be empty";
+        case "newPWNotConfirmed": return "New password confirmation does not match";
+        case "userNonExistent": return "This user does not exist.";
         default: return ""
     }
 }
@@ -110,3 +115,13 @@ export const isErrorTypePassword = (err: userErrorType) =>
     err === "passwordTooShort" ||
     err === "passwordTooLong" ||
     err === "passwordContentsWrong";
+
+export const verifyPasswordUpdate = (user: UserType, current: string, confirmCurrent: string, newPass: string, confirmNew: string): userErrorType => {
+    if (user === null) return "userNonExistent";
+    // TEST validation: Change when PW is hashed
+    if (current !== user.password) return "currentPWIncorrect";
+    if (current !== confirmCurrent) return "currentPWNotConfirmed";
+    if (!newPass)  return "newPWEmpty";
+    if (newPass !== confirmNew) return "newPWNotConfirmed";
+    return null;
+}
