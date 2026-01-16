@@ -39,9 +39,12 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         onLoginSuccess();
     };
 
-    const removeUser = async () => {
-        if(user === null) return;
-        await deleteUser(user.id);
+    const removeUser = async (password: string) => {
+        if(user === null) return "userNonExistent";
+        const res = await deleteUser(user.id, password);
+        console.log(res);
+        if(!res.success) return "currentPWIncorrect";
+        return null;
     };
     const updateUserName = async (newName: string) => { 
         if(user === null) return "userNonExistent";

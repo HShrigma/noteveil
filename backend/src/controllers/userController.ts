@@ -20,10 +20,11 @@ export class UserController {
         res.json(result);
     }
 
-    public deleteUser = (req:Request, res:Response) => {
-        const id = Number(req.params.id);
-        const result = UserService.deleteUser(id);
+    public deleteUser = async (req:Request, res:Response) => {
+        const {id, password} = req.body; 
+        const result = await UserService.deleteUser(id, password);
 
+        console.log("RES: " + result);
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 

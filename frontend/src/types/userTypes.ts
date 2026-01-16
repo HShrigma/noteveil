@@ -48,7 +48,7 @@ export type UserContextResult = {
     signup: (email: string, userName: string, password: string) => void,
     logout: () => void,
 
-    deleteUser: () => void,
+    deleteUser: (password:string) => void,
     updatePassword: (
         current: string, 
         confirmCurrent: string,

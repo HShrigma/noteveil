@@ -1,6 +1,4 @@
-// import UserRepository from "../repository/userRepository";
 import { runService } from "../utils/service";
-import { User } from "../models/users";
 import UserRepository from "../repository/userRepository";
 import bcrypt from "bcrypt";
 const SALT_ROUNDS = 10;
@@ -14,13 +12,26 @@ export class UserService {
 
     async getUser(email: string, password: string) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
-        if(!user) return null;
+        if (!user) return null;
         const match = await bcrypt.compare(password, user.password);
-        if(!match) return null;
+        if (!match) return null;
         return user;
     }
 
-    deleteUser(id: number) {
+    async deleteUser(id: number, password: string) {
+
+        const user = runService(() => this.repo.getUserById(id), `Error fetching user. Not found for id = ${id}!`);
+        if (!user) {
+            console.error(`[ERROR] UserService.deleteUser: User not found!`);
+            return null;
+        }
+
+        const match = await bcrypt.compare(password, user.password);
+        if (!match) {
+            console.error(`[ERROR] UserService.deleteUserr: Current password incorrect`);
+            return null;
+        } 
+        console.log("[INFO] UserService.deleteUserr: User matches ");
         const res = runService(() => this.repo.deleteUser(id), 'Error deleting user:');
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
@@ -33,14 +44,14 @@ export class UserService {
 
     async updateUser(id: number, key: string, values: string[]) {
         let value = "";
-        switch(key){
+        switch (key) {
             case "name":
                 value = values[0];
                 break;
             case "password":
                 const currentPW = values[0];
                 const newPW = values[1];
-                const user = runService(() => this.repo.getUserById(id),`Error fetching user. Not found for id = ${id}!`);
+                const user = runService(() => this.repo.getUserById(id), `Error fetching user. Not found for id = ${id}!`);
                 if (!user) {
                     console.error(`[ERROR] UserService.updateUser: User not found!`);
                     return null;
@@ -52,9 +63,9 @@ export class UserService {
                 }
                 value = await bcrypt.hash(newPW, SALT_ROUNDS);
                 break;
-            default: 
-            console.error(`[ERROR] UserService.updateUser: Invalid Key: ${key}!`);
-            return null;
+            default:
+                console.error(`[ERROR] UserService.updateUser: Invalid Key: ${key}!`);
+                return null;
         }
         const res = runService(() => this.repo.updateUser(id, key, value),
             'Error updating user:');

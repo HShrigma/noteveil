@@ -13,7 +13,7 @@ router.post("/verify", runMiddleware({bodyFields:["email"]}), (_req, res) => Use
 router.post("/login", runMiddleware({bodyFields:["email", "password"]}), (_req, res) => UserController.fetchUser(_req, res));
 
 // Delete User
-router.delete("/:id", runMiddleware({idFields:["id"]}), (_req, res) => UserController.deleteUser(_req, res));
+router.delete("/delete", runMiddleware({bodyFields:["id", "password"]}), (_req, res) => UserController.deleteUser(_req, res));
 
 // Add User
 router.post("/add", runMiddleware({ bodyFields: ["email", "name", "password"] }), (_req, res) => UserController.addUser(_req, res));

@@ -22,20 +22,17 @@ const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => 
         setIsError(false);
     }, [resetKey]);
 
-    const onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        if(ctx.user === null) return;
-
-        if (password !== ctx.user.password) {
+        const err = await ctx.deleteUser(password);
+        if(err !== null){
             setIsError(true);
             return;
         }
-
         if (!window.confirm(deleteAccountMsg)) return;
         setIsDelete(false);
         setIsError(false);
         setPassword("");
-        ctx.deleteUser();
         onLogout();
     };
 
