@@ -78,6 +78,16 @@ export const isPasswordValid = (password: string) => {
     return true;
 };
 
+export const verifyPasswordUpdate = (current: string, confirmCurrent: string, newPass: string, confirmNew: string): userErrorType => {
+    // TEST validation: Change when PW is hashed
+    // if (current !== user.password) 
+    if (current !== confirmCurrent) return "currentPWNotConfirmed";
+    if (!newPass)  return "newPWEmpty";
+    if (newPass !== confirmNew) return "newPWNotConfirmed";
+    const newErr = getPasswordValidationError(newPass);
+    return newErr;
+}
+
 export const getErrorMessageForSignUp = (err: userErrorType) => {
     switch (err) {
         case "emailExists": return "This email already exists on Noteveil. Please provide a valid email.";
@@ -115,13 +125,3 @@ export const isErrorTypePassword = (err: userErrorType) =>
     err === "passwordTooShort" ||
     err === "passwordTooLong" ||
     err === "passwordContentsWrong";
-
-export const verifyPasswordUpdate = (user: UserType, current: string, confirmCurrent: string, newPass: string, confirmNew: string): userErrorType => {
-    if (user === null) return "userNonExistent";
-    // TEST validation: Change when PW is hashed
-    if (current !== user.password) return "currentPWIncorrect";
-    if (current !== confirmCurrent) return "currentPWNotConfirmed";
-    if (!newPass)  return "newPWEmpty";
-    if (newPass !== confirmNew) return "newPWNotConfirmed";
-    return null;
-}

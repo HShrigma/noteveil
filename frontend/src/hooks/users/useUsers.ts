@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, verifyPasswordUpdate} from "./userErrorHelper";
+import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
 import { addUser, deleteUser, fetchUser, patchUser } from "../../api/userApi";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -27,15 +27,13 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         const newUser: UserData = { id: createTempId(), email, name: name, password };
         const res = await addUser(newUser.email, newUser.name, newUser.password);
-        console.log(res);
         if(!res.success) {
             console.log(" no success " + res.body.success);
             return;
         }
-        console.log("res is OK");
         const realId = Number(res.body.id);
         newUser.id = realId;
-        console.log(`New User: ${newUser}`);
+
         setUser(newUser);
         onLoginSuccess();
     };
@@ -44,21 +42,24 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         if(user === null) return;
         await deleteUser(user.id);
     };
-
-    const updateUserField = async <K extends keyof UserData>( key: K,  value: UserData[K], validate?: () => userErrorType): Promise<userErrorType> => {
+    const updateUserName = async (newName: string) => { 
         if(user === null) return "userNonExistent";
-        const err = validate?.();
-        if(err) return err;
-
-        setUser(prev => prev === null ? null : {...prev,[key]:value });
-        await patchUser(user.id, key, String(value));
+        const err = getUserSignupLengthError(newName);
+        if(err !== null ) return err;
+        const res = await patchUser(user.id,"name",[newName]);
+        if(!res.success){
+            console.log("Couldn't update username");
+            return;
+        }
         return null;
     }
-
     const updatePassword = async (current: string, confirmCurrent: string, newPass: string, confirmNew: string) => {
-        const err = verifyPasswordUpdate(user,current, confirmCurrent, newPass, confirmNew);
+        if(user === null) return "userNonExistent";
+        const err = verifyPasswordUpdate(current, confirmCurrent, newPass, confirmNew);
         if(err !== null) return err;
-        return await updateUserField("password", newPass, () => getPasswordValidationError(newPass));
+        const res = await patchUser(user.id, "password", [current,newPass]);
+        if(!res.success) return "currentPWIncorrect";
+        return null;
     }
 
     return {
@@ -76,7 +77,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         deleteUser: removeUser, 
         updatePassword,
-        updateUserName:(newName: string) => updateUserField("name", newName, () => getUserSignupLengthError(newName)),
+        updateUserName,
         openLoginScreen: () => { setIsLogin(true); setSignupError(null); },
         openSignupScreen: () => { setIsLogin(false); setLoginError(false); }
     } as UserContextResult;
