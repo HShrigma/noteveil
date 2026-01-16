@@ -3,7 +3,7 @@ import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import UserService from "../services/userService";
 
 export class UserController {
-    public fetchUser = (req:Request, res:Response) => {
+    public fetchUser = async (req:Request, res:Response) => {
         const {email, password} = req.body;
         let result, err;
 
@@ -12,7 +12,7 @@ export class UserController {
             err = "Could not fetch email verification";
         }
         else {
-            result = UserService.getUser(email, password); 
+            result = await UserService.getUser(email, password); 
             err = "Could not fetch Users";
         }
         if (result === null) return sendError(res, 500, err);
@@ -30,19 +30,19 @@ export class UserController {
         res.json(sendSuccess(result));
     }
 
-    public addUser = (req:Request, res:Response) => {
+    public addUser = async (req:Request, res:Response) => {
         const {email, name, password} = req.body;
-        const result = UserService.addUser(email, name, password);
+        const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
         res.json(sendSuccess(result));
     }
 
-    public updateUser = (req:Request, res:Response) => {
+    public updateUser = async (req: Request, res: Response) => {
         const id = Number(req.params.id);
-        const {key,value} = req.body;
+        const {key, values} = req.body;
         
-        const result = UserService.updateUser(id, key, value);
+        const result = await UserService.updateUser(id, key, values);
 
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");

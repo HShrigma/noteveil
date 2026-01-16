@@ -31,6 +31,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
             console.log(" no success " + res.body.success);
             return;
         }
+        console.log(res);
         const realId = Number(res.body.id);
         newUser.id = realId;
 

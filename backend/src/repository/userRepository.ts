@@ -14,14 +14,24 @@ class UserRepository {
         const rows = stmt.all(email) as String[];
         return rows.length > 0;
     }
-    getUser(email: string, password: string) {
+    getUserById(id:number) {
+        const stmt = this.db.prepare(`
+        SELECT * 
+        FROM users
+        WHERE id = ?
+    `);
+        const rows = stmt.all(id) as User[];
+        return rows[0];
+    }
+
+
+    getUser(email: string) {
         const stmt = this.db.prepare(`
         SELECT * 
         FROM users
         WHERE email = ?
-        AND password = ?
     `);
-        const rows = stmt.all(email, password) as User[];
+        const rows = stmt.all(email) as User[];
         return rows[0];
     }
 

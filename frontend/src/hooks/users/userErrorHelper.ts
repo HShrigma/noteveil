@@ -78,9 +78,8 @@ export const isPasswordValid = (password: string) => {
     return true;
 };
 
+// sanity checkinck validations only on form data, does not require server calls
 export const verifyPasswordUpdate = (current: string, confirmCurrent: string, newPass: string, confirmNew: string): userErrorType => {
-    // TEST validation: Change when PW is hashed
-    // if (current !== user.password) 
     if (current !== confirmCurrent) return "currentPWNotConfirmed";
     if (!newPass)  return "newPWEmpty";
     if (newPass !== confirmNew) return "newPWNotConfirmed";
