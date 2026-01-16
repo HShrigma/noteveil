@@ -1,6 +1,7 @@
 import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
 import bcrypt from "bcrypt";
+import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 const SALT_ROUNDS = 10;
 
 export class UserService {
@@ -15,7 +16,7 @@ export class UserService {
         if (!user) return null;
         const match = await bcrypt.compare(password, user.password);
         if (!match) return null;
-        return user;
+        return getUserToUserReturnObj(user);
     }
 
     async deleteUser(id: number, password: string) {

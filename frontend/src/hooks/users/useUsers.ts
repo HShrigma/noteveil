@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getPasswordValidationError, getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
+import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
 import { addUser, deleteUser, fetchUser, patchUser } from "../../api/userApi";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -12,10 +12,10 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
     const login = async (email: string, password: string) => {
         const foundUser = await fetchUser(email, password);
-        if (!foundUser) { setLoginError(true); return; }
+        if (!foundUser || !foundUser.success) { setLoginError(true); return; }
 
         setLoginError(false);
-        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email, password: foundUser.password });
+        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
         onLoginSuccess();
     };
 
@@ -25,8 +25,8 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
         if (err !== null) return;
 
-        const newUser: UserData = { id: createTempId(), email, name: name, password };
-        const res = await addUser(newUser.email, newUser.name, newUser.password);
+        const newUser: UserData = { id: createTempId(), email, name: name };
+        const res = await addUser(newUser.email, newUser.name, password);
         if(!res.success) {
             console.log(" no success " + res.body.success);
             return;
@@ -50,10 +50,16 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         if(user === null) return "userNonExistent";
         const err = getUserSignupLengthError(newName);
         if(err !== null ) return err;
+        const oldName = user.name;
+        const newUser = {id: user.id, name: newName, email: user.email};
+        setUser(newUser);
+
         const res = await patchUser(user.id,"name",[newName]);
         if(!res.success){
             console.log("Couldn't update username");
-            return;
+            newUser.name = oldName;
+            setUser(newUser);
+            return "userNonExistent";
         }
         return null;
     }

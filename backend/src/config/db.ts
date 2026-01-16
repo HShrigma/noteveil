@@ -15,7 +15,6 @@ class DB{
 
     private initSchema() {
         const toCreate = [tableType.users, tableType.projects, tableType.taskLists, tableType.tasks, tableType.notes];
-        dbSchema.dropTables(toCreate, this.db);
         dbSchema.createTables(toCreate, this.db);
     }
 

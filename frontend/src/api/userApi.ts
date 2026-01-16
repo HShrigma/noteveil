@@ -4,37 +4,47 @@ const BASE_URL = `${CORE_URL}/users`;
 // Get email
 export const fetchIfEmailExists = async (email: string) => {
     const res = await fetch(`${BASE_URL}/verify`, {
-        method:"POST",
+        method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email})
+        body: JSON.stringify({ email: email })
     });
-    return res.json(); 
+    return res.json();
 }
 
 // Get User
-export const fetchUser = async (email: string, password:string) => {
-    const res = await fetch(`${BASE_URL}/login`, {
-        method:"POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, password: password })
-    });
-    if (!res.ok) return undefined;
-    const text = await res.text();
-    if (!text) return undefined;
+export const fetchUser = async (email: string, password: string) => {
+    try {
+        const res = await fetch(`${BASE_URL}/login`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, password })
+        });
 
-    return JSON.parse(text);
+        if (!res.ok) {
+            const text = await res.text();
+            const data = text ? JSON.parse(text) : null;
+            return { error: data?.error || 'Unknown error', status: res.status };
+        }
+
+        return await res.json();
+    }
+    catch (error) {
+        console.error(error); 
+        return { error: 'Network error', status: 0 };
+    }
 }
+
 
 // Delete User
 export const deleteUser = async (id: number, password: string) => {
     const res = await fetch(`${BASE_URL}/delete`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id, password: password})
+        body: JSON.stringify({ id: id, password: password })
     });
-    
+
     if (!res.ok) {
-        console.log(res);
+        console.error(res);
         throw new Error("Failed to delete user");
     }
     return await res.json();
@@ -46,7 +56,7 @@ export const addUser = async (email: string, name: string, password: string) => 
     const res = await fetch(`${BASE_URL}/add`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, name: name , password: password})
+        body: JSON.stringify({ email: email, name: name, password: password })
     })
 
     if (!res.ok) throw new Error("Failed to add new user");

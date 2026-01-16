@@ -5,17 +5,19 @@ import UserService from "../services/userService";
 export class UserController {
     public fetchUser = async (req:Request, res:Response) => {
         const {email, password} = req.body;
-        let result, err;
+        let result, err, code;
 
         if (!password) {
             result = { exists: UserService.getHasEmail(email) };
             err = "Could not fetch email verification";
+            code = 500;
         }
         else {
             result = await UserService.getUser(email, password); 
             err = "Could not fetch Users";
+            code = 404;
         }
-        if (result === null) return sendError(res, 500, err);
+        if (result === null) return sendError(res, code, err);
 
         res.json(result);
     }

@@ -2,13 +2,14 @@ import { Database } from "better-sqlite3";
 import { tableType } from "../../config/schema";
 import { runDelete, runInsertSingle, runUpdate } from "./repository";
 import { runProjectDelete } from "./projectRepoHelpers";
+import { User, UserReturnObj } from "../../models/users";
 
 const usersTable = tableType.users;
 
 export const runUserUpdate = (db: Database, id: number, key: string, value: string) => {
     const obj = {
         db: db,
-        tableName: usersTable, 
+        tableName: usersTable,
         fieldNames: [key],
         fieldValues: [value],
         predicateNames: ["id"],
@@ -20,7 +21,7 @@ export const runUserUpdate = (db: Database, id: number, key: string, value: stri
 export const runUserDelete = (db: Database, id: number) => {
     const obj = {
         db: db,
-        tableName: usersTable, 
+        tableName: usersTable,
         predicateNames: ["id"],
         predicateValues: [id]
     }
@@ -30,10 +31,18 @@ export const runUserDelete = (db: Database, id: number) => {
 
 export const runUserInsertSingle = (db: Database, email: string, name: string, password: string) => {
     const obj = {
-        db:db,
+        db: db,
         tableName: usersTable,
-        fieldNames: ["email","name","password"],
+        fieldNames: ["email", "name", "password"],
         fieldValues: [email, name, password]
     }
     return runInsertSingle(obj)
+}
+
+export const getUserToUserReturnObj = (user: User): UserReturnObj => {
+    return {
+        id: user.id,
+        email: user.email,
+        name: user.name
+    }
 }
