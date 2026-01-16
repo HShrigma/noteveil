@@ -4,3 +4,9 @@ export interface User {
     name: string;
     password: string;
 };
+
+export interface UserReturnObj {
+    id: number;
+    email: string;
+    name: string;
+}
