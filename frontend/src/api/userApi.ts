@@ -88,12 +88,11 @@ export const addUser = async (email: string, name: string, password: string) => 
 
 // Update User
 export const patchUser = async (id: number, key: string, values: string[]) => {
-    console.log(id);
-    const res = await fetch(`${BASE_URL}/${id}`, {
+    const res = await fetch(`${BASE_URL}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            key: key, values: values
+            id: id, key: key, values: values
         })
     })
 

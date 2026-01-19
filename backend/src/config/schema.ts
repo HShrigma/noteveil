@@ -62,7 +62,8 @@ export class dbSchema {
         id          INTEGER PRIMARY KEY AUTOINCREMENT,
         email       TEXT NOT NULL,
         name        TEXT NOT NULL,
-        password    TEXT NOT NULL,
+        password    TEXT,
+        from_auth   BOOLEAN DEFAULT FALSE,
         created_at  DATETIME DEFAULT CURRENT_TIMESTAMP
         )`;
     }

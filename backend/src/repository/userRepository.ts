@@ -4,7 +4,6 @@ import { runUserDelete, runUserInsertSingle, runUserUpdate } from "../utils/repo
 
 class UserRepository {
     db = DB.getInstance().getConnection();
-
     getHasEmail(email: string) {
         const stmt = this.db.prepare(`
         SELECT email 
@@ -37,7 +36,7 @@ class UserRepository {
 
     deleteUser(id: number) { return runUserDelete(this.db, id) }
 
-    addUser(email: string, name: string, password: string) { 
+    addUser(email: string, name: string, password?: string) { 
         return runUserInsertSingle(this.db, email, name, password) 
     }
 

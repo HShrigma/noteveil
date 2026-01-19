@@ -29,13 +29,18 @@ export const runUserDelete = (db: Database, id: number) => {
     return runDelete(obj);
 }
 
-export const runUserInsertSingle = (db: Database, email: string, name: string, password: string) => {
+export const runUserInsertSingle = (db: Database, email: string, name: string, password?: string) => {
     const obj = {
         db: db,
         tableName: usersTable,
-        fieldNames: ["email", "name", "password"],
-        fieldValues: [email, name, password]
+        fieldNames: ["email", "name", "from_auth"],
+        fieldValues: [email, name, 1]
     }
+    if(password){
+        obj.fieldNames[2] = "password";
+        obj.fieldValues[2] = password;
+    }
+
     return runInsertSingle(obj)
 }
 

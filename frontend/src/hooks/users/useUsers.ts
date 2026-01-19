@@ -15,7 +15,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         const res = await authenticateWithGoogle(token);
         if (!res) { console.error("Unexpected Authentication Error"); return; };
         if (res.error) { console.error(`Failed to Authenticate: ${res.error}`); return; };
-        console.log("Success");
+        console.log(res);
     }
 
     const login = async (email: string, password: string) => {
@@ -24,7 +24,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
             setLoginError(true); 
             return;
         }
-        console.log("Logged in");
         setLoginError(false);
         setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
         onLoginSuccess();

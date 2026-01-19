@@ -20,7 +20,7 @@ router.delete("/delete", runMiddleware({bodyFields:["id", "password"]}), (_req, 
 router.post("/add", runMiddleware({ bodyFields: ["email", "name", "password"] }), (_req, res) => UserController.addUser(_req, res));
 
 // Patch User
-router.patch("/:id", runMiddleware({ idFields: ["id"], bodyFields: ["key"] }), (_req, res) => UserController.updateUser(_req, res));
+router.patch("/", runMiddleware({ bodyFields: ["key"] }), (_req, res) => UserController.updateUser(_req, res));
 
 // ------------------ SHARED ---------------
 
