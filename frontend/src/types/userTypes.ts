@@ -31,7 +31,6 @@ export type UserType = UserData | null;
 
 export type UserContextResult = {
     user: UserType,
-
     loginError: boolean,
     signupError: userErrorType,
     isLogin: boolean,
@@ -42,7 +41,6 @@ export type UserContextResult = {
     isPasswordError: () => boolean,
 
     isUserLoggedIn: () => boolean;
-
     login: (email: string, password: string) => void,
     signup: (email: string, userName: string, password: string) => void,
     logout: () => void,

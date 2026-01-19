@@ -27,7 +27,7 @@ export const addProject = async (userId: number, title: string) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
     })
-    console.log(res);
+
     if (!res.ok) throw new Error("Failed to add new project");
 
     return await res.json();
