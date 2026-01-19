@@ -22,7 +22,7 @@ export class dbSchema {
             db.exec(dbSchema.getTableCreateString(param));
         } catch (error) {
             console.error(`Error creating table ${param}:`, error);
-            throw error; // Re-throw to stop initialization
+            throw error; 
         }
         });
     }
@@ -48,7 +48,7 @@ export class dbSchema {
             db.exec(dbSchema.dropTable(param));
         } catch (error) {
             console.error(`Error creating table ${param}:`, error);
-            throw error; // Re-throw to stop initialization
+            throw error; 
         }
         });
  

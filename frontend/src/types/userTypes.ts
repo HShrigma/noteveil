@@ -47,6 +47,7 @@ export type UserContextResult = {
     signup: (email: string, userName: string, password: string) => void,
     logout: () => void,
 
+    deleteUserById: () => void,
     deleteUser: (password:string) => void,
     updatePassword: (
         current: string, 
@@ -60,4 +61,5 @@ export type UserContextResult = {
     openLoginScreen: () => void,
     openSignupScreen: () => void,
     useGoogleApi: (token: TokenResponse) => Promise<void>
+    fromAuth: boolean
 }

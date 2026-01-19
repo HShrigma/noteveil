@@ -22,14 +22,22 @@ const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => 
         setIsError(false);
     }, [resetKey]);
 
+    const handleDelete = () => {
+        if(ctx.fromAuth){
+            if (!window.confirm(deleteAccountMsg)) return;
+            onLogout();
+            return;
+        }
+        setIsDelete(true);
+    }
     const onFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
+        if (!window.confirm(deleteAccountMsg)) return;
         const err = await ctx.deleteUser(password);
         if(err !== null){
             setIsError(true);
             return;
         }
-        if (!window.confirm(deleteAccountMsg)) return;
         setIsDelete(false);
         setIsError(false);
         setPassword("");
@@ -90,7 +98,7 @@ const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => 
                     confirmLabel="Are you sure?"
                     color="red"
                     confirmColor="yellow"
-                    onConfirm={() => setIsDelete(true)}
+                    onConfirm={handleDelete}
                 />
             )}
         </div>

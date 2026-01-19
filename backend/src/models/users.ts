@@ -3,6 +3,7 @@ export interface User {
     email: string;
     name: string;
     password: string;
+    from_auth: boolean;
 };
 
 export interface UserReturnObj {

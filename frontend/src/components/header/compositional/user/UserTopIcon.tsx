@@ -66,7 +66,12 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
                 >
                     {initials || "U"}
                 </div>
-                <div className="min-w-0 max-w-1/2 flex flex-col">
+                {ctx.fromAuth ?
+                    <span className="min-w-0 max-w-1/2 flex flex-col text-[#c0caf5] font-semibold hidden sm:inline">
+                        {ctx.getUsername()}
+                    </span>
+                    :
+                    <div className="min-w-0 max-w-1/2 flex flex-col">
                     <EditableTitle
                         title={userField}
                         isActive={isEditing}
@@ -80,6 +85,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
                     />
 
                 </div>
+                }
             </div>
             :
             <div

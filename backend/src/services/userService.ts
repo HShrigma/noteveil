@@ -9,8 +9,8 @@ const SALT_ROUNDS = 10;
 export class UserService {
     repo = new UserRepository();
 
-    async authenticateWithGoogle(payload:GoogleUserInfo) {
-        try{
+    async authenticateWithGoogle(payload: GoogleUserInfo) {
+        try {
             const googleId = payload.sub;
             const email = payload.email;
             const name = payload.name;
@@ -23,7 +23,7 @@ export class UserService {
             res = { ...res, name: name, email: email };
             return res;
         }
-        catch(error){
+        catch (error) {
             console.error("Error accessing payload", error);
             return null;
         }
@@ -41,31 +41,32 @@ export class UserService {
         return getUserToUserReturnObj(user);
     }
 
-    async deleteUser(id: number, password: string) {
-
+    async deleteUser(id: number, password?: string) {
         const user = runService(() => this.repo.getUserById(id), `Error fetching user. Not found for id = ${id}!`);
         if (!user) {
             console.error(`[ERROR] UserService.deleteUser: User not found!`);
             return null;
         }
 
-        const match = await bcrypt.compare(password, user.password);
-        if (!match) {
-            console.error(`[ERROR] UserService.deleteUserr: Current password incorrect`);
-            return null;
-        } 
-        console.log("[INFO] UserService.deleteUserr: User matches ");
+        if (password) {
+            const match = await bcrypt.compare(password, user.password);
+            if (!match) {
+                console.error(`[ERROR] UserService.deleteUserr: Current password incorrect`);
+                return null;
+            }
+            console.log("[INFO] UserService.deleteUserr: User matches ");
+        }
         const res = runService(() => this.repo.deleteUser(id), 'Error deleting user:');
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
     async addUser(email: string, name: string, password?: string) {
         let res;
-        if(password){
+        if (password) {
             const hashedPW = await bcrypt.hash(password, SALT_ROUNDS);
             res = runService(() => this.repo.addUser(email, name, hashedPW), 'Error adding user:');
         }
-        else{
+        else {
             res = runService(() => this.repo.addUser(email, name), 'Error adding user:');
         }
         return res ? { id: res.lastInsertRowid as number } : null;

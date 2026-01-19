@@ -20,7 +20,7 @@ export class UserController {
 
     public authenticateWithGoogle = async (req: Request, res: Response) => {
         const {token} = req.body;
-        console.log(token);
+
         if (!token) return sendError(res, 400, "token not provided");
         if (!token.access_token) return sendError(res, 400, "Invalid token");
         if (!client) return sendError(res, 500, "Error getting client");

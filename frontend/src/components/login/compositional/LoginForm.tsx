@@ -8,7 +8,6 @@ export const LoginForm = () => {
     const [password, setPassword] = useState("");
 
     const ctx = useUserContext();
-
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await ctx.login(email, password);

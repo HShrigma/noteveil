@@ -73,6 +73,20 @@ export const deleteUser = async (id: number, password: string) => {
 }
 
 
+export const deleteUserById = async (id: number) => {
+    const res = await fetch(`${BASE_URL}/delete`, {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ id: id })
+    });
+
+    if (!res.ok) {
+        console.error(res);
+        throw new Error("Failed to delete user by id");
+    }
+    return await res.json();
+}
+
 // Add User
 export const addUser = async (email: string, name: string, password: string) => {
     const res = await fetch(`${BASE_URL}/add`, {

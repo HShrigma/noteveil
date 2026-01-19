@@ -2,7 +2,7 @@ import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
-import { addUser, authenticateWithGoogle, deleteUser, fetchUser, patchUser } from "../../api/userApi";
+import { addUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -10,12 +10,22 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [loginError, setLoginError] = useState(false);
     const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
+    const [fromAuth, setFromAuth] = useState(false);
 
     const useGoogleApi = async (token: TokenResponse) => {
         const res = await authenticateWithGoogle(token);
         if (!res) { console.error("Unexpected Authentication Error"); return; };
         if (res.error) { console.error(`Failed to Authenticate: ${res.error}`); return; };
-        console.log(res);
+        const newUser:UserData = {
+            id: res.body.id,
+            name: res.body.name,
+            email: res.body.email
+        }
+        setFromAuth(true);
+        setUser(newUser);
+        onLoginSuccess();
+        setLoginError(false);
+        setSignupError(null);
     }
 
     const login = async (email: string, password: string) => {
@@ -27,6 +37,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setLoginError(false);
         setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
         onLoginSuccess();
+        setFromAuth(false);
     };
 
     const signup = async (email: string, name: string, password: string) => {
@@ -41,10 +52,18 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         const realId = Number(res.body.id);
         newUser.id = realId;
 
+        setSignupError(null);
         setUser(newUser);
         onLoginSuccess();
+        setFromAuth(false);
     };
-
+    const removeUserById = async () => {
+        if(user === null) return "userNonExistent";
+        const res = await deleteUserById(user.id);
+        if(!res.success) return "currentPWIncorrect";
+        return null;
+ 
+    }
     const removeUser = async (password: string) => {
         if(user === null) return "userNonExistent";
         const res = await deleteUser(user.id, password);
@@ -91,9 +110,11 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         useGoogleApi,
 
         deleteUser: removeUser, 
+        deleteUserById: removeUserById,
         updatePassword,
         updateUserName,
-        openLoginScreen: () => { setIsLogin(true); setSignupError(null); },
-        openSignupScreen: () => { setIsLogin(false); setLoginError(false); }
+        openLoginScreen: () => { setIsLogin(true); setSignupError(null); setFromAuth(false); },
+        openSignupScreen: () => { setIsLogin(false); setLoginError(false); setFromAuth(false); },
+        fromAuth
     } as UserContextResult;
 }
