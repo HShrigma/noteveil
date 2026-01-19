@@ -1,15 +1,16 @@
 import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
-import {getErrorMessageForSignUp} from "../../../hooks/users/userErrorHelper";
+import { getErrorMessageForSignUp } from "../../../hooks/users/userErrorHelper";
 import { useUserContext } from "../../../context/users/userContext";
+import GoogleButton from "./GoogleButton";
 
 export const Signup = () => {
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    
+
     const ctx = useUserContext();
-   
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         await ctx.signup(email, username, password);
@@ -50,7 +51,7 @@ export const Signup = () => {
                         className=" px-3 py-2 bg-[#16161e] border border-[#2a2f47] rounded-md text-[#c0caf5] outline-none focus:border-[#7aa2f7] focus:shadow-[0_0_10px_rgba(122,162,247,0.35)] transition-all "
                     />
                 </div>
-                <ErrorHint 
+                <ErrorHint
                     message={getErrorMessageForSignUp(ctx.signupError)}
                     toValidate={ctx.isEmailError() ? "" : "valid"}
                     triggerCheck={ctx.isEmailError()} />
@@ -87,9 +88,9 @@ export const Signup = () => {
                         className=" px-3 py-2 bg-[#16161e] border border-[#2a2f47] rounded-md text-[#c0caf5] outline-none focus:border-[#7aa2f7] focus:shadow-[0_0_10px_rgba(122,162,247,0.35)] transition-all "
                     />
                 </div>
-                <ErrorHint 
+                <ErrorHint
                     message={getErrorMessageForSignUp(ctx.signupError)}
-                    toValidate={ctx.isPasswordError() ? "" : "valid"} 
+                    toValidate={ctx.isPasswordError() ? "" : "valid"}
                     triggerCheck={ctx.isPasswordError()} />
 
                 {/* Submit */}
@@ -99,12 +100,18 @@ export const Signup = () => {
                 >
                     Sign Up
                 </button>
-
                 {/* Footer */}
                 <p className="text-xs text-center text-[#565f89]">
                     Noteveil © {new Date().getFullYear()}
                 </p>
             </form>
+            OR
+
+            {/* Google Signup */}
+            <GoogleButton
+                label="Sign up with Google"
+                onLoginFailure={() => console.error("SIGNUP failed")}
+                onLoginSuccess={(res) => console.log("SIGNUP success: " + res.access_token)} />
         </div>
     );
 };

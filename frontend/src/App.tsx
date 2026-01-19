@@ -1,7 +1,8 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { MAIN_STATES, MainState } from './utils/registries';
 import { UserProvider } from './context/users/UserProvider';
 import { AppWithUser } from './components/AppWithUser';
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
@@ -18,11 +19,13 @@ function App() {
 
     return (
         <UserProvider onLoginSuccess={handleLoginSuccess} onLogoutSuccess={handleLogoutSuccess}>
-            <AppWithUser 
-                state={state}
-                onProjectOpened={handleProjectOpened}
-                onScreenChange={handleDisplayChange}
-            />
+            <GoogleOAuthProvider clientId={import.meta.env.VITE_GOOGLE_CLIENT_ID} >
+                <AppWithUser
+                    state={state}
+                    onProjectOpened={handleProjectOpened}
+                    onScreenChange={handleDisplayChange}
+                />
+            </GoogleOAuthProvider>
         </UserProvider>
     );
 }

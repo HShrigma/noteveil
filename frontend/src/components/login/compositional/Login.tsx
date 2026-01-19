@@ -2,6 +2,8 @@ import { useState } from "react";
 import ErrorHint from "../../shared/ErrorHint";
 import { invalidLoginMsg } from "../../../utils/registries";
 import { useUserContext } from "../../../context/users/userContext";
+import { CredentialResponse, GoogleLogin, TokenResponse } from "@react-oauth/google";
+import GoogleButton from "./GoogleButton";
 
 export const Login = () => {
     const [email, setEmail] = useState("");
@@ -14,6 +16,15 @@ export const Login = () => {
         await ctx.login(email, password);
     };
 
+
+    const handleGoogleSuccess = (res: TokenResponse): void => {
+
+        console.log(`Success: ${res.access_token}`);
+    }
+
+    const  handleGoogleError = (): void =>{
+        console.error("Failure");
+    }
 
     return (
         <div className="min-h-[calc(100vh-5rem)] flex flex-col items-center justify-center gap-4">
@@ -77,7 +88,9 @@ export const Login = () => {
                     Noteveil © {new Date().getFullYear()}
                 </p>
             </form>
-
+            OR
+            {/* Google Login */}
+            <GoogleButton onLoginSuccess={handleGoogleSuccess} onLoginFailure={handleGoogleError} />
         </div>
 
     );
