@@ -5,7 +5,8 @@ import ProjectController from "../controllers/projectController";
 
 const router = Router();
 // ------------------ OWN ---------------
-
+// Get/Create with Google
+router.post("/auth/google", runMiddleware({}), (_req, res) => UserController.authenticateWithGoogle(_req, res));
 // Get emails
 router.post("/verify", runMiddleware({bodyFields:["email"]}), (_req, res) => UserController.fetchUser(_req, res));
 

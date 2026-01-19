@@ -1,5 +1,27 @@
+import { TokenResponse } from "@react-oauth/google";
 import { CORE_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/users`;
+
+export const authenticateWithGoogle = async (token: TokenResponse) => {
+    try {
+        const res = await fetch(`${BASE_URL}/auth/google`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ token: token })
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            return { error: data.error || "Response not OK" }
+        }
+        return data;
+    }
+    catch(error){
+        console.error("Error authenticating with Google", error);
+        return undefined;
+    }
+
+}
 
 // Get email
 export const fetchIfEmailExists = async (email: string) => {
@@ -29,7 +51,7 @@ export const fetchUser = async (email: string, password: string) => {
         return await res.json();
     }
     catch (error) {
-        console.error(error); 
+        console.error(error);
         return { error: 'Network error', status: 0 };
     }
 }

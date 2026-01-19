@@ -3,6 +3,10 @@ import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import UserService from "../services/userService";
 
 export class UserController {
+    public authenticateWithGoogle = (req:Request, res:Response) => {
+        return sendError(res,500, "Authentication unimplemented");
+    }
+
     public fetchUser = async (req:Request, res:Response) => {
         const {email, password} = req.body;
         let result, err, code;

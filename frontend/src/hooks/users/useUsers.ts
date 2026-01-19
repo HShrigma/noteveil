@@ -2,13 +2,21 @@ import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
-import { addUser, deleteUser, fetchUser, patchUser } from "../../api/userApi";
+import { addUser, authenticateWithGoogle, deleteUser, fetchUser, patchUser } from "../../api/userApi";
+import { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
     const [user, setUser] = useState<UserType>(null);
     const [loginError, setLoginError] = useState(false);
     const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
+
+    const useGoogleApi = async (token: TokenResponse) => {
+        const res = await authenticateWithGoogle(token);
+        if (!res) { console.error("Unexpected Authentication Error"); return; };
+        if (res.error) { console.error(`Failed to Authenticate: ${res.error}`); return; };
+        console.log("Success");
+    }
 
     const login = async (email: string, password: string) => {
         const foundUser = await fetchUser(email, password);
@@ -81,6 +89,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         getUsername: () => user === null ? "User" : user.name,
         login, signup, 
         logout:() => { setUser(null); onLogoutSuccess(); },
+        useGoogleApi,
 
         deleteUser: removeUser, 
         updatePassword,

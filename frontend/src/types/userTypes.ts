@@ -1,3 +1,5 @@
+import { TokenResponse } from "@react-oauth/google";
+
 export interface UserData{
     id: number;
     name: string;
@@ -56,5 +58,6 @@ export type UserContextResult = {
     updateUserName:(newName: string) => Promise<userErrorType>,
 
     openLoginScreen: () => void,
-    openSignupScreen: () => void
+    openSignupScreen: () => void,
+    useGoogleApi: (token: TokenResponse) => Promise<void>
 }

@@ -1,6 +1,3 @@
-import { useState } from "react";
-import ErrorHint from "../../shared/ErrorHint";
-import { getErrorMessageForSignUp } from "../../../hooks/users/userErrorHelper";
 import { useUserContext } from "../../../context/users/userContext";
 import GoogleButton from "./GoogleButton";
 import SignupForm from "./SignupForm";
@@ -26,10 +23,7 @@ export const Signup = () => {
             <SignupForm />
             OR
             {/* Google Signup */}
-            <GoogleButton
-                label="Sign up with Google"
-                onLoginFailure={() => console.error("SIGNUP failed")}
-                onLoginSuccess={(res) => console.log("SIGNUP success: " + res.access_token)} />
+            <GoogleButton signIn={false} />
         </div>
     );
 };

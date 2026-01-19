@@ -5,13 +5,17 @@ import projectsRouter from "./routes/projectRoutes";
 import tasksRouter from "./routes/taskRoutes";
 import notesRouter from "./routes/noteRoutes";
 import DB from "./config/db";
-
+import dotenv from "dotenv";
 const app = express();
-const PORT = 4000;
+
+dotenv.config();
+
+const PORT = Number(process.env.PORT);
+const CLIENT = process.env.CLIENT;
 
 DB.getInstance();
 
-app.use(cors({ origin: "http://localhost:5173"}));
+app.use(cors({ origin: CLIENT}));
 app.use(express.json());
 
 // Routes
