@@ -1,10 +1,8 @@
 import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
-import bcrypt from "bcrypt";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
-import { OAuth2Client } from "google-auth-library";
 import { GoogleUserInfo } from "../models/users";
-const SALT_ROUNDS = 10;
+import { PasswordUtils } from "../utils/security/passwordUtils";
 
 export class UserService {
     repo = new UserRepository();
@@ -36,7 +34,7 @@ export class UserService {
     async getUser(email: string, password: string) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
         if (!user) return null;
-        const match = await bcrypt.compare(password, user.password);
+        const match = await PasswordUtils.compare(password, user.password);
         if (!match) return null;
         return getUserToUserReturnObj(user);
     }
@@ -49,7 +47,7 @@ export class UserService {
         }
 
         if (password) {
-            const match = await bcrypt.compare(password, user.password);
+            const match = await PasswordUtils.compare(password, user.password);
             if (!match) {
                 console.error(`[ERROR] UserService.deleteUserr: Current password incorrect`);
                 return null;
@@ -63,7 +61,7 @@ export class UserService {
     async addUser(email: string, name: string, password?: string) {
         let res;
         if (password) {
-            const hashedPW = await bcrypt.hash(password, SALT_ROUNDS);
+            const hashedPW = await PasswordUtils.hash(password);
             res = runService(() => this.repo.addUser(email, name, hashedPW), 'Error adding user:');
         }
         else {
@@ -86,12 +84,12 @@ export class UserService {
                     console.error(`[ERROR] UserService.updateUser: User not found!`);
                     return null;
                 }
-                const match = await bcrypt.compare(currentPW, user.password);
+                const match = await PasswordUtils.compare(currentPW, user.password);
                 if (!match) {
                     console.error(`[ERROR] UserService.updateUser: Current password incorrect`);
                     return null;
                 }
-                value = await bcrypt.hash(newPW, SALT_ROUNDS);
+                value = await PasswordUtils.hash(newPW);
                 break;
             default:
                 console.error(`[ERROR] UserService.updateUser: Invalid Key: ${key}!`);

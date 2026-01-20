@@ -64,12 +64,12 @@ export const deleteUser = async (id: number, password: string) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id, password: password })
     });
-
+    
+    const data = await res.json();
     if (!res.ok) {
         console.error(res);
-        throw new Error("Failed to delete user");
     }
-    return await res.json();
+    return data;
 }
 
 

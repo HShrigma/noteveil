@@ -34,6 +34,7 @@ const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => 
         e.preventDefault();
         if (!window.confirm(deleteAccountMsg)) return;
         const err = await ctx.deleteUser(password);
+        console.log("ERROR:" + err);
         if(err !== null){
             setIsError(true);
             return;
