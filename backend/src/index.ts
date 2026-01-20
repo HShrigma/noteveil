@@ -14,6 +14,7 @@ const PORT = Number(process.env.PORT);
 const CLIENT = process.env.CLIENT;
 export const GOOGLE_ID = process.env.GOOGLE_CLIENT_ID;
 export const AUTH_ROUTE = process.env.AUTH_ROUTE;
+export const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
 
 DB.getInstance();
 

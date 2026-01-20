@@ -1,6 +1,6 @@
 import brcypt from "bcrypt";
+import { SALT_ROUNDS } from "../..";
 
-const SALT_ROUNDS = 10;
 
 export class PasswordUtils {
     static async hash(password:string): Promise<string>{
