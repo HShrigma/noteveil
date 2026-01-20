@@ -4,29 +4,55 @@ import UserService from "../services/userService";
 import { AUTH_ROUTE, GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { GoogleUserInfo } from "../models/users";
+import { log } from "console";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
 export class UserController {
     getGoogleUserInfo = async (access_token: string) => {
-        if(!AUTH_ROUTE) return undefined;
+        if (!AUTH_ROUTE) return undefined;
 
         const res = await fetch(AUTH_ROUTE, {
             headers: { Authorization: `Bearer ${access_token}` }
         });
-        const data:GoogleUserInfo = await res.json();
+        const data: GoogleUserInfo = await res.json();
         return data;
     }
 
+    public refreshUser = async (req: Request, res: Response) => {
+        const auth = req.headers.authorization || req.cookies.token;
+
+        if (!auth) {
+            console.log("user didn't send data, sending dummy user & cookie");
+            const dummyToken = "dummy-jwt-token";
+            res.cookie("token", dummyToken, {
+                httpOnly: true,
+                secure: false,
+                sameSite: "lax",
+            });
+
+            return res.json({
+                id: 0,
+                name: "Dummy User",
+                email: "dummy@example.com",
+            });
+        } else {
+            console.log("user sent data!");
+            console.log(auth);
+        }
+
+        return sendError(res, 500, "User refresh not implemented yet");
+    };
+
     public authenticateWithGoogle = async (req: Request, res: Response) => {
-        const {token} = req.body;
+        const { token } = req.body;
 
         if (!token) return sendError(res, 400, "token not provided");
         if (!token.access_token) return sendError(res, 400, "Invalid token");
         if (!client) return sendError(res, 500, "Error getting client");
 
         const userInfo = await this.getGoogleUserInfo(token.access_token);
-        if(!userInfo) return sendError(res, 500, "Error getting user info");
+        if (!userInfo) return sendError(res, 500, "Error getting user info");
 
         const result = await UserService.authenticateWithGoogle(userInfo);
         if (result === null) return sendError(res, 500, "Error validating user");
@@ -34,8 +60,8 @@ export class UserController {
         return res.json(sendSuccess(result));
     }
 
-    public fetchUser = async (req:Request, res:Response) => {
-        const {email, password} = req.body;
+    public fetchUser = async (req: Request, res: Response) => {
+        const { email, password } = req.body;
         let result, err, code;
 
         if (!password) {
@@ -44,7 +70,7 @@ export class UserController {
             code = 500;
         }
         else {
-            result = await UserService.getUser(email, password); 
+            result = await UserService.getUser(email, password);
             err = "Could not fetch Users";
             code = 404;
         }
@@ -53,8 +79,8 @@ export class UserController {
         res.json(result);
     }
 
-    public deleteUser = async (req:Request, res:Response) => {
-        const {id, password} = req.body; 
+    public deleteUser = async (req: Request, res: Response) => {
+        const { id, password } = req.body;
         const result = await UserService.deleteUser(id, password);
 
         console.log("RES: " + result);
@@ -64,8 +90,8 @@ export class UserController {
         res.json(sendSuccess(result));
     }
 
-    public addUser = async (req:Request, res:Response) => {
-        const {email, name, password} = req.body;
+    public addUser = async (req: Request, res: Response) => {
+        const { email, name, password } = req.body;
         const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
@@ -73,8 +99,8 @@ export class UserController {
     }
 
     public updateUser = async (req: Request, res: Response) => {
-        const {id, key, values} = req.body;
-        
+        const { id, key, values } = req.body;
+
         const result = await UserService.updateUser(id, key, values);
 
         if (result === null) return sendError(res, 500, "Could not update User");

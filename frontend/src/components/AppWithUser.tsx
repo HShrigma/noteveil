@@ -1,3 +1,4 @@
+import { useEffect } from "react";
 import { ProjectsProvider } from "../context/projects/ProjectsProvider";
 import { useUserContext } from "../context/users/userContext";
 import { MainState } from "../utils/registries";
@@ -10,9 +11,11 @@ interface AppWithUserProps{
     onScreenChange: (value: MainState) => void;
 }
 export const AppWithUser = ({ state, onProjectOpened, onScreenChange }: AppWithUserProps) => {
+    const ctx = useUserContext();
+    useEffect(() => { ctx.initializeUser() }, []);
 
     return (
-        <ProjectsProvider user={useUserContext().user} onProjectOpened={onProjectOpened}>
+        <ProjectsProvider user={ctx.user} onProjectOpened={onProjectOpened}>
                 <DefaultHeader onScreenChange={onScreenChange} currentState={state} />
                 <MainScreen state={state} />
         </ProjectsProvider>

@@ -2,7 +2,7 @@ import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
-import { addUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser } from "../../api/userApi";
+import { addUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -11,6 +11,17 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
     const [fromAuth, setFromAuth] = useState(false);
+
+    const initializeUser = async () => {
+        const res = await refreshUser();
+        if(res === null) return;
+        setUser({
+            id: res.id,
+            name: res.name,
+            email: res.email,
+        });
+        onLoginSuccess();
+    }
 
     const useGoogleApi = async (token: TokenResponse) => {
         const res = await authenticateWithGoogle(token);
@@ -104,6 +115,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         isPasswordError: () => isErrorTypePassword(signupError), 
         isUserLoggedIn: () => user !== null,
 
+        initializeUser,
         getUsername: () => user === null ? "User" : user.name,
         login, signup, 
         logout:() => { setUser(null); onLogoutSuccess(); },

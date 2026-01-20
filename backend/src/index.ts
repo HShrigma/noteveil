@@ -7,6 +7,7 @@ import notesRouter from "./routes/noteRoutes";
 import DB from "./config/db";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
+import cookieParser from "cookie-parser";
 
 const app = express();
 
@@ -24,8 +25,9 @@ export const JWT_EXPIRES_IN_MS = Number(process.env.JWT_EXPIRES_IN_MS);
 
 DB.getInstance();
 
-app.use(cors({ origin: CLIENT}));
+app.use(cors({ origin: CLIENT, credentials: true }));
 app.use(express.json());
+app.use(cookieParser());
 
 // Routes
 app.use("/api/users", userRouter);

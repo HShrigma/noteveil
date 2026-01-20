@@ -2,6 +2,27 @@ import { TokenResponse } from "@react-oauth/google";
 import { CORE_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/users`;
 
+export const refreshUser = async () => {
+    try {
+        const res = await fetch(`${BASE_URL}/auth/refresh`, {
+            method: "POST",
+            credentials: "include",
+        });
+        console.log("running request");
+        const data = await res.json();
+
+        console.log("got data");
+        if (!res.ok) {
+            console.log("not ok");
+            return null;
+        }
+        return data;
+    } catch (err) {
+        console.error("Failed to initialize user", err);
+        return null;
+    }
+}
+
 export const authenticateWithGoogle = async (token: TokenResponse) => {
     try {
         const res = await fetch(`${BASE_URL}/auth/google`, {
@@ -16,7 +37,7 @@ export const authenticateWithGoogle = async (token: TokenResponse) => {
         }
         return data;
     }
-    catch(error){
+    catch (error) {
         console.error("Error authenticating with Google", error);
         return undefined;
     }
@@ -64,7 +85,7 @@ export const deleteUser = async (id: number, password: string) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id, password: password })
     });
-    
+
     const data = await res.json();
     if (!res.ok) {
         console.error(res);

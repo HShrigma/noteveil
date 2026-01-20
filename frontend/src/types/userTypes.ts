@@ -37,6 +37,7 @@ export type UserContextResult = {
     signupError: userErrorType,
     isLogin: boolean,
 
+    initializeUser: () => void;
     getUsername: () => string;
     isEmailError: () => boolean,
     isUserError: () => boolean,
