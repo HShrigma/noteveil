@@ -1,8 +1,7 @@
 import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
-import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 import { GoogleUserInfo } from "../models/users";
-import { PasswordUtils } from "../utils/security/passwordUtils";
+import { addUserWithCredentials, deleteAccountIfVerified, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userAuthHelpers";
 
 export class UserService {
     repo = new UserRepository();
@@ -34,62 +33,26 @@ export class UserService {
     async getUser(email: string, password: string) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
         if (!user) return null;
-        const identifier = "UserService.getUser";
-        return await PasswordUtils.getIsMatch(password, user.password, `${identifier}: Found matching user`, `${identifier}: User Not Found`) ? 
-            getUserToUserReturnObj(user) : null;
+        return await getUserReturnObjIfPasswordMatches("UserService.getUser", password, user);
     }
 
     async deleteUser(id: number, password?: string) {
-        const user = runService(() => this.repo.getUserById(id), `Error fetching user. Not found for id = ${id}!`);
-        if (!user) {
-            console.error(`[ERROR] UserService.deleteUser: User not found!`);
-            return null;
-        }
-
-        const identifier = "UserService.deleteUser";
-        const match = await PasswordUtils.getIsMatch(password, user.password, 
-            `${identifier}: Found password`, `${identifier}: Could not find password`);
-        const res = match ? runService(() => this.repo.deleteUser(id), 'Error deleting user:') : undefined;
-
+        const res = await deleteAccountIfVerified("UserService.deleteUser", password, id, this.repo); 
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
     async addUser(email: string, name: string, password?: string) {
-        let res;
-        if (password) {
-            const hashedPW = await PasswordUtils.hash(password);
-            res = runService(() => this.repo.addUser(email, name, hashedPW), 'Error adding user:');
-        }
-        else {
-            res = runService(() => this.repo.addUser(email, name), 'Error adding user:');
-        }
+        const res = await addUserWithCredentials("UserService.addUser", email, name, password, this.repo);
         return res ? { id: res.lastInsertRowid as number } : null;
     }
 
     async updateUser(id: number, key: string, values: string[]) {
-        let value: string | null = "";
-        switch (key) {
-            case "name":
-                value = values[0];
-                break;
-            case "password":
-                const currentPW = values[0];
-                const newPW = values[1];
-                const user = runService(() => this.repo.getUserById(id), `Error fetching user. Not found for id = ${id}!`);
-                if (!user) {
-                    console.error(`[ERROR] UserService.updateUser: User not found!`);
-                    return null;
-                }
-                const identifier = "UserService.updateUser";
-                value = await PasswordUtils.getIsMatch(currentPW, user.password, `${identifier}: Found Matching User`, `${identifier}: User Not Found`) ? await PasswordUtils.hash(newPW) : null;
-                break;
-            default:
-                console.error(`[ERROR] UserService.updateUser: Invalid Key: ${key}!`);
-                return null;
-        }
+        const identifier = "UserService.updateUser";
+        const value = await getUserUpdateValueForKey(id, key, values, identifier, this.repo);
         if (value === null) return null;
+
         const res = runService(() => this.repo.updateUser(id, key, value),
-            'Error updating user:');
+            `[ERROR] ${identifier}: Could not update user`);
         return res ? { updated: res.changes > 0, id: id, [key]: values } : null;
     }
 }
