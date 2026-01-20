@@ -34,9 +34,9 @@ export class UserService {
     async getUser(email: string, password: string) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
         if (!user) return null;
-        const match = await PasswordUtils.compare(password, user.password);
-        if (!match) return null;
-        return getUserToUserReturnObj(user);
+        const identifier = "UserService.getUser";
+        return await PasswordUtils.getIsMatch(password, user.password, `${identifier}: Found matching user`, `${identifier}: User Not Found`) ? 
+            getUserToUserReturnObj(user) : null;
     }
 
     async deleteUser(id: number, password?: string) {
@@ -46,15 +46,11 @@ export class UserService {
             return null;
         }
 
-        if (password) {
-            const match = await PasswordUtils.compare(password, user.password);
-            if (!match) {
-                console.error(`[ERROR] UserService.deleteUserr: Current password incorrect`);
-                return null;
-            }
-            console.log("[INFO] UserService.deleteUserr: User matches ");
-        }
-        const res = runService(() => this.repo.deleteUser(id), 'Error deleting user:');
+        const identifier = "UserService.deleteUser";
+        const match = await PasswordUtils.getIsMatch(password, user.password, 
+            `${identifier}: Found password`, `${identifier}: Could not find password`);
+        const res = match ? runService(() => this.repo.deleteUser(id), 'Error deleting user:') : undefined;
+
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
@@ -71,7 +67,7 @@ export class UserService {
     }
 
     async updateUser(id: number, key: string, values: string[]) {
-        let value = "";
+        let value: string | null = "";
         switch (key) {
             case "name":
                 value = values[0];
@@ -84,17 +80,14 @@ export class UserService {
                     console.error(`[ERROR] UserService.updateUser: User not found!`);
                     return null;
                 }
-                const match = await PasswordUtils.compare(currentPW, user.password);
-                if (!match) {
-                    console.error(`[ERROR] UserService.updateUser: Current password incorrect`);
-                    return null;
-                }
-                value = await PasswordUtils.hash(newPW);
+                const identifier = "UserService.updateUser";
+                value = await PasswordUtils.getIsMatch(currentPW, user.password, `${identifier}: Found Matching User`, `${identifier}: User Not Found`) ? await PasswordUtils.hash(newPW) : null;
                 break;
             default:
                 console.error(`[ERROR] UserService.updateUser: Invalid Key: ${key}!`);
                 return null;
         }
+        if (value === null) return null;
         const res = runService(() => this.repo.updateUser(id, key, value),
             'Error updating user:');
         return res ? { updated: res.changes > 0, id: id, [key]: values } : null;
