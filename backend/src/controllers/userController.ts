@@ -4,7 +4,7 @@ import UserService from "../services/userService";
 import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
-import { getTokenForHeaderOrCookie, signToken, verifyToken } from "../utils/security/jwtHelper";
+import { cookieSettings, getTokenForHeaderOrCookie, JwtPayload, signToken, verifyToken } from "../utils/security/jwtHelper";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
@@ -18,12 +18,7 @@ export class UserController {
             const result = await UserService.getUserJWTRefreshResult(token);
             if(result === null ) return sendError(res, 401, "User no longer exists");
 
-            res.cookie("token", result.token, {
-                httpOnly: true,
-                secure: false, // true in prod (HTTPS)
-                sameSite: "lax",
-            });
-
+            res.cookie("token", result.token, cookieSettings);
             return res.json(result.user);
         } catch (err) {
             console.error("Refresh failed:", err);
@@ -77,10 +72,13 @@ export class UserController {
         res.json(sendSuccess(result));
     }
 
-    public addUser = async (req: Request, res: Response) => {
+    public register = async (req: Request, res: Response) => {
         const { email, name, password } = req.body;
         const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
+
+        const newToken = signToken(result);
+        res.cookie("token", newToken, cookieSettings);
 
         res.json(sendSuccess(result));
     }

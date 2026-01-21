@@ -59,7 +59,7 @@ export class UserService {
 
     async addUser(email: string, name: string, password?: string) {
         const res = await addUserWithCredentials("UserService.addUser", email, name, password, this.repo);
-        return res ? { id: res.lastInsertRowid as number } : null;
+        return res ? { id: Number(res.lastInsertRowid) } : null;
     }
 
     async updateUser(id: number, key: string, values: string[]) {

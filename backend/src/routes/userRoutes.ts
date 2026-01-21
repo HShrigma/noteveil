@@ -13,7 +13,7 @@ router.post("/auth/refresh", runMiddleware({}), (_req, res) => UserController.re
 router.post("/auth/google", runMiddleware({}), (_req, res) => UserController.authenticateWithGoogle(_req, res));
 
 // Register User
-router.post("/auth/register", runMiddleware({ bodyFields: ["email", "name", "password"] }), (_req, res) => UserController.addUser(_req, res));
+router.post("/auth/register", runMiddleware({ bodyFields: ["email", "name", "password"] }), (_req, res) => UserController.register(_req, res));
 
 // Get emails
 router.post("/verify", runMiddleware({bodyFields:["email"]}), (_req, res) => UserController.fetchUser(_req, res));

@@ -1,6 +1,6 @@
 import jwt from "jsonwebtoken";
 import {  JWT_EXPIRES_IN_S, JWT_SECRET } from "../..";
-import { Request } from "express";
+import { CookieOptions, Request } from "express";
 
 export type JwtPayload = {
     id: number;
@@ -24,3 +24,8 @@ export const getTokenForHeaderOrCookie = (req: Request) => {
 
     return req.cookies?.token;
 }
+export const cookieSettings = {
+    httpOnly: true,
+    secure: false, // true in prod (HTTPS)
+    sameSite: "lax",
+} as CookieOptions;
