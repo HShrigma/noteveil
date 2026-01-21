@@ -1,23 +1,13 @@
 import { Request, Response } from "express";
 import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
 import UserService from "../services/userService";
-import { AUTH_ROUTE, GOOGLE_ID } from "..";
+import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
-import { GoogleUserInfo } from "../models/users";
-import { log } from "console";
+import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
 export class UserController {
-    getGoogleUserInfo = async (access_token: string) => {
-        if (!AUTH_ROUTE) return undefined;
-
-        const res = await fetch(AUTH_ROUTE, {
-            headers: { Authorization: `Bearer ${access_token}` }
-        });
-        const data: GoogleUserInfo = await res.json();
-        return data;
-    }
 
     public refreshUser = async (req: Request, res: Response) => {
         const auth = req.headers.authorization || req.cookies.token;
@@ -51,7 +41,7 @@ export class UserController {
         if (!token.access_token) return sendError(res, 400, "Invalid token");
         if (!client) return sendError(res, 500, "Error getting client");
 
-        const userInfo = await this.getGoogleUserInfo(token.access_token);
+        const userInfo = await getGoogleUserInfo(token.access_token);
         if (!userInfo) return sendError(res, 500, "Error getting user info");
 
         const result = await UserService.authenticateWithGoogle(userInfo);
