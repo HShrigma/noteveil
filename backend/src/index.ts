@@ -21,7 +21,7 @@ export const AUTH_ROUTE = process.env.AUTH_ROUTE;
 export const SALT_ROUNDS = Number(process.env.SALT_ROUNDS);
 
 export const JWT_SECRET:jwt.Secret  = String(process.env.JWT_SECRET);
-export const JWT_EXPIRES_IN_MS = Number(process.env.JWT_EXPIRES_IN_MS);
+export const JWT_EXPIRES_IN_S = Number(process.env.JWT_EXPIRES_IN_S);
 
 DB.getInstance();
 

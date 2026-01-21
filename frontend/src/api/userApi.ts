@@ -8,14 +8,10 @@ export const refreshUser = async () => {
             method: "POST",
             credentials: "include",
         });
-        console.log("running request");
         const data = await res.json();
 
-        console.log("got data");
-        if (!res.ok) {
-            console.log("not ok");
-            return null;
-        }
+        if (!res.ok) return null; 
+
         return data;
     } catch (err) {
         console.error("Failed to initialize user", err);
