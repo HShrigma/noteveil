@@ -58,6 +58,10 @@ export const addUserWithCredentials = async (identifier: string, email: string, 
 
 }
 
+export const getUserIfPasswordMatches = async (identifier: string, password: string | undefined, user: User) => {
+    return await PasswordUtils.getIsMatch(password, user.password, mismatchErr(identifier)) ? user : null;
+}
+
 export const getUserReturnObjIfPasswordMatches = async (identifier: string, password: string | undefined, user: User) => {
     return await PasswordUtils.getIsMatch(password, user.password, mismatchErr(identifier)) ? getUserToUserReturnObj(user) : null;
 }

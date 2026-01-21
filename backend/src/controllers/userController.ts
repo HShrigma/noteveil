@@ -5,11 +5,12 @@ import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 import { cookieSettings, getTokenForHeaderOrCookie, JwtPayload, signToken, verifyToken } from "../utils/security/jwtHelper";
+import { fetchHasEmail, getFetchCredentialsError } from "../utils/controller/userControllerHelper";
+import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
 export class UserController {
-
     public refreshUser = async (req: Request, res: Response) => {
         try {
             const token = getTokenForHeaderOrCookie(req);
@@ -44,28 +45,25 @@ export class UserController {
 
     public fetchUser = async (req: Request, res: Response) => {
         const { email, password } = req.body;
-        let result, err, code;
 
-        if (!password) {
-            result = { exists: UserService.getHasEmail(email) };
-            err = "Could not fetch email verification";
-            code = 500;
-        }
-        else {
-            result = await UserService.getUser(email, password);
-            err = "Could not fetch Users";
-            code = 404;
-        }
-        if (result === null) return sendError(res, code, err);
+        if (!password) return fetchHasEmail(email, res);
 
-        res.json(result);
+        const err = getFetchCredentialsError(email, password);
+        if (err) return sendError(res, 404, err);
+
+        const result = await UserService.getUser(email, password);
+        if (result === null) return sendError(res, 404, "Could not fetch Users");
+
+        const newToken = signToken({ id: result.id });
+        res.cookie("token", newToken, cookieSettings);
+
+        res.json(getUserToUserReturnObj(result));
     }
 
     public deleteUser = async (req: Request, res: Response) => {
         const { id, password } = req.body;
         const result = await UserService.deleteUser(id, password);
 
-        console.log("RES: " + result);
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
@@ -77,7 +75,7 @@ export class UserController {
         const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
-        const newToken = signToken(result);
+        const newToken = signToken({ id: result.id });
         res.cookie("token", newToken, cookieSettings);
 
         res.json(sendSuccess(result));

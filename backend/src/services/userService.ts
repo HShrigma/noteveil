@@ -1,7 +1,7 @@
 import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
 import { GoogleUserInfo, UserJWTPayload, UserReturnObj } from "../models/users";
-import { addUserWithCredentials, deleteAccountIfVerified, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userAuthHelpers";
+import { addUserWithCredentials, deleteAccountIfVerified, getUserIfPasswordMatches, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userServiceAuthHelpers";
 import { signToken, verifyToken } from "../utils/security/jwtHelper";
 
 export class UserService {
@@ -47,6 +47,12 @@ export class UserService {
     }
 
     async getUser(email: string, password: string) {
+        const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
+        if (!user) return null;
+        return await getUserIfPasswordMatches("UserService.getUser", password, user);
+    }
+
+    async getUserReturnObj(email: string, password: string) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
         if (!user) return null;
         return await getUserReturnObjIfPasswordMatches("UserService.getUser", password, user);
