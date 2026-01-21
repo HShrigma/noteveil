@@ -9,7 +9,6 @@ export const refreshUser = async () => {
             credentials: "include",
         });
         const data = await res.json();
-
         if (!res.ok) return null; 
 
         return data;
@@ -105,14 +104,18 @@ export const deleteUserById = async (id: number) => {
 }
 
 // Add User
-export const addUser = async (email: string, name: string, password: string) => {
-    const res = await fetch(`${BASE_URL}/add`, {
+export const registerUser = async (email: string, name: string, password: string) => {
+    const res = await fetch(`${BASE_URL}/auth/register`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: email, name: name, password: password })
+        body: JSON.stringify({ email, name, password })
     })
 
-    if (!res.ok) throw new Error("Failed to add new user");
+    if (!res.ok) {
+        console.error("Failed to register user");
+        return null;
+    }
 
     return await res.json();
 }

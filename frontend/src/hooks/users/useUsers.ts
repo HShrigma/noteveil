@@ -2,7 +2,7 @@ import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
-import { addUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser } from "../../api/userApi";
+import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -54,12 +54,11 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const signup = async (email: string, name: string, password: string) => {
         const err = await getSignupValidationError(email, name, password);
         setSignupError(err);
-
         if (err !== null) return;
 
         const newUser: UserData = { id: createTempId(), email, name: name };
-        const res = await addUser(newUser.email, newUser.name, password);
-        if(!res.success) { return;}
+        const res = await registerUser(newUser.email, newUser.name, password);
+        if (!res || res.error) return;
         const realId = Number(res.body.id);
         newUser.id = realId;
 

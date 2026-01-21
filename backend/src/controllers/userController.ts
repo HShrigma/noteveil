@@ -12,7 +12,6 @@ export class UserController {
 
     public refreshUser = async (req: Request, res: Response) => {
         try {
-            // Get token from header OR cookie
             const token = getTokenForHeaderOrCookie(req);
             if (!token) return sendError(res, 401, "User Token not found");
 
