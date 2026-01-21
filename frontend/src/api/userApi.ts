@@ -18,10 +18,30 @@ export const refreshUser = async () => {
     }
 }
 
+export const logoutAndClearToken = async () => {
+    try {
+        const res = await fetch(`${BASE_URL}/logout`, {
+            method: "POST",
+            credentials: "include",
+            headers: { "Content-Type": "application/json" },
+        });
+        const data = await res.json();
+
+        if (!res.ok) {
+            return { error: data.error || "Response not OK" }
+        }
+        return data;
+    }
+    catch (error) {
+        console.error("Error logging out", error);
+        return undefined;
+    }
+}
 export const authenticateWithGoogle = async (token: TokenResponse) => {
     try {
         const res = await fetch(`${BASE_URL}/auth/google`, {
             method: "POST",
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ token: token })
         });
@@ -36,7 +56,6 @@ export const authenticateWithGoogle = async (token: TokenResponse) => {
         console.error("Error authenticating with Google", error);
         return undefined;
     }
-
 }
 
 // Get email
@@ -54,6 +73,7 @@ export const fetchUser = async (email: string, password: string) => {
     try {
         const res = await fetch(`${BASE_URL}/login`, {
             method: "POST",
+            credentials: "include",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ email, password })
         });
@@ -77,6 +97,7 @@ export const fetchUser = async (email: string, password: string) => {
 export const deleteUser = async (id: number, password: string) => {
     const res = await fetch(`${BASE_URL}/delete`, {
         method: "DELETE",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id, password: password })
     });
@@ -92,6 +113,7 @@ export const deleteUser = async (id: number, password: string) => {
 export const deleteUserById = async (id: number) => {
     const res = await fetch(`${BASE_URL}/delete`, {
         method: "DELETE",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id: id })
     });

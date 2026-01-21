@@ -62,8 +62,8 @@ export const getUserIfPasswordMatches = async (identifier: string, password: str
     return await PasswordUtils.getIsMatch(password, user.password, mismatchErr(identifier)) ? user : null;
 }
 
-export const getUserReturnObjIfPasswordMatches = async (identifier: string, password: string | undefined, user: User) => {
-    return await PasswordUtils.getIsMatch(password, user.password, mismatchErr(identifier)) ? getUserToUserReturnObj(user) : null;
+export const getUserReturnObjIfPasswordMatches = async (identifier: string, password: string | undefined, user: User, auth: boolean) => {
+    return await PasswordUtils.getIsMatch(password, user.password, mismatchErr(identifier)) ? getUserToUserReturnObj(user, auth) : null;
 }
 
 export const getUserUpdateValueForKey = async (id: number, key: string, values: string[], identifier: string, repo: UserRepository) => {

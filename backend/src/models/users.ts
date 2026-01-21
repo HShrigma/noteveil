@@ -10,6 +10,7 @@ export interface UserReturnObj {
     id: number;
     email: string;
     name: string;
+    from_auth: boolean;
 }
 
 export interface GoogleUserInfo {

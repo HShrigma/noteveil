@@ -40,6 +40,9 @@ export class UserController {
         const result = await UserService.authenticateWithGoogle(userInfo);
         if (result === null) return sendError(res, 500, "Error validating user");
 
+        const newToken = signToken({ id: result.id });
+        res.cookie("token", newToken, cookieSettings);
+
         return res.json(sendSuccess(result));
     }
 
@@ -57,7 +60,7 @@ export class UserController {
         const newToken = signToken({ id: result.id });
         res.cookie("token", newToken, cookieSettings);
 
-        res.json(getUserToUserReturnObj(result));
+        res.json(getUserToUserReturnObj(result, false));
     }
 
     public deleteUser = async (req: Request, res: Response) => {
@@ -67,7 +70,13 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
+        res.clearCookie("token", cookieSettings);
         res.json(sendSuccess(result));
+    }
+
+    public logout = async (req: Request, res: Response) => {
+        res.clearCookie("token", cookieSettings);
+        return res.json({ success: true });
     }
 
     public register = async (req: Request, res: Response) => {
@@ -88,6 +97,9 @@ export class UserController {
 
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");
+
+        const newToken = signToken({ id: result.id });
+        res.cookie("token", newToken, cookieSettings);
 
         res.json(sendSuccess(result));
     }

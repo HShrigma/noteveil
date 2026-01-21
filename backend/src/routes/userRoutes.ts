@@ -22,8 +22,10 @@ router.post("/verify", runMiddleware({bodyFields:["email"]}), (_req, res) => Use
 router.post("/login", runMiddleware({bodyFields:["email", "password"]}), (_req, res) => UserController.fetchUser(_req, res));
 
 // Delete User
-router.delete("/delete", runMiddleware({bodyFields:["id"]}), (_req, res) => UserController.deleteUser(_req, res));
+router.post("/logout", runMiddleware({}), (_req, res) => UserController.logout(_req, res));
 
+// Delete User
+router.delete("/delete", runMiddleware({bodyFields:["id"]}), (_req, res) => UserController.deleteUser(_req, res));
 
 // Patch User
 router.patch("/", runMiddleware({ bodyFields: ["key"] }), (_req, res) => UserController.updateUser(_req, res));

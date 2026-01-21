@@ -43,7 +43,7 @@ export class UserService {
     async getUserById(id: number){
         const user = runService(() => this.repo.getUserById(id), 'Error fetching users:');
         if(!user) return null;
-        return { id: user.id, email: user.email, name: user.name } as UserReturnObj;
+        return { id: user.id, email: user.email, name: user.name, from_auth: user.from_auth } as UserReturnObj;
     }
 
     async getUser(email: string, password: string) {
@@ -52,10 +52,10 @@ export class UserService {
         return await getUserIfPasswordMatches("UserService.getUser", password, user);
     }
 
-    async getUserReturnObj(email: string, password: string) {
+    async getUserReturnObj(email: string, password: string, auth: boolean) {
         const user = runService(() => this.repo.getUser(email), 'Error fetching users:');
         if (!user) return null;
-        return await getUserReturnObjIfPasswordMatches("UserService.getUser", password, user);
+        return await getUserReturnObjIfPasswordMatches("UserService.getUser", password, user, auth);
     }
 
     async deleteUser(id: number, password?: string) {

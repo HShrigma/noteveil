@@ -2,7 +2,7 @@ import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
-import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser } from "../../api/userApi";
+import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser, logoutAndClearToken } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
@@ -20,6 +20,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
             name: res.name,
             email: res.email,
         });
+        setFromAuth(res.from_auth);
         onLoginSuccess();
     }
 
@@ -104,6 +105,12 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         if(!res.success) return "currentPWIncorrect";
         return null;
     }
+    const logout = async () => { 
+        await logoutAndClearToken();
+        setUser(null); 
+        setIsLogin(true);
+        onLogoutSuccess();
+    }
 
     return {
         user,
@@ -117,7 +124,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         initializeUser,
         getUsername: () => user === null ? "User" : user.name,
         login, signup, 
-        logout:() => { setUser(null); onLogoutSuccess(); },
+        logout,
         useGoogleApi,
 
         deleteUser: removeUser, 
