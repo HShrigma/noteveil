@@ -5,7 +5,7 @@ import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
-import { clearAuthCookie, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookie } from "../utils/controller/userControllerHelper";
+import { clearCookieAndSendSuccess, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookie, signCookieAndSendData, signCookieAndSendSuccess } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 
 const client = new OAuth2Client(GOOGLE_ID);
@@ -40,9 +40,7 @@ export class UserController {
         const result = await UserService.authenticateWithGoogle(userInfo);
         if (result === null) return sendError(res, 500, "Error validating user");
 
-        signAndSetAuthCookie(res, result.id);
-
-        return res.json(sendSuccess(result));
+        signCookieAndSendSuccess(res, result);
     }
 
     public fetchUser = async (req: Request, res: Response) => {
@@ -54,11 +52,9 @@ export class UserController {
         if (err) return sendError(res, 404, err);
 
         const result = await UserService.getUser(email, password);
-        if (result === null) return sendError(res, 404, "Could not fetch Users");
+        if (result === null) return sendError(res, 404, "User not found");
 
-        signAndSetAuthCookie(res, result.id);
-
-        res.json(getUserToUserReturnObj(result, false));
+        signCookieAndSendData(res, result, getUserToUserReturnObj(result, false));
     }
 
     public deleteUser = async (req: Request, res: Response) => {
@@ -68,22 +64,17 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
-        clearAuthCookie(res);
-        res.json(sendSuccess(result));
+        clearCookieAndSendSuccess(res, result);
     }
 
-    public logout = async (req: Request, res: Response) => {
-        clearAuthCookie(res);
-        return res.json({ success: true });
-    }
+    public logout = async (req: Request, res: Response) => clearCookieAndSendSuccess(res, {});
 
     public register = async (req: Request, res: Response) => {
         const { email, name, password } = req.body;
         const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
-        signAndSetAuthCookie(res, result.id);
-        res.json(sendSuccess(result));
+        signCookieAndSendSuccess(res, result);
     }
 
     public updateUser = async (req: Request, res: Response) => {
@@ -94,8 +85,7 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");
 
-        signAndSetAuthCookie(res, result.id);
-        res.json(sendSuccess(result));
+        signCookieAndSendSuccess(res, result);
     }
 };
 

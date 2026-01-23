@@ -1,5 +1,5 @@
 import { signToken, cookieSettings } from "../security/jwtHelper";
-import  UserService  from "../../services/userService";
+import UserService from "../../services/userService";
 import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../messages";
 
@@ -18,15 +18,33 @@ export const getFetchCredentialsError = (email: string | undefined, password: st
 }
 
 export const signAndSetAuthCookie = (res: Response, userId: number) => {
-    const token = signToken({id: userId});
+    const token = signToken({ id: userId });
     res.cookie("token", token, cookieSettings);
     return token;
 }
 
-export const clearAuthCookie = (res:Response) => {
+export const clearAuthCookie = (res: Response) => {
     res.clearCookie("token", cookieSettings);
 }
 
 export const setAuthCookieFromToken = (res: Response, token: string) => {
     res.cookie("token", token, cookieSettings);
+};
+
+export const signCookieAndSendSuccess = <T extends { id: number }>(res: Response, result: T) => {
+    signAndSetAuthCookie(res, result.id);
+    res.json(sendSuccess(result))
+}
+export const clearCookieAndSendSuccess = (res: Response, result: Object) => {
+    clearAuthCookie(res);
+    res.json(sendSuccess(result))
+}
+
+export const signCookieAndSendData = <T extends { id: number }, R>(
+    res: Response,
+    result: T,
+    response: R
+) => {
+    signAndSetAuthCookie(res, result.id);
+    res.json(response);
 };
