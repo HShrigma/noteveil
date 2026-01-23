@@ -1,10 +1,12 @@
 import { NextFunction, Request, Response } from "express";
 import { sendEmptyError, sendError } from "../utils/messages";
 import sanitizeHtml from 'sanitize-html';
+import { getTokenForHeaderOrCookie, verifyToken } from "./security/jwtHelper";
 
 export interface MiddlewareParams {
     idFields?: string[];
     bodyFields?: string[];
+    auth?: boolean;
 }
 
 const isIdInvalid = (id: number) => { return isNaN(id) || id <= 0; }
@@ -48,6 +50,23 @@ const sanitizeInput = () => {
     };
 };
 
+export const requireAuth = () => {
+    return (req: Request, res: Response, next: NextFunction) => {
+        try{
+            const token = getTokenForHeaderOrCookie(req);
+            if (!token) return sendError(res, 401, "Authentication required");
+
+            const payload = verifyToken(token);
+
+            (req as any).userId = payload.id;
+            console.log('set user credentials');
+            next();
+        }
+        catch(err){
+            return  sendError(res, 401, "Invalid or expired token");
+        }
+    };
+}
 
 export const runMiddleware = (params: MiddlewareParams) => {
     const middlewares: ((req: Request, res: Response, next: NextFunction) => void)[] = [];
@@ -55,12 +74,10 @@ export const runMiddleware = (params: MiddlewareParams) => {
     middlewares.push(sanitizeInput());
 
     // Validate body fields if required
-    if (params.bodyFields && params.bodyFields.length > 0) {
-        middlewares.push(requireBodyFields(params.bodyFields));
-    }
-    if (params.idFields && params.idFields.length > 0){
-        middlewares.push(validateIds(params.idFields));
-    }
+    if (params.bodyFields && params.bodyFields.length > 0) middlewares.push(requireBodyFields(params.bodyFields));
+    if (params.idFields && params.idFields.length > 0) middlewares.push(validateIds(params.idFields));
+    if (params.auth) middlewares.push(requireAuth());
+
     // Return a single middleware that runs all selected middlewares in sequence
     return (req: Request, res: Response, next: NextFunction) => {
         let index = 0;

@@ -5,7 +5,9 @@ import ProjectService from "../services/projectService";
 export class ProjectController {
 
     public getProjects = (req:Request, res:Response) => {
-        const userId = Number(req.params.id);
+        const userId = (req as Request & { userId: number }).userId;
+        if(!userId) return sendError(res, 401, "Unauthorized");
+
         const result = ProjectService.getProjectsForUser(userId);
 
         if (result === null) return sendError(res, 500, "Could not fetch Projects");
@@ -23,7 +25,9 @@ export class ProjectController {
     }
 
     public addProject = (req:Request, res:Response) => {
-        const userId = Number(req.params.id);
+        const userId = (req as Request & { userId: number }).userId;
+        if(!userId) return sendError(res, 401, "Unauthorized");
+
         const {title} = req.body;
 
         const result = ProjectService.addProject(userId, title);

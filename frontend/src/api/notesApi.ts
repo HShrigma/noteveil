@@ -4,14 +4,18 @@ const getProjectUrl = (projectId: number) => `${PROJECTS_URL}/${projectId}/notes
 
 // Get notes
 export const fetchNotes = async (activeProjectId: number) => {
-    const res = await fetch(`${getProjectUrl(activeProjectId)}`);
+    const res = await fetch(`${getProjectUrl(activeProjectId)}`,{
+        method: "GET",
+        credentials: "include",
+    });
     return res.json();
 };
 
 // Delete Note
 export async function deleteNote(id: number) {
     const res = await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include",
     });
 
     if (!res.ok) throw new Error("Failed to delete note");
@@ -22,6 +26,7 @@ export async function deleteNote(id: number) {
 export async function addNote(activeProjectId: number) {
     const res = await fetch(`${getProjectUrl(activeProjectId)}`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" }
     });
 
@@ -33,6 +38,7 @@ export async function addNote(activeProjectId: number) {
 export async function patchNoteTitle(id: number, title: string) {
     const res = await fetch(`${BASE_URL}/${id}/title`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             title: title
@@ -47,6 +53,7 @@ export async function patchNoteTitle(id: number, title: string) {
 export async function patchNoteContent(id: number, content: string) {
     const res = await fetch(`${BASE_URL}/${id}/content`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             content: content

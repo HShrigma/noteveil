@@ -63,6 +63,7 @@ export const fetchIfEmailExists = async (email: string) => {
     const res = await fetch(`${BASE_URL}/verify`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        credentials: "include",
         body: JSON.stringify({ email: email })
     });
     return res.json();
@@ -146,6 +147,7 @@ export const registerUser = async (email: string, name: string, password: string
 export const patchUser = async (id: number, key: string, values: string[]) => {
     const res = await fetch(`${BASE_URL}`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             id: id, key: key, values: values

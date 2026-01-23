@@ -1,10 +1,14 @@
 import { CORE_URL, USERS_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/projects`;
-const getUserUrl = (userId: number) => `${USERS_URL}/${userId}/projects`;
+const getUserUrl = () => `${USERS_URL}/projects`;
 
 // Get Projects
-export const fetchProjects = async (userId: number) => {
-    const res = await fetch(`${getUserUrl(userId)}`);
+export const fetchProjects = async () => {
+    const res = await fetch(`${getUserUrl()}/get`,{
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+    });
     if (!res.ok) throw new Error("Failed to fetch projects");
     return res.json();
 }
@@ -12,7 +16,9 @@ export const fetchProjects = async (userId: number) => {
 // Delete Project
 export const deleteProject = async (id: number) => {
     const res = await fetch(`${BASE_URL}/${id}`, {
-        method: "DELETE"
+        method: "DELETE",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
     });
 
     if (!res.ok) throw new Error("Failed to delete project");
@@ -22,8 +28,9 @@ export const deleteProject = async (id: number) => {
 
 // Add Project
 export const addProject = async (userId: number, title: string) => {
-    const res = await fetch(getUserUrl(userId), {
+    const res = await fetch(`${getUserUrl()}/add`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
     })
@@ -38,6 +45,7 @@ export const addProject = async (userId: number, title: string) => {
 export const patchProjectTitle = async (id: number, title: string) => {
     const res = await fetch(`${BASE_URL}/${id}`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             title: title

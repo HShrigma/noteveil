@@ -32,11 +32,11 @@ router.patch("/", runMiddleware({ bodyFields: ["key"] }), (_req, res) => UserCon
 // ------------------ SHARED ---------------
 
 // Get Projects
-router.get("/:id/projects", runMiddleware({idFields:["id"]}), 
+router.post("/projects/get", runMiddleware({ auth: true }), 
     (_req, res) => ProjectController.getProjects(_req, res));
 
 // Add Project
-router.post("/:id/projects", runMiddleware({ idFields: ["id"], bodyFields: ["title"] }), 
+router.post("/projects/add", runMiddleware({ auth: true, bodyFields: ["title"] }), 
     (_req, res) => ProjectController.addProject(_req, res));
 
 export default router;

@@ -7,14 +7,14 @@ const router = Router();
 // Delete tasklist
 router.delete(
     "/:id",
-    runMiddleware({idFields:["id"]}),
+    runMiddleware({ auth: true, idFields: ["id"] }),
     (req, res) => TaskController.deleteTaskList(req, res)
 );
 
 // Delete task
 router.delete(
     "/task/:taskId",
-    runMiddleware({ idFields: ["taskId"]}),
+    runMiddleware({ auth: true, idFields: ["taskId"] }),
     (req, res) => TaskController.deleteTask(req, res)
 );
 
@@ -22,35 +22,35 @@ router.delete(
 // Add task
 router.post(
     "/:id/task",
-    runMiddleware({ idFields: ["id"], bodyFields: ["label"] }),
+    runMiddleware({ auth: true, idFields: ["id"], bodyFields: ["label"] }),
     (req, res) => TaskController.addTask(req, res)
 );
 
 // Update nextId
 router.patch(
     "/:id/next",
-    runMiddleware({ idFields: ["id"]}),
+    runMiddleware({ auth: true, idFields: ["id"] }),
     (req, res) => TaskController.updateNextId(req, res)
 );
 
 // Update task done
 router.patch(
     "/task/:taskId/done",
-    runMiddleware({ idFields: ["taskId"] }),
+    runMiddleware({ auth: true, idFields: ["taskId"] }),
     (req, res) => TaskController.updateTaskDone(req, res)
 );
 
 // Update task label
 router.patch(
     "/task/:taskId/label",
-    runMiddleware({idFields: ["taskId"], bodyFields:["label"]}),
+    runMiddleware({ auth: true, idFields: ["taskId"], bodyFields: ["label"] }),
     (req, res) => TaskController.updateTaskLabel(req, res)
 );
 
 // Update list title
 router.patch(
     "/:id/title",
-    runMiddleware({ idFields: ["id"], bodyFields:["title"]}),
+    runMiddleware({ auth: true, idFields: ["id"], bodyFields: ["title"] }),
     (req, res) => TaskController.updateListTitle(req, res)
 );
 

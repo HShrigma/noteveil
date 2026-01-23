@@ -3,12 +3,16 @@ const BASE_URL = `${CORE_URL}/tasks`;
 const getProjectUrl = (projectId: number) => `${PROJECTS_URL}/${projectId}/tasks`;
 
 export const fetchTasks = async (activeProjectId: number) => {
-    const res = await fetch(getProjectUrl(activeProjectId));
+    const res = await fetch(getProjectUrl(activeProjectId),{
+        method:"GET",
+        credentials: "include",
+    });
     return res.json();
 };
 
 export async function deleteTaskList(id: number) {
     const res = await fetch(`${BASE_URL}/${id}`, {
+        credentials: "include",
         method: "DELETE"
     });
 
@@ -19,6 +23,7 @@ export async function deleteTaskList(id: number) {
 
 export async function deleteTask(taskId: number) {
     const res = await fetch(`${BASE_URL}/task/${taskId}`, {
+        credentials: "include",
         method: "DELETE"
     });
 
@@ -31,6 +36,7 @@ export async function deleteTask(taskId: number) {
 export async function addList( activeProjectId: number, title: string) {
     const res = await fetch(getProjectUrl(activeProjectId), {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
     })
@@ -43,6 +49,7 @@ export async function addList( activeProjectId: number, title: string) {
 export async function addTask(id: number, label: string) {
     const res = await fetch(`${BASE_URL}/${id}/task`, {
         method: "POST",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             label: label
@@ -57,6 +64,7 @@ export async function addTask(id: number, label: string) {
 export async function patchNextId(id:number, nextId: number | undefined){
     const res = await fetch(`${BASE_URL}/${id}/next`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             nextId: nextId
@@ -72,6 +80,7 @@ export async function patchNextId(id:number, nextId: number | undefined){
 export async function patchTaskDone(taskId: number, done: boolean) {
     const res = await fetch(`${BASE_URL}/task/${taskId}/done`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             done: done
@@ -87,6 +96,7 @@ export async function patchTaskDone(taskId: number, done: boolean) {
 export async function patchTaskLabel(taskId: number, label: string) {
     const res = await fetch(`${BASE_URL}/task/${taskId}/label`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             label: label
@@ -102,6 +112,7 @@ export async function patchTaskLabel(taskId: number, label: string) {
 export async function patchListTitle(id: number, title: string) {
     const res = await fetch(`${BASE_URL}/${id}/title`, {
         method: "PATCH",
+        credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
             title: title

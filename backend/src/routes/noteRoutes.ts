@@ -10,14 +10,14 @@ router.delete("/:id", runMiddleware({ idFields: ["id"] }), (req, res) => NoteCon
 // Update note title
 router.patch(
     "/:id/title",
-    runMiddleware({ idFields: ["id"], bodyFields: ["title"] }),
+    runMiddleware({auth: true, idFields: ["id"], bodyFields: ["title"] }),
     (req, res) => NoteController.updateNoteTitle(req, res)
 );
 
 // Update note content
 router.patch(
     "/:id/content",
-    runMiddleware({ idFields: ["id"], bodyFields: ["content"] }),
+    runMiddleware({ auth: true, idFields: ["id"], bodyFields: ["content"] }),
     (req, res) => NoteController.updateNoteContent(req, res)
 );
 
