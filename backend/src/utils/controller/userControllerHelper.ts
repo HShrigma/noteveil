@@ -1,6 +1,7 @@
+import { signToken, cookieSettings } from "../security/jwtHelper";
 import  UserService  from "../../services/userService";
-import { Response } from "express";
-import { sendError } from "../messages";
+import { Request, Response } from "express";
+import { sendError, sendSuccess } from "../messages";
 
 export const fetchHasEmail = (email: string | undefined, res: Response) => {
     if (!email) return sendError(res, 404, "Email not found");
@@ -15,3 +16,17 @@ export const getFetchCredentialsError = (email: string | undefined, password: st
     if (!password) return "Password not found";
     return undefined;
 }
+
+export const signAndSetAuthCookie = (res: Response, userId: number) => {
+    const token = signToken({id: userId});
+    res.cookie("token", token, cookieSettings);
+    return token;
+}
+
+export const clearAuthCookie = (res:Response) => {
+    res.clearCookie("token", cookieSettings);
+}
+
+export const setAuthCookieFromToken = (res: Response, token: string) => {
+    res.cookie("token", token, cookieSettings);
+};

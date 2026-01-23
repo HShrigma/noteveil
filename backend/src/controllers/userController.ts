@@ -4,8 +4,8 @@ import UserService from "../services/userService";
 import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
-import { cookieSettings, getTokenForHeaderOrCookie, JwtPayload, signToken, verifyToken } from "../utils/security/jwtHelper";
-import { fetchHasEmail, getFetchCredentialsError } from "../utils/controller/userControllerHelper";
+import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
+import { clearAuthCookie, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookie } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 
 const client = new OAuth2Client(GOOGLE_ID);
@@ -17,9 +17,9 @@ export class UserController {
             if (!token) return sendError(res, 401, "User Token not found");
 
             const result = await UserService.getUserJWTRefreshResult(token);
-            if(result === null ) return sendError(res, 401, "User no longer exists");
+            if (result === null) return sendError(res, 401, "User no longer exists");
 
-            res.cookie("token", result.token, cookieSettings);
+            setAuthCookieFromToken(res, result.token);
             return res.json(result.user);
         } catch (err) {
             console.error("Refresh failed:", err);
@@ -40,8 +40,7 @@ export class UserController {
         const result = await UserService.authenticateWithGoogle(userInfo);
         if (result === null) return sendError(res, 500, "Error validating user");
 
-        const newToken = signToken({ id: result.id });
-        res.cookie("token", newToken, cookieSettings);
+        signAndSetAuthCookie(res, result.id);
 
         return res.json(sendSuccess(result));
     }
@@ -57,8 +56,7 @@ export class UserController {
         const result = await UserService.getUser(email, password);
         if (result === null) return sendError(res, 404, "Could not fetch Users");
 
-        const newToken = signToken({ id: result.id });
-        res.cookie("token", newToken, cookieSettings);
+        signAndSetAuthCookie(res, result.id);
 
         res.json(getUserToUserReturnObj(result, false));
     }
@@ -70,12 +68,12 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
-        res.clearCookie("token", cookieSettings);
+        clearAuthCookie(res);
         res.json(sendSuccess(result));
     }
 
     public logout = async (req: Request, res: Response) => {
-        res.clearCookie("token", cookieSettings);
+        clearAuthCookie(res);
         return res.json({ success: true });
     }
 
@@ -84,9 +82,7 @@ export class UserController {
         const result = await UserService.addUser(email, name, password);
         if (result === null) return sendError(res, 500, "Could not add User");
 
-        const newToken = signToken({ id: result.id });
-        res.cookie("token", newToken, cookieSettings);
-
+        signAndSetAuthCookie(res, result.id);
         res.json(sendSuccess(result));
     }
 
@@ -98,9 +94,7 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");
 
-        const newToken = signToken({ id: result.id });
-        res.cookie("token", newToken, cookieSettings);
-
+        signAndSetAuthCookie(res, result.id);
         res.json(sendSuccess(result));
     }
 };
