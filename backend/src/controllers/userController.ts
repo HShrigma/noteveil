@@ -57,8 +57,9 @@ export class UserController {
     }
 
     public deleteUser = async (req: Request, res: Response) => {
-        const { id, password } = req.body;
-        const result = await UserService.deleteUser(id, password);
+        const userId = (req as Request & { userId: number }).userId;
+        const { password } = req.body;
+        const result = await UserService.deleteUser(userId, password);
 
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
@@ -77,9 +78,10 @@ export class UserController {
     }
 
     public updateUser = async (req: Request, res: Response) => {
-        const { id, key, values } = req.body;
+        const userId = (req as Request & { userId: number }).userId;
+        const { key, values } = req.body;
 
-        const result = await UserService.updateUser(id, key, values);
+        const result = await UserService.updateUser(userId, key, values);
 
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");
