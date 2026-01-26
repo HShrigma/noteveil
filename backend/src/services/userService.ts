@@ -2,7 +2,7 @@ import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
 import { GoogleUserInfo, UserJWTPayload, UserReturnObj } from "../models/users";
 import { addUserWithCredentials, deleteAccountIfVerified, getUserIfPasswordMatches, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userServiceAuthHelpers";
-import { signToken, verifyToken } from "../utils/security/jwtHelper";
+import { signAccessToken, verifyAccessToken } from "../utils/security/jwtHelper";
 
 export class UserService {
     repo = new UserRepository();
@@ -29,15 +29,6 @@ export class UserService {
 
     getHasEmail(email: string) {
         return runService(() => this.repo.getHasEmail(email), 'Error verifying email');
-    }
-
-    async getUserJWTRefreshResult(currentToken: string) {
-        const payload = verifyToken(currentToken) as UserJWTPayload;
-        const user = await this.getUserById(payload.id);
-        if (!user) {
-            return null;
-        }
-        return { token: signToken({ id: user.id }), user: user };
     }
 
     async getUserById(id: number){

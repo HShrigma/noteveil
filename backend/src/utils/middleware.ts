@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from "express";
 import { sendEmptyError, sendError } from "../utils/messages";
 import sanitizeHtml from 'sanitize-html';
-import { getTokenForHeaderOrCookie, verifyToken } from "./security/jwtHelper";
+import { decodeAccessToken, getTokenForHeaderOrCookie, getUserFromAuth, getUserFromTokens, JwtAccessPayload, verifyAccessToken, verifyRefreshToken } from "./security/jwtHelper";
+import { clearAuthCookies } from "./controller/userControllerHelper";
 
 export interface MiddlewareParams {
     idFields?: string[];
@@ -52,18 +53,13 @@ const sanitizeInput = () => {
 
 export const requireAuth = () => {
     return (req: Request, res: Response, next: NextFunction) => {
-        try{
-            const token = getTokenForHeaderOrCookie(req);
-            if (!token) return sendError(res, 401, "Authentication required");
-
-            const payload = verifyToken(token);
-
-            (req as any).userId = payload.id;
-            console.log('set user credentials');
+        try {
+            getUserFromAuth(req, res);
             next();
         }
-        catch(err){
-            return  sendError(res, 401, "Invalid or expired token");
+        catch (err: any) {
+            clearAuthCookies(res);
+            return sendError(res, 401, err.message);
         }
     };
 }

@@ -7,7 +7,7 @@ const router = Router();
 // ------------------ OWN ---------------
 
 // Refresh
-router.post("/auth/refresh", runMiddleware({}), (_req, res) => UserController.refreshUser(_req, res));
+router.post("/auth/refresh", runMiddleware({auth:true}), (_req, res) => UserController.refreshUser(_req, res));
 
 // Get/Create with Google
 router.post("/auth/google", runMiddleware({}), (_req, res) => UserController.authenticateWithGoogle(_req, res));

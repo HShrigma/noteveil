@@ -5,7 +5,7 @@ import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
-import { clearCookieAndSendSuccess, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookie, signCookieAndSendData, signCookieAndSendSuccess } from "../utils/controller/userControllerHelper";
+import { clearAuthCookies, clearCookiesAndSendSuccess, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookies, signCookieAndSendData, signCookieAndSendSuccess } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 
 const client = new OAuth2Client(GOOGLE_ID);
@@ -13,17 +13,14 @@ const client = new OAuth2Client(GOOGLE_ID);
 export class UserController {
     public refreshUser = async (req: Request, res: Response) => {
         try {
-            const token = getTokenForHeaderOrCookie(req);
-            if (!token) return sendError(res, 401, "User Token not found");
-
-            const result = await UserService.getUserJWTRefreshResult(token);
-            if (result === null) return sendError(res, 401, "User no longer exists");
-
-            setAuthCookieFromToken(res, result.token);
-            return res.json(result.user);
-        } catch (err) {
+            const userId = (req as Request & { userId: number }).userId;
+            const result = await UserService.getUserById(userId);
+            if (result === null) throw new Error("Invalid User ID");
+            return res.json(result);
+        } catch (err: any) {
             console.error("Refresh failed:", err);
-            return sendError(res, 401, "Invalid or expired token");
+            clearAuthCookies(res);
+            return sendError(res, 401, err.message);
         }
     };
 
@@ -64,10 +61,10 @@ export class UserController {
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
-        clearCookieAndSendSuccess(res, result);
+        clearCookiesAndSendSuccess(res, result);
     }
 
-    public logout = async (req: Request, res: Response) => clearCookieAndSendSuccess(res, {});
+    public logout = async (req: Request, res: Response) => clearCookiesAndSendSuccess(res, {});
 
     public register = async (req: Request, res: Response) => {
         const { email, name, password } = req.body;
