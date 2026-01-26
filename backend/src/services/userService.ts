@@ -3,6 +3,7 @@ import UserRepository from "../repository/userRepository";
 import { GoogleUserInfo, UserJWTPayload, UserReturnObj } from "../models/users";
 import { addUserWithCredentials, deleteAccountIfVerified, getUserIfPasswordMatches, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userServiceAuthHelpers";
 import { signAccessToken, verifyAccessToken } from "../utils/security/jwtHelper";
+import { throwHTTPError } from "../utils/controller/userControllerHelper";
 
 export class UserService {
     repo = new UserRepository();
@@ -17,13 +18,17 @@ export class UserService {
 
             let res = null;
             res = exists ? runService(() => this.repo.getUser(email), 'Error fetching users:') : await this.addUser(email, name);
-            if (!res) return null;
-            res = { ...res, name: name, email: email };
+            if (!res) {
+                if (exists) throwHTTPError(404, "User not found"); 
+                else throwHTTPError(500, "User could not be registered");
+            }
+
+            res = { ...res, name: name, email: email, from_auth:true } as UserReturnObj;
             return res;
         }
         catch (error) {
             console.error("Error accessing payload", error);
-            return null;
+            throw error;
         }
     }
 
@@ -31,9 +36,9 @@ export class UserService {
         return runService(() => this.repo.getHasEmail(email), 'Error verifying email');
     }
 
-    async getUserById(id: number){
+    async getUserById(id: number) {
         const user = runService(() => this.repo.getUserById(id), 'Error fetching users:');
-        if(!user) return null;
+        if (!user) return null;
         return { id: user.id, email: user.email, name: user.name, from_auth: user.from_auth } as UserReturnObj;
     }
 
@@ -50,7 +55,7 @@ export class UserService {
     }
 
     async deleteUser(id: number, password?: string) {
-        const res = await deleteAccountIfVerified("UserService.deleteUser", password, id, this.repo); 
+        const res = await deleteAccountIfVerified("UserService.deleteUser", password, id, this.repo);
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 

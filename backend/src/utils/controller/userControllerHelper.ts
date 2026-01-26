@@ -3,6 +3,18 @@ import UserService from "../../services/userService";
 import { Request, Response } from "express";
 import { sendError, sendSuccess } from "../messages";
 
+export const throwHTTPError = (code: number, msg: string):never => { throw new Error(`${code}$${msg}`); }
+export const decodeHTTPError = (err: Error, res: Response) => {
+    const msgArr = err.message.split("$");
+            if (msgArr.length < 2) { 
+                console.error("unexpected error:", err.message);
+                return sendError(res, 500, "Unhandled exception");
+            }
+            const code = Number(msgArr[0]);
+            const msg = msgArr[1];
+            return sendError(res, code, msg);
+}
+
 export const fetchHasEmail = (email: string | undefined, res: Response) => {
     if (!email) return sendError(res, 404, "Email not found");
 

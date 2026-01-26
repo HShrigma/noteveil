@@ -5,7 +5,7 @@ import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
-import { clearAuthCookies, clearCookiesAndSendSuccess, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookies, signCookieAndSendData, signCookieAndSendSuccess } from "../utils/controller/userControllerHelper";
+import { clearAuthCookies, clearCookiesAndSendSuccess, decodeHTTPError, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookies, signCookieAndSendData, signCookieAndSendSuccess, throwHTTPError } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
 
 const client = new OAuth2Client(GOOGLE_ID);
@@ -25,19 +25,21 @@ export class UserController {
     };
 
     public authenticateWithGoogle = async (req: Request, res: Response) => {
-        const { token } = req.body;
+        try{
+            const { token: googleToken } = req.body;
 
-        if (!token) return sendError(res, 400, "token not provided");
-        if (!token.access_token) return sendError(res, 400, "Invalid token");
-        if (!client) return sendError(res, 500, "Error getting client");
+            if (!googleToken) throwHTTPError(400, "Google token not provided");
+            if (!googleToken.access_token) throwHTTPError(400, "Invalid token");
+            if (!client) throwHTTPError(500, "Error getting client");
 
-        const userInfo = await getGoogleUserInfo(token.access_token);
-        if (!userInfo) return sendError(res, 500, "Error getting user info");
+            const userInfo = await getGoogleUserInfo(googleToken.access_token);
+            if (!userInfo) throwHTTPError(500, "Error getting user info");
 
-        const result = await UserService.authenticateWithGoogle(userInfo);
-        if (result === null) return sendError(res, 500, "Error validating user");
+            const result = await UserService.authenticateWithGoogle(userInfo!);
 
-        signCookieAndSendSuccess(res, result);
+            signCookieAndSendSuccess(res, result);
+        }
+        catch (err: any) { return decodeHTTPError(err, res); }
     }
 
     public fetchUser = async (req: Request, res: Response) => {
