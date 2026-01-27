@@ -7,7 +7,9 @@ export const fetchTasks = async (activeProjectId: number) => {
         method:"GET",
         credentials: "include",
     });
-    return res.json();
+
+    if (!res.ok) return {error:res.status};
+    return await res.json();
 };
 
 export async function deleteTaskList(id: number) {
@@ -16,8 +18,7 @@ export async function deleteTaskList(id: number) {
         method: "DELETE"
     });
 
-    if (!res.ok) throw new Error("Failed to delete taskList");
-
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -26,9 +27,8 @@ export async function deleteTask(taskId: number) {
         credentials: "include",
         method: "DELETE"
     });
-
-    if (!res.ok) throw new Error("Failed to delete task");
-
+   
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -40,9 +40,8 @@ export async function addList( activeProjectId: number, title: string) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ title: title })
     })
-
-    if (!res.ok) throw new Error("Failed to add new taskList");
-
+    
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -56,8 +55,7 @@ export async function addTask(id: number, label: string) {
         })
     })
 
-    if (!res.ok) throw new Error("Failed to add new task");
-
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -71,10 +69,8 @@ export async function patchNextId(id:number, nextId: number | undefined){
         })
     })
 
-    if (!res.ok) throw new Error("Couldn't patch next Id");
-
+    if (!res.ok) return {error:res.status};
     return await res.json();
-
 }
 
 export async function patchTaskDone(taskId: number, done: boolean) {
@@ -87,10 +83,8 @@ export async function patchTaskDone(taskId: number, done: boolean) {
         })
     })
 
-    if (!res.ok) throw new Error("Couldn't patch task done");
-
+    if (!res.ok) return {error:res.status};
     return await res.json();
-
 }
 
 export async function patchTaskLabel(taskId: number, label: string) {
@@ -103,10 +97,8 @@ export async function patchTaskLabel(taskId: number, label: string) {
         })
     })
 
-    if (!res.ok) throw new Error("Couldn't patch task label");
-
+    if (!res.ok) return {error:res.status};
     return await res.json();
-
 }
 
 export async function patchListTitle(id: number, title: string) {
@@ -118,9 +110,7 @@ export async function patchListTitle(id: number, title: string) {
             title: title
         })
     })
-
-    if (!res.ok) throw new Error("Couldn't patch list title");
-
+    
+    if (!res.ok) return {error:res.status};
     return await res.json();
-
 }
