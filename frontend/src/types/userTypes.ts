@@ -46,7 +46,8 @@ export type UserContextResult = {
     isUserLoggedIn: () => boolean;
     login: (email: string, password: string) => void,
     signup: (email: string, userName: string, password: string) => void,
-    logout: () => void,
+    logout: () => Promise<void>,
+    authLogout: () => Promise<void>;
 
     deleteUserById: () => void,
     deleteUser: (password:string) => void,

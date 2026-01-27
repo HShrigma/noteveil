@@ -111,6 +111,9 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setIsLogin(true);
         onLogoutSuccess();
     }
+    const authLogout = async () => {
+        await logout();
+    }
 
     return {
         user,
@@ -125,6 +128,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         getUsername: () => user === null ? "User" : user.name,
         login, signup, 
         logout,
+        authLogout,
         useGoogleApi,
 
         deleteUser: removeUser, 

@@ -13,12 +13,12 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
 
     const refreshProjects = async () => {
         if(user === null) {
-            userCtx.logout();
+            await userCtx.authLogout();
             return;
         }
         const data = await fetchProjects();
         if(data.error) {
-            userCtx.logout();
+            await userCtx.authLogout();
             return;
         }
         setProjects(data);
@@ -29,16 +29,16 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
     const [activeProjectElement, setActiveProjectElement] =
         useState<ProjectElementActivity>(null);
 
-    const  fetch = () => {
+    const fetch = () => {
         if (user === null) {
-            userCtx.logout();
+            userCtx.authLogout();
             return;
         }
 
         fetchProjects().then((fetched) => { 
             if(fetched.error){
                 setProjects([]);
-                userCtx.logout();
+                userCtx.authLogout();
                 return;
             }
             setProjects(fetched)
@@ -73,7 +73,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
         const res = await addProject(user.id, title);
         if (res.error) {
             setProjects(prev => prev.filter(n => n.id !== tempId))
-            userCtx.logout();
+            await userCtx.authLogout();
             return;
         }
 
@@ -85,7 +85,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
     const removeProject = async (id: number) => {
         const res = await deleteProject(id);
         if(res.error){
-            userCtx.logout();
+            await userCtx.authLogout();
             return;
         }
         setProjects(prev => prev.filter(project => project.id !== id));
@@ -101,8 +101,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
         const res = await patchProjectTitle(id, value);
         if(res.error){
             setProjects(prev => prev.map(project => project.id === id ? { ...project, title: temp?.title } : project));
-            userCtx.logout();
-            return;
+            await userCtx.authLogout();
         }
     };
 
