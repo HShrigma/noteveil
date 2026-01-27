@@ -5,7 +5,6 @@ import { createTempId } from "../../utils/mathUtils";
 import { tryCancelDiscard } from "../../utils/activityHelper";
 import { discardMsgProjectAdder, discardMsgProjectTitle } from "../../utils/registries";
 import { addProject, deleteProject, fetchProjects, patchProjectTitle } from "../../api/projectsApi";
-import { UserType } from "../../types/userTypes";
 import { useUserContext } from "../../context/users/userContext";
 
 export function useProjects(onProjectOpened?: (id: number) => void) {

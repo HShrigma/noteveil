@@ -8,7 +8,9 @@ export const fetchNotes = async (activeProjectId: number) => {
         method: "GET",
         credentials: "include",
     });
-    return res.json();
+
+    if (!res.ok) return {error:res.status};
+    return await res.json();
 };
 
 // Delete Note
@@ -18,7 +20,7 @@ export async function deleteNote(id: number) {
         credentials: "include",
     });
 
-    if (!res.ok) throw new Error("Failed to delete note");
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -30,7 +32,7 @@ export async function addNote(activeProjectId: number) {
         headers: { "Content-Type": "application/json" }
     });
 
-    if (!res.ok) throw new Error("Failed to add note");
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -45,7 +47,7 @@ export async function patchNoteTitle(id: number, title: string) {
         })
     });
 
-    if (!res.ok) throw new Error("Failed to update title");
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }
 
@@ -60,6 +62,6 @@ export async function patchNoteContent(id: number, content: string) {
         })
     });
 
-    if (!res.ok) throw new Error("Failed to update content");
+    if (!res.ok) return {error:res.status};
     return await res.json();
 }

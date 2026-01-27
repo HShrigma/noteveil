@@ -11,7 +11,7 @@ export const fetchProjects = async () => {
     });
 
     if (!res.ok) return {error:res.status};
-    return res.json();
+    return await res.json();
 }
 
 // Delete Project
