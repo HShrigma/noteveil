@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500" xmlns:bx="https://boxy-svg.com">
+  <defs>
+    <bx:export>
+      <bx:file format="svg" href="#object-1" path="Untitled 2.svg"/>
+      <bx:file format="svg" href="#object-2" path="Rec2.svg"/>
+      <bx:file format="svg" href="#object-3" path="Untitled 3.svg" normalization="{&quot;removeBoxySVGMetadata&quot;:true,&quot;removeAnimations&quot;:true,&quot;resetTransformOrigins&quot;:true,&quot;convertTextsToPaths&quot;:true,&quot;embedExternalFonts&quot;:true}" width="360" height="360"/>
+    </bx:export>
+  </defs>
+  <g id="object-3">
+    <path d="M 230.734 302.64 L 115.134 169.04 L 115.134 302.64 L 33.934 302.64 L 33.934 27.44 L 111.134 27.44 L 226.734 163.04 L 226.734 27.44 L 307.934 27.44 L 307.934 302.64 Z" transform="matrix(1, 0, 0, 1.003589, 45.640545, 99.74633)" style="fill: rgb(171, 71, 188); text-transform: uppercase; text-wrap-mode: nowrap;"/>
+    <path d="" transform="matrix(1, 0, 0, 1.003589, 45.640545, 99.74633)" style="fill: rgb(171, 71, 188); text-transform: uppercase; text-wrap-mode: nowrap;"/>
+    <rect x="272.85" y="119.4" width="150" height="75" style="stroke: rgb(171, 71, 188); fill: rgb(171, 71, 188);" id="object-1"/>
+    <rect x="272.9" y="228.4" width="150" height="75" style="stroke: rgb(171, 71, 188); fill: rgb(171, 71, 188); stroke-width: 1px;" id="object-2">
+      <title>Rec2</title>
+    </rect>
+  </g>
+</svg>
