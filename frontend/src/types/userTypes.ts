@@ -62,6 +62,7 @@ export type UserContextResult = {
 
     openLoginScreen: () => void,
     openSignupScreen: () => void,
-    useGoogleApi: (token: TokenResponse) => Promise<void>
-    fromAuth: boolean
+    useGoogleApi: (token: TokenResponse) => Promise<void>,
+    fromAuth: boolean,
+    authLogoutNotice: boolean,
 }

@@ -15,7 +15,7 @@ export const AppWithUser = ({ state, onProjectOpened, onScreenChange }: AppWithU
     useEffect(() => { ctx.initializeUser() }, []);
 
     return (
-        <ProjectsProvider user={ctx.user} onProjectOpened={onProjectOpened}>
+        <ProjectsProvider onProjectOpened={onProjectOpened}>
                 <DefaultHeader onScreenChange={onScreenChange} currentState={state} />
                 <MainScreen state={state} />
         </ProjectsProvider>

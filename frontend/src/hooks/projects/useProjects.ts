@@ -8,14 +8,11 @@ import { addProject, deleteProject, fetchProjects, patchProjectTitle } from "../
 import { UserType } from "../../types/userTypes";
 import { useUserContext } from "../../context/users/userContext";
 
-export function useProjects(user: UserType, onProjectOpened?: (id: number) => void) {
+export function useProjects(onProjectOpened?: (id: number) => void) {
     const userCtx = useUserContext();
 
     const refreshProjects = async () => {
-        if(user === null) {
-            await userCtx.authLogout();
-            return;
-        }
+        if (userCtx.user === null) return; 
         const data = await fetchProjects();
         if(data.error) {
             await userCtx.authLogout();
@@ -30,10 +27,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
         useState<ProjectElementActivity>(null);
 
     const fetch = () => {
-        if (user === null) {
-            userCtx.authLogout();
-            return;
-        }
+        if (userCtx.user === null) return; 
 
         fetchProjects().then((fetched) => { 
             if(fetched.error){
@@ -44,7 +38,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
             setProjects(fetched)
         });
     }
-    useEffect(() => fetch(), [user]);
+    useEffect(() => fetch(), [userCtx.user]);
     useEffect(() => fetch(), []);
 
     const selectProject = (id: number | null) => {
@@ -59,7 +53,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
     };
 
     const createProject = async (title: string) => {
-        if(user === null) return;
+        if(userCtx.user === null) return;
         const tempId = createTempId();
         const newProject: ProjectData = {
             id: tempId,
@@ -70,7 +64,7 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
 
         setProjects(prev => [...prev, newProject]);
 
-        const res = await addProject(user.id, title);
+        const res = await addProject(userCtx.user.id, title);
         if (res.error) {
             setProjects(prev => prev.filter(n => n.id !== tempId))
             await userCtx.authLogout();

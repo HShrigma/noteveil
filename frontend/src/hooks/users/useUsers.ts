@@ -4,6 +4,7 @@ import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
 import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser, logoutAndClearToken } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
+import { FaAlignJustify } from "react-icons/fa";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
     const [user, setUser] = useState<UserType>(null);
@@ -11,8 +12,15 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [signupError, setSignupError] = useState<userErrorType>(null);
     const [isLogin, setIsLogin] = useState(true);
     const [fromAuth, setFromAuth] = useState(false);
+    const [authLogoutNotice, setAuthLogoutNotice] = useState(false);
+
+    const showAuthLogoutNotice = (seconds: number) => {
+        setAuthLogoutNotice(true);
+        setTimeout(() => setAuthLogoutNotice(false), seconds * 1000);
+    }
 
     const initializeUser = async () => {
+        console.log(`Logout notice: ${authLogoutNotice}`);
         const res = await refreshUser();
         if(res === null) return;
         setUser({
@@ -113,8 +121,9 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     }
     const authLogout = async () => {
         await logout();
+        console.log("Logout")
+        showAuthLogoutNotice(5);
     }
-
     return {
         user,
         loginError, signupError, isLogin,
@@ -137,6 +146,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         updateUserName,
         openLoginScreen: () => { setIsLogin(true); setSignupError(null); setFromAuth(false); },
         openSignupScreen: () => { setIsLogin(false); setLoginError(false); setFromAuth(false); },
-        fromAuth
+        fromAuth,
+        authLogoutNotice
     } as UserContextResult;
 }

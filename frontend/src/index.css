@@ -194,6 +194,10 @@ body {
   animation: fadeOut 0.25s ease-in forwards;
 }
 
+.fade-in-out {
+  animation: fadeInOut 5s ease-in-out forwards; /* duration = how long it shows */
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -214,6 +218,13 @@ body {
     opacity: 0;
     transform: scale(0.92);
   }
+}
+
+@keyframes fadeInOut {
+  0% { opacity: 0; transform: scale(0.92); }
+  10% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0.92); }
 }
 
 @keyframes slideLeft {
