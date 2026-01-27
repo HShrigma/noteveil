@@ -86,7 +86,6 @@ export const getUserFromTokens = (
     if (!accessToken) throw new Error("Missing access token");
 
     let accessPayload = verifyAccessToken(accessToken);
-
     if (accessPayload === "unhandled") throw new Error("Malformed access token");
 
     let newRefreshToken: string | undefined;
@@ -106,14 +105,13 @@ export const getUserFromTokens = (
         if (!decoded) throw new Error("Malformed access token");
 
         newAccessToken = signAccessToken({ id: decoded.id });
-
         if (isNearExpiry(refreshToken, 60 * 5)) newRefreshToken = signRefreshToken({ expired: false });
-        
+
         return { userId: decoded.id, newAccessToken, newRefreshToken };
     }
 
     if (typeof accessPayload === "string") throw new Error("Unexpected access payload state");
-    if (isNearExpiry(accessToken, 60)) newAccessToken = signAccessToken(accessPayload);
+    if (isNearExpiry(accessToken, 60)) newAccessToken = signAccessToken({id: accessPayload.id});
     return { userId: (accessPayload as JwtAccessPayload).id, newAccessToken };
 
 };
@@ -130,5 +128,5 @@ export const getUserFromAuth = (req: Request, res: Response) => {
         if (newAccessToken) res.cookie("accessToken", newAccessToken, cookieSettings);
         if (newRefreshToken) res.cookie("refreshToken", newRefreshToken, cookieSettings);
     }
-    catch (error: any) { throw error; }
+    catch (error: any) {console.log("error occurred", error); throw error; }
 }

@@ -9,7 +9,8 @@ export const fetchProjects = async () => {
         credentials: "include",
         headers: { "Content-Type": "application/json" },
     });
-    if (!res.ok) throw new Error("Failed to fetch projects");
+
+    if (!res.ok) return {error:res.status};
     return res.json();
 }
 
@@ -21,7 +22,7 @@ export const deleteProject = async (id: number) => {
         headers: { "Content-Type": "application/json" },
     });
 
-    if (!res.ok) throw new Error("Failed to delete project");
+    if (!res.ok) return { error: res.status };
     return await res.json();
 }
 
@@ -35,10 +36,8 @@ export const addProject = async (userId: number, title: string) => {
         body: JSON.stringify({ title: title })
     })
 
-    if (!res.ok) throw new Error("Failed to add new project");
-
+    if (!res.ok) return { error: res.status };
     return await res.json();
-
 }
 
 // Update Project Title
@@ -52,7 +51,6 @@ export const patchProjectTitle = async (id: number, title: string) => {
         })
     })
 
-    if (!res.ok) throw new Error("Couldn't patch project");
-
+    if (!res.ok) return { error: res.status };
     return await res.json();
 }

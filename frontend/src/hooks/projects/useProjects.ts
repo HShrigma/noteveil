@@ -6,21 +6,43 @@ import { tryCancelDiscard } from "../../utils/activityHelper";
 import { discardMsgProjectAdder, discardMsgProjectTitle } from "../../utils/registries";
 import { addProject, deleteProject, fetchProjects, patchProjectTitle } from "../../api/projectsApi";
 import { UserType } from "../../types/userTypes";
+import { useUserContext } from "../../context/users/userContext";
 
 export function useProjects(user: UserType, onProjectOpened?: (id: number) => void) {
+    const userCtx = useUserContext();
+
     const refreshProjects = async () => {
-        if(user === null) return;
-        const data = await fetchProjects(user.id);
+        if(user === null) {
+            userCtx.logout();
+            return;
+        }
+        const data = await fetchProjects();
+        if(data.error) {
+            userCtx.logout();
+            return;
+        }
         setProjects(data);
     };
+
     const [projects, setProjects] = useState<ProjectData[]>([]);
     const [activeProject, setActiveProject] = useState<ProjectActivity>({ id: null });
     const [activeProjectElement, setActiveProjectElement] =
         useState<ProjectElementActivity>(null);
 
     const  fetch = () => {
-        if (user === null) return;
-        fetchProjects(user.id).then((fetched) => setProjects(fetched))
+        if (user === null) {
+            userCtx.logout();
+            return;
+        }
+
+        fetchProjects().then((fetched) => { 
+            if(fetched.error){
+                setProjects([]);
+                userCtx.logout();
+                return;
+            }
+            setProjects(fetched)
+        });
     }
     useEffect(() => fetch(), [user]);
     useEffect(() => fetch(), []);
@@ -49,8 +71,9 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
         setProjects(prev => [...prev, newProject]);
 
         const res = await addProject(user.id, title);
-        if (!res.success) {
+        if (res.error) {
             setProjects(prev => prev.filter(n => n.id !== tempId))
+            userCtx.logout();
             return;
         }
 
@@ -60,14 +83,27 @@ export function useProjects(user: UserType, onProjectOpened?: (id: number) => vo
     };
 
     const removeProject = async (id: number) => {
+        const res = await deleteProject(id);
+        if(res.error){
+            userCtx.logout();
+            return;
+        }
         setProjects(prev => prev.filter(project => project.id !== id));
-        await deleteProject(id);
     };
 
     const submitProjectTitle = async (id: number, value: string) => {
+        const temp = projects.find(p => p.id === id);
+        if(!temp) return;
+
         setProjects(prev => prev.map(project => project.id === id ? { ...project, title: value } : project));
         setActiveProjectElement(null);
-        await patchProjectTitle(id, value);
+
+        const res = await patchProjectTitle(id, value);
+        if(res.error){
+            setProjects(prev => prev.map(project => project.id === id ? { ...project, title: temp?.title } : project));
+            userCtx.logout();
+            return;
+        }
     };
 
     const didUserDiscardTitle = (req: ProjectElementActivity) => {

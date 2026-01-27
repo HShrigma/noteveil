@@ -48,8 +48,8 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         }
         setLoginError(false);
         setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
-        onLoginSuccess();
         setFromAuth(false);
+        onLoginSuccess();
     };
 
     const signup = async (email: string, name: string, password: string) => {

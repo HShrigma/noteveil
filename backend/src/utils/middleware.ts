@@ -68,7 +68,6 @@ export const runMiddleware = (params: MiddlewareParams) => {
     const middlewares: ((req: Request, res: Response, next: NextFunction) => void)[] = [];
 
     middlewares.push(sanitizeInput());
-
     // Validate body fields if required
     if (params.bodyFields && params.bodyFields.length > 0) middlewares.push(requireBodyFields(params.bodyFields));
     if (params.idFields && params.idFields.length > 0) middlewares.push(validateIds(params.idFields));

@@ -5,7 +5,7 @@ import { runMiddleware } from "../utils/middleware";
 const router = Router();
 
 // Delete note
-router.delete("/:id", runMiddleware({ idFields: ["id"] }), (req, res) => NoteController.deleteNote(req, res));
+router.delete("/:id", runMiddleware({ auth: true, idFields: ["id"] }), (req, res) => NoteController.deleteNote(req, res));
 
 // Update note title
 router.patch(
