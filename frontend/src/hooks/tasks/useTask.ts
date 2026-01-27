@@ -1,25 +1,39 @@
 import { useEffect, useState } from "react";
 import { TaskListData, UseTaskResult } from "../../types/taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
-import { getCreatedLists, getCreatedTaskList, getGoesToList, getIndex, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
+import { getCreatedLists, getCreatedTaskList, getGoesToList, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getTaskIndex, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
 import { useProjectsContext } from "../../context/projects/projectsContext";
+import { useUserContext } from "../../context/users/userContext";
 
 export const useTask = (activeProjectId: number | null): UseTaskResult => {
+    const userCtx = useUserContext();
     const [tasks, setTasks] = useState<TaskListData[]>([]);
     const { refreshProjects } = useProjectsContext();
 
-    useEffect(() => { if(activeProjectId != null) fetchTasks(activeProjectId).then((data) => setTasks(data)) }, []);
+    useEffect(() => { if(activeProjectId != null) fetchTasks(activeProjectId).then((data) => { 
+        if (data.error) {
+            userCtx.authLogout();
+            return;
+        }
+        setTasks(data)
+    })
+    }, []);
 
     const setNewList = (list: TaskListData) => setTasks((prev) => prev.map((t) => (t.id === list.id ? list : t)));
 
     const updateListOptimistic = async (
     derive: () => TaskListData | undefined,
-    persist: (list: TaskListData) => Promise<void>) => { 
+    persist: (list: TaskListData) => Promise<void | any>) => { 
         const list = derive();
         if(!list) return;
         setNewList(list);
-        await persist(list);
+        const res = await persist(list);
+        if(res.error){
+            userCtx.authLogout();
+            return;
+        }
     }
+    
     const getGoesTo = (id: number | undefined) => {
         const list = getList(id ?? -1, tasks);
         if (!list) return '';
@@ -35,11 +49,21 @@ export const useTask = (activeProjectId: number | null): UseTaskResult => {
         if (list.nextId && done) {
             setNewList({...list, tasks: list.tasks.filter(t => t.id !== taskId)});
             await createTask(list.nextId, taskLabel);
-            await deleteTask(taskId);
+            const res = await deleteTask(taskId);
+            if(res.error){
+                userCtx.authLogout();
+                return;
+            }
             return;
         }
+
         setNewList(list);
-        await patchTaskDone(taskId, done);
+        const res = await patchTaskDone(taskId, done);
+        if(res.error){
+            list.tasks[taskIndex].done = !list.tasks[taskIndex].done;
+            setNewList(list);
+            userCtx.authLogout();
+        }
     }
 
 
@@ -52,8 +76,9 @@ export const useTask = (activeProjectId: number | null): UseTaskResult => {
 
         const res = await addTask(id, label);
 
-        if (!res.success) {
+        if (res.error) {
             setTasks(prev => prev.map(l => l.id === id ? { ...l, tasks: l.tasks.filter(t => t.id !== tempId) } : l));
+            userCtx.authLogout();
             return;
         }
         const realId = Number(res.body.id);
@@ -67,7 +92,8 @@ export const useTask = (activeProjectId: number | null): UseTaskResult => {
         setTasks(lists);
 
         const res = await addList(activeProjectId, title);
-        if (!res.success) {
+        if (res.error) {
+            userCtx.authLogout();
             setTasks(prev => getRemovedLists(tempId, prev));
             return;
         }

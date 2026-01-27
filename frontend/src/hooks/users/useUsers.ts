@@ -20,7 +20,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     }
 
     const initializeUser = async () => {
-        console.log(`Logout notice: ${authLogoutNotice}`);
         const res = await refreshUser();
         if(res === null) return;
         setUser({
@@ -121,7 +120,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     }
     const authLogout = async () => {
         await logout();
-        console.log("Logout")
         showAuthLogoutNotice(5);
     }
     return {
