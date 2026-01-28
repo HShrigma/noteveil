@@ -42,11 +42,12 @@ export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }
         if (e.key === 'Enter') handleSubmit();
         if (e.key === 'Escape') handleDiscard();
     };
-    return (<div className="flex flex-col gap-1">
-        <div className="flex items-center gap-2">
+    return (
+    <div className="flex flex-col gap-1">
+        <div className="flex items-center gap-2 min-w-0">
             <button
                 onClick={handleDiscard}
-                className="p-2 rounded-full bg-transparent border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#f7768e] transition-all duration-150 cursor-pointer"
+                className="flex shrink-0 p-2 rounded-full bg-transparent border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#f7768e] transition-all duration-150 cursor-pointer"
             >
                 <X size={18} strokeWidth={3} />
             </button>
@@ -56,11 +57,11 @@ export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }
                 onChange={(e) => { setValue(e.target.value); onChange?.(e.target.value); setTriggerErrorCheck(false); }}
                 onKeyDown={handleKeyDown}
                 placeholder="Enter Title..."
-                className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal text-[#c0caf5] px-2 py-1 transition-all duration-150"
+                className="flex-1 min-w-0 bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal text-[#c0caf5] px-2 py-1 transition-all duration-150"
             />
             <button
                 onClick={handleSubmit}
-                className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150 cursor-pointer"
+                className="shrink-0 p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150 cursor-pointer"
             >
                 <Check size={18} strokeWidth={3} />
             </button>

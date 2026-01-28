@@ -24,10 +24,11 @@ export const Project = ({ project  }: ProjectProps) => {
                 hover:bg-[#24283b]
                 hover:shadow-[0_0_18px_rgba(122,162,247,0.25)]
                 hover:-translate-y-1
+                hover:scale-102
                 active:translate-y-0`}>
             {/* Top row */}
-            <div className="flex items-center justify-between px-5 py-4">
-                <div onClick={(e) => e.stopPropagation()}>
+            <div className=" flex flex-col items-start gap-3 py-3 px-2 min-w-0">
+                <div className="w-full min-w-0" onClick={(e) => e.stopPropagation()}>
                     <EditableTitle
                         title={project.title}
                         isActive={ctx.isProjectTitleActive(project.id)}
@@ -35,13 +36,9 @@ export const Project = ({ project  }: ProjectProps) => {
                         onActivityRequest={(wantsActive, value) => ctx.buildTitleActivityRequest(project.id, wantsActive, value)}
                         onSubmit={(newValue) => ctx.submitProjectTitle(project.id, newValue)} />
                 </div>
-                <div className="flex gap-3 text-sm">
-                    <span className="text-[#7aa2f7]">
-                        Tasks Lists:{project.taskListCount}
-                    </span>
-                    <span className="text-[#bb9af7]">
-                        Notes:{project.noteCount}
-                    </span>
+                <div className="flex shrink-0 gap-2 text-sm flex-col min-[700px]:flex-row">
+                    <span className="text-[#7aa2f7] whitespace-nowrap"> Tasks Lists:{project.taskListCount} </span>
+                    <span className="text-[#bb9af7] whitespace-nowrap"> Notes:{project.noteCount} </span>
                 </div>
             </div>
 
@@ -59,9 +56,11 @@ export const Project = ({ project  }: ProjectProps) => {
                 <span className={`
                     text-xs font-semibold tracking-wide
                     rounded-md p-2
-                    bg-[#bb9af7] text-white
-                    opacity-0 group-hover:opacity-100
-                    transition-opacity`}>
+                    bg-purple-400 text-white
+                    opacity-0 
+                    group-hover:opacity-100
+                    hover:shadow-[0_0_8px_4px_rgba(194,122,255,0.7)]
+                    transition-all`}>
                     Open
                 </span>
             </div>

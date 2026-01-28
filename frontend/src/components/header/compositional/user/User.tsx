@@ -15,10 +15,10 @@ export const User = ({ onLogout}: UserProps ) => {
     return (
         ctx.user !== null && 
         <>
-            <UserTopIcon 
+            {!isUserActive && <UserTopIcon 
                 OnIconClicked={() => { setIsUserActive(true); triggerScreenBob(200); }} 
                 isActive={isUserActive} 
-            />
+            />}
             <UserOverlay
                 isOpen={isUserActive}
                 onClose={() => { setIsUserActive(false); triggerScreenBob(200); }}

@@ -17,8 +17,8 @@ export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }
     const [value, setValue] = useState("");
     const [triggerErrorCheck, setTriggerErrorCheck] = useState(false);
 
-    useEffect(() => { 
-        if (isActive) triggerScreenBob(150); 
+    useEffect(() => {
+        if (isActive) triggerScreenBob(150);
         else setValue("");
     }, [isActive]);
 
@@ -50,7 +50,7 @@ export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }
     return isActive ? (
 
         <div className="flex flex-col gap-1">
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-2 min-w-0">
                 {/* Discard Button */}
                 <button
                     onClick={tryDiscard}
@@ -66,7 +66,7 @@ export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }
                     onKeyDown={handleKey}
                     autoFocus
                     placeholder="Add Task..."
-                    className="flex-1 bg-transparent border-b-2 border-[#9d7cd8] text-[#c0caf5] font-mono font-semibold px-2 py-1 
+                    className="flex-1 min-w-0 bg-transparent border-b-2 border-[#9d7cd8] text-[#c0caf5] font-mono font-semibold px-2 py-1 
                    focus:font-normal focus:font-firabase outline-none transition-all duration-150"
                 />
 
@@ -82,15 +82,18 @@ export const TaskBottomBar = ({ isActive, onActivityRequest, onAdded, onDelete }
         </div>
     ) : (
 
-        <div className="flex justify-between mt-4 gap-2">
+        <div className="flex justify-between mt-4 gap-2 flex-wrap items-stretch">
             <ConfirmDeleteButton
                 onConfirm={onDelete}
                 label="Delete"
+                confirmLabel="Confirm?"
+                className=" flex items-center gap-2 p-2 rounded-sm border-2 border-red-500 bg-red-500 text-[#f6faff] hover:bg-red-600 hover:shadow-[0_0_10px_#f7768e] transition-all duration-150 cursor-pointer whitespace-nowrap "
+                confirmClassName=" flex items-center gap-2 p-2 rounded-sm border-2 border-yellow-500 bg-yellow-500 text-[#1a1b26] hover:bg-yellow-600 transition-all duration-150 cursor-pointer whitespace-nowrap "
             />
+
             <button
-                    onClick={() => onActivityRequest(true)}
-                className="flex items-center gap-2 px-4 py-2 mt-2 rounded-sm border-2 border-green-500 bg-green-500 text-[#f6faff] 
-                 hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150 cursor-pointer"
+                onClick={() => onActivityRequest(true)}
+                className=" flex items-center gap-2 p-2 rounded-sm border-2 border-green-500 bg-green-500 text-[#f6faff] whitespace-nowrap hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150 cursor-pointer "
             >
                 <Plus size={18} strokeWidth={3} />
                 Add Task

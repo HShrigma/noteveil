@@ -28,7 +28,7 @@ export const InactiveTask = ({ taskId, label, done, onActivate, onDoneChange, on
       <div className={`flex items-center gap-3 px-4 py-2 rounded-md bg-[#1f2335] border border-[#2a2f47] shadow-sm`}>
         <ConfirmDeleteButton onConfirm={handleDeleteClick}/>
         <div
-          className={`flex-1 px-1 cursor-pointer font-mono font-semibold text-base tracking-wide ${done ? "text-[#565f89] line-through" : "text-[#c0caf5]"}`}
+          className={`flex-1 px-1 cursor-pointer font-mono  font-semibold truncate text-base tracking-wide ${done ? "text-[#565f89] line-through" : "text-[#c0caf5]"}`}
           onClick={onActivate}
         >
           {getShorter(label,23) || <span className="opacity-40 italic">Task...</span>}

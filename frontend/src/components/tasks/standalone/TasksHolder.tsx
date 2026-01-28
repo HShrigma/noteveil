@@ -19,7 +19,7 @@ export const TasksHolder = () => {
                 onTaskListAdded={(title) => { ctx.createList(title); triggerScreenBob(); }} />
             <Masonry breakpointCols={breakpointColumnsObj} className="flex gap-4" columnClassName="flex flex-col gap-4">
                 {ctx.tasks.map((list) => (
-                    <section className="bg-[#1f2335] p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]" key={list.id}>
+                    <section className="bg-[#1f2335] overflow-hidden p-5 rounded-md shadow-md shadow-black/30 border border-[#2a2f47]" key={list.id}>
                         <TaskList
                             goesToLabel={ctx.getGoesTo(list.nextId)}
                             data={list}

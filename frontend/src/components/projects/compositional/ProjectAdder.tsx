@@ -56,7 +56,7 @@ export const ProjectAdder = ({ isActive, onProjectAdded , onActivityRequest}: Pr
                         <button
                             onClick={tryDiscard}
                             className="p-2 rounded-full border-2 border-red-500 text-[#f7768e] 
-                         hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150"
+                         hover:bg-red-500 hover:text-[#f6e0ff] transition-all duration-150 cursor-pointer"
                         >
                             <X size={18} strokeWidth={3} />
                         </button>
@@ -77,8 +77,8 @@ export const ProjectAdder = ({ isActive, onProjectAdded , onActivityRequest}: Pr
 
                         <button
                             onClick={submit}
-                            className="p-2 rounded-full border-2 border-green-500 text-[#f6faff] bg-transparent 
-                         hover:bg-[#9ece6a] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150"
+                            className="p-2 rounded-full border-2 border-green-500 text-green-500 bg-transparent 
+                         hover:bg-[#9ece6a] hover:text-[#f6faff] hover:shadow-[0_0_10px_#9ece6a] transition-all duration-150 cursor-pointer"
                         >
                             <Check size={18} strokeWidth={3} />
                         </button>
@@ -94,7 +94,7 @@ export const ProjectAdder = ({ isActive, onProjectAdded , onActivityRequest}: Pr
                 <button
                     onClick={() => activateAdder()}
                     className="flex items-center gap-2 px-4 py-2 rounded-sm border-2 border-purple-500 bg-purple-500 
-                     text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150"
+                     text-[#f6faff] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7] transition-all duration-150 cursor-pointer"
                 >
                     <Plus size={18} strokeWidth={3} />
                     Add Project

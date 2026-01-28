@@ -33,6 +33,12 @@ body {
   background-color: var(--tokyo-night-subtle);
 }
 
+/* Firefox support */
+.scrollbar-x {
+  scrollbar-width: thin;
+  scrollbar-color: var(--tokyo-night-purple)
+}
+
 @layer utilities {
   .font-firabase { font-family: 'Fira Code', monospace; }
 }

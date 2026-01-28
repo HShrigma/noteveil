@@ -11,7 +11,7 @@ export const Projects = () => {
                 isActive={ctx.isAdderActive()} 
                 onActivityRequest={ctx.buildAdderActivityRequest} 
                 onProjectAdded={ctx.addProject} />
-            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <div className="grid gap-4 grid-cols-[repeat(auto-fit,minmax(250px,1fr))]">
                 {ctx.projects.map(project => (<Project key={project.id} project={project} />))}
             </div>
         </>
