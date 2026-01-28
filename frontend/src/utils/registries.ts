@@ -2,7 +2,7 @@ export const MAIN_STATES = {
     TASK_DISPLAY: 'taskDisplay',
     NOTES_DISPLAY: 'notesDisplay',
     PROJECTS_DISPLAY: 'projectsDisplay',
-    LOGIN_DISPLAY: 'loginDisplay'
+    LOGIN_DISPLAY: 'loginDisplay',
 } as const;
 
 export type MainState = typeof MAIN_STATES[keyof typeof MAIN_STATES];

@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getSignupValidationError,  getUserSignupLengthError,  isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate} from "./userErrorHelper";
+import { getSignupValidationError, getUserSignupLengthError, isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate } from "./userErrorHelper";
 import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser, logoutAndClearToken } from "../../api/userApi";
 import { TokenResponse } from "@react-oauth/google";
-import { FaAlignJustify } from "react-icons/fa";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
     const [user, setUser] = useState<UserType>(null);
@@ -13,29 +12,37 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     const [isLogin, setIsLogin] = useState(true);
     const [fromAuth, setFromAuth] = useState(false);
     const [authLogoutNotice, setAuthLogoutNotice] = useState(false);
+    const [initializing, setInitializing] = useState(true);
 
     const showAuthLogoutNotice = (seconds: number) => {
         setAuthLogoutNotice(true);
         setTimeout(() => setAuthLogoutNotice(false), seconds * 1000);
     }
 
+
     const initializeUser = async () => {
-        const res = await refreshUser();
-        if(res === null) return;
-        setUser({
-            id: res.id,
-            name: res.name,
-            email: res.email,
-        });
-        setFromAuth(res.from_auth);
-        onLoginSuccess();
-    }
+        try {
+            const res = await refreshUser();
+
+            if (res !== null) {
+                setUser({
+                    id: res.id,
+                    name: res.name,
+                    email: res.email,
+                });
+                setFromAuth(res.from_auth);
+                onLoginSuccess();
+            }
+        } finally {
+            setInitializing(false);
+        }
+    };
 
     const useGoogleApi = async (token: TokenResponse) => {
         const res = await authenticateWithGoogle(token);
         if (!res) { console.error("Unexpected Authentication Error"); return; };
         if (res.error) { console.error(`Failed to Authenticate: ${res.error}`); return; };
-        const newUser:UserData = {
+        const newUser: UserData = {
             id: res.body.id,
             name: res.body.name,
             email: res.body.email
@@ -49,12 +56,12 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
     const login = async (email: string, password: string) => {
         const foundUser = await fetchUser(email, password);
-        if (!foundUser || foundUser.error) { 
-            setLoginError(true); 
+        if (!foundUser || foundUser.error) {
+            setLoginError(true);
             return;
         }
         setLoginError(false);
-        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email});
+        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email });
         setFromAuth(false);
         onLoginSuccess();
     };
@@ -76,28 +83,28 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setFromAuth(false);
     };
     const removeUserById = async () => {
-        if(user === null) return "userNonExistent";
+        if (user === null) return "userNonExistent";
         const res = await deleteUserById(user.id);
-        if(!res.success) return "currentPWIncorrect";
+        if (!res.success) return "currentPWIncorrect";
         return null;
- 
+
     }
     const removeUser = async (password: string) => {
-        if(user === null) return "userNonExistent";
+        if (user === null) return "userNonExistent";
         const res = await deleteUser(user.id, password);
-        if(res.success === false) return "currentPWIncorrect";
+        if (res.success === false) return "currentPWIncorrect";
         return null;
     };
-    const updateUserName = async (newName: string) => { 
-        if(user === null) return "userNonExistent";
+    const updateUserName = async (newName: string) => {
+        if (user === null) return "userNonExistent";
         const err = getUserSignupLengthError(newName);
-        if(err !== null ) return err;
+        if (err !== null) return err;
         const oldName = user.name;
-        const newUser = {id: user.id, name: newName, email: user.email};
+        const newUser = { id: user.id, name: newName, email: user.email };
         setUser(newUser);
 
-        const res = await patchUser(user.id,"name",[newName]);
-        if(!res.success){
+        const res = await patchUser(user.id, "name", [newName]);
+        if (!res.success) {
             newUser.name = oldName;
             setUser(newUser);
             return "userNonExistent";
@@ -105,16 +112,16 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         return null;
     }
     const updatePassword = async (current: string, confirmCurrent: string, newPass: string, confirmNew: string) => {
-        if(user === null) return "userNonExistent";
+        if (user === null) return "userNonExistent";
         const err = verifyPasswordUpdate(current, confirmCurrent, newPass, confirmNew);
-        if(err !== null) return err;
-        const res = await patchUser(user.id, "password", [current,newPass]);
-        if(!res.success) return "currentPWIncorrect";
+        if (err !== null) return err;
+        const res = await patchUser(user.id, "password", [current, newPass]);
+        if (!res.success) return "currentPWIncorrect";
         return null;
     }
-    const logout = async () => { 
+    const logout = async () => {
         await logoutAndClearToken();
-        setUser(null); 
+        setUser(null);
         setIsLogin(true);
         onLogoutSuccess();
     }
@@ -124,21 +131,22 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     }
     return {
         user,
+        initializing,
         loginError, signupError, isLogin,
 
         isEmailError: () => isErrorTypeEmail(signupError),
-        isUserError: () => isErrorTypeUser(signupError), 
-        isPasswordError: () => isErrorTypePassword(signupError), 
+        isUserError: () => isErrorTypeUser(signupError),
+        isPasswordError: () => isErrorTypePassword(signupError),
         isUserLoggedIn: () => user !== null,
 
         initializeUser,
         getUsername: () => user === null ? "User" : user.name,
-        login, signup, 
+        login, signup,
         logout,
         authLogout,
         useGoogleApi,
 
-        deleteUser: removeUser, 
+        deleteUser: removeUser,
         deleteUserById: removeUserById,
         updatePassword,
         updateUserName,

@@ -10,7 +10,43 @@
     <link rel="icon" type="image/png" sizes="512x512" href="/favicon-512x512.png" />
   </head>
   <body>
+    <div id="initial-loader" style="
+    position: fixed;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #1a1b26; /* --tokyo-night-bg */
+    color: #c0caf5; /* --tokyo-night-foreground */
+    font-family: 'JetBrains Mono', monospace;
+    z-index: 9999;
+">
+    <div style="
+        width: 48px;
+        height: 48px;
+        border: 4px solid #16161e; /* spinner bg */
+        border-top-color: #9d7cd8; /* spinner accent */
+        border-radius: 50%;
+        animation: spin 0.9s linear infinite;
+        margin-bottom: 1rem;
+    "></div>
+    <h3>Loading...</h3>
+</div>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      window.addEventListener("DOMContentLoaded", () => {
+        const loader = document.getElementById("initial-loader");
+        if (loader) {
+          loader.style.display = "none";
+        }
+      });
+    </script>
+<style>
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+</style>
   </body>
 </html>

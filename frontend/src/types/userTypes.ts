@@ -33,11 +33,12 @@ export type UserType = UserData | null;
 
 export type UserContextResult = {
     user: UserType,
+    initializing: boolean,
     loginError: boolean,
     signupError: userErrorType,
     isLogin: boolean,
 
-    initializeUser: () => void;
+    initializeUser: () => Promise<void>;
     getUsername: () => string;
     isEmailError: () => boolean,
     isUserError: () => boolean,

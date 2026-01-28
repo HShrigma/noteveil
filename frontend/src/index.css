@@ -56,7 +56,14 @@ body {
   0%, 100% { opacity: 1; }
   50% { opacity: 0.55; }
 }
-
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--tokyo-night-subtle);
+    border-top-color: var(--tokyo-night-purple);
+    border-radius: 50%;
+    animation: spin 0.9s linear infinite;
+}
 /* Markdown container */
 .markdown-body {
   color: #c0caf5; /* foreground */

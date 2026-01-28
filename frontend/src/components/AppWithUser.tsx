@@ -4,6 +4,7 @@ import { useUserContext } from "../context/users/userContext";
 import { MainState } from "../utils/registries";
 import DefaultHeader from "./header/standalone/Header";
 import MainScreen from "./MainScreen";
+import FullScreenLoader from "./FullScreenLoader";
 
 interface AppWithUserProps{
     state: MainState;
@@ -12,7 +13,11 @@ interface AppWithUserProps{
 }
 export const AppWithUser = ({ state, onProjectOpened, onScreenChange }: AppWithUserProps) => {
     const ctx = useUserContext();
-    useEffect(() => { ctx.initializeUser() }, []);
+    useEffect( () => { ctx.initializeUser().then() }, []);
+
+    if (ctx.initializing) {
+        return <FullScreenLoader />;
+    }
 
     return (
         <ProjectsProvider onProjectOpened={onProjectOpened}>
