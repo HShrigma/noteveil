@@ -16,7 +16,7 @@ export const NotesHolder = () => {
             <NoteAdder notes={ctx.notes} onAddNote={ctx.onAddNote} disabled={ctx.isAdderDisabled()} />
             <Masonry
                 breakpointCols={breakpointColumnsObj}
-                className="flex gap-4"
+                className=" flex gap-4"
                 columnClassName="flex flex-col gap-4"
             >
                 {ctx.notes.map((note, index) => (

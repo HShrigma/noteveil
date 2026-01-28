@@ -32,7 +32,7 @@ export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onActivi
                     flex items-center gap-2 px-3 py-1 rounded-2xl border-2 
                     border-purple-500 ${label ? "bg-purple-500" : "bg-purple-800"}
                     text-[#f6faff] transition-all duration-150
-                    hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7]
+                    hover:border-[#bb9af7] hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7]
                     ${shaking ? "shake-subtle" : ""} ${isActive ? "": "cursor-pointer"}
                 `}
                 onClick={() => onRequestActive(!isActive)}
