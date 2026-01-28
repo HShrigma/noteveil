@@ -39,6 +39,7 @@ export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }
         onDiscard?.();
     };
     const handleKeyDown = (e: React.KeyboardEvent) => {
+        e.preventDefault();
         if (e.key === 'Enter') handleSubmit();
         if (e.key === 'Escape') handleDiscard();
     };
