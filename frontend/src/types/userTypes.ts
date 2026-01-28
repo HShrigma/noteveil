@@ -27,7 +27,8 @@ export type userErrorType =
     | "currentPWIncorrect"
     | "currentPWNotConfirmed"
     | "newPWEmpty"
-    | "newPWNotConfirmed";
+    | "newPWNotConfirmed"
+    | "errorDeletingById";
 
 export type UserType = UserData | null;
 
@@ -50,7 +51,7 @@ export type UserContextResult = {
     logout: () => Promise<void>,
     authLogout: () => Promise<void>;
 
-    deleteUserById: () => void,
+    deleteUserById: () => Promise<"userNonExistent" | "errorDeletingById" | null>,
     deleteUser: (password:string) => void,
     updatePassword: (
         current: string, 

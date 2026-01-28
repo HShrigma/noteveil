@@ -23,7 +23,6 @@ export const tryRunPasswordVerifiedOperation = async <T>(
         user.password,
         mismatchErr(identifier)
     );
-
     if (!isMatch) return null;
 
     return await verifiedOperation();

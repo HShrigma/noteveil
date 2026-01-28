@@ -71,7 +71,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
                         {ctx.getUsername()}
                     </span>
                     :
-                    <div className="min-w-0 max-w-1/2 flex flex-col">
+                    <div className="min-w-0 flex flex-col">
                     <EditableTitle
                         title={userField}
                         isActive={isEditing}

@@ -84,10 +84,9 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     };
     const removeUserById = async () => {
         if (user === null) return "userNonExistent";
-        const res = await deleteUserById(user.id);
-        if (!res.success) return "currentPWIncorrect";
+        const res = await deleteUserById();
+        if (res.error) return "errorDeletingById";
         return null;
-
     }
     const removeUser = async (password: string) => {
         if (user === null) return "userNonExistent";
@@ -116,7 +115,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         const err = verifyPasswordUpdate(current, confirmCurrent, newPass, confirmNew);
         if (err !== null) return err;
         const res = await patchUser(user.id, "password", [current, newPass]);
-        if (!res.success) return "currentPWIncorrect";
+        if (res.error) return "currentPWIncorrect";
         return null;
     }
     const logout = async () => {

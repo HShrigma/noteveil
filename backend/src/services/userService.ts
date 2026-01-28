@@ -54,8 +54,14 @@ export class UserService {
         return await getUserReturnObjIfPasswordMatches("UserService.getUser", password, user, auth);
     }
 
-    async deleteUser(id: number, password?: string) {
+    async deleteUser(id: number, password: string) {
         const res = await deleteAccountIfVerified("UserService.deleteUser", password, id, this.repo);
+        return res ? { deleted: res.changes > 0, id: id } : null;
+    }
+
+    async deleteUserById(id:number) {
+        const identifier = "UserService.deleteUserById";
+        const res = runService(() => this.repo.deleteUser(id), `[ERROR] ${identifier}: Could not delete user`);
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 

@@ -111,18 +111,14 @@ export const deleteUser = async (id: number, password: string) => {
 }
 
 
-export const deleteUserById = async (id: number) => {
+export const deleteUserById = async () => {
     const res = await fetch(`${BASE_URL}/delete`, {
         method: "DELETE",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id })
     });
 
-    if (!res.ok) {
-        console.error(res);
-        throw new Error("Failed to delete user by id");
-    }
+    if (!res.ok) return { error: res.status }; 
     return await res.json();
 }
 
@@ -154,7 +150,6 @@ export const patchUser = async (id: number, key: string, values: string[]) => {
         })
     })
 
-    if (!res.ok) throw new Error("Couldn't patch user");
-
+    if (!res.ok) return { error: res.status }; 
     return await res.json();
 }

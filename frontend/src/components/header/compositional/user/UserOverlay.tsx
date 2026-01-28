@@ -26,7 +26,7 @@ const UserOverlay = ({ isOpen, onClose, onLogout, }: UserOverlayProps) => {
                 className={` z-9999 fixed top-0 right-0 h-full w-4/12 bg-[#1a1b26] shadow-2xl transform transition-transform duration-300 slide-left ${isOpen ? "translate-x-0" : "translate-x-full"
                     }`}
             >
-                <div className="p-6  flex justify-between items-start border-b border-[#2a2f47]">
+                <div className="p-6  flex items-baseline justify-between border-b border-[#2a2f47]">
                     <UserTopIcon OnIconClicked={onClose} isActive={isOpen}/>
                     <button
                         className="cursor-pointer fade-in p-2 rounded-full border-2 border-purple-400 hover:shadow-[0_0_10px_rgba(157,124,216,0.35)] hover:bg-purple-400 hover:text-[#1a1b26] hover:font-extrabold"

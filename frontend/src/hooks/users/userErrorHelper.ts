@@ -101,6 +101,7 @@ export const getErrorMessageForSignUp = (err: userErrorType) => {
         case "newPWEmpty": return "New password cannot be empty";
         case "newPWNotConfirmed": return "New password confirmation does not match";
         case "userNonExistent": return "This user does not exist.";
+        case "errorDeletingById": return "Error Removing User, please try again Later";
         default: return ""
     }
 }

@@ -7,6 +7,7 @@ import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
 import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
 import { clearAuthCookies, clearCookiesAndSendSuccess, decodeHTTPError, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookies, signCookieAndSendData, signCookieAndSendSuccess, throwHTTPError } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
+import userService from "../services/userService";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
@@ -58,9 +59,7 @@ export class UserController {
 
     public deleteUser = async (req: Request, res: Response) => {
         const userId = (req as Request & { userId: number }).userId;
-        const { password } = req.body;
-        const result = await UserService.deleteUser(userId, password);
-
+        const result = !req.body ? await UserService.deleteUserById(userId) : await UserService.deleteUser(userId, req.body["password"]);
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 
@@ -82,7 +81,6 @@ export class UserController {
         const { key, values } = req.body;
 
         const result = await UserService.updateUser(userId, key, values);
-
         if (result === null) return sendError(res, 500, "Could not update User");
         if (!result.updated) return sendNotFoundError(res, "User");
 

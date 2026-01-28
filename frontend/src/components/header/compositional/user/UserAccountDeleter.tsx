@@ -23,9 +23,14 @@ const UserAccountDeleter = ({ className, onLogout, resetKey }: UserAccountDelete
         setIsError(false);
     }, [resetKey]);
 
-    const handleDelete = () => {
-        if(ctx.fromAuth){
+    const handleDelete = async () => {
+        if (ctx.fromAuth) {
             if (!window.confirm(deleteAccountMsg)) return;
+            const err = await ctx.deleteUserById();
+            if(err !== null){
+                setIsError(true);
+                return;
+            }
             onLogout();
             return;
         }
@@ -36,7 +41,7 @@ const UserAccountDeleter = ({ className, onLogout, resetKey }: UserAccountDelete
         if (!window.confirm(deleteAccountMsg)) return;
 
         const err = await ctx.deleteUser(password);
-        if(err !== null){
+        if (err !== null) {
             setIsError(true);
             return;
         }
@@ -96,13 +101,22 @@ const UserAccountDeleter = ({ className, onLogout, resetKey }: UserAccountDelete
                     />
                 </form>
             ) : (
-                <ConfirmDeleteButton
-                    label="Delete Account"
-                    confirmLabel="Are you sure?"
-                    color="red"
-                    confirmColor="yellow"
-                    onConfirm={handleDelete}
-                />
+                <div>
+                    <ConfirmDeleteButton
+                        label="Delete Account"
+                        confirmLabel="Are you sure?"
+                        color="red"
+                        confirmColor="yellow"
+                        onConfirm={handleDelete}
+                    />
+                    <ErrorHint
+                        message="Error trying to delete account. Please try again later."
+                        toValidate={isError ? "" : "valid"}
+                        triggerCheck={isError}
+                    />
+
+
+                </div>
             )}
         </div>
     );
