@@ -65,7 +65,7 @@ export const ConfirmDeleteButton = ({
         <button
             type="button"
             onClick={handleConfirmClick}
-            className={`${confirming ? getConfirmClassName() : getClassName()} ${shaking ? "shake-subtle" : ""}`}
+            className={`cursor-pointer ${confirming ? getConfirmClassName() : getClassName()} ${shaking ? "shake-subtle" : ""}`}
         >
             <Trash2 size={16} strokeWidth={3} />
             {confirming ? confirmLabel : label}

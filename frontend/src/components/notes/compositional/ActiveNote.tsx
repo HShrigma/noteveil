@@ -46,6 +46,13 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsAc
         triggerScreenBob(150);
     };
 
+    const resizeTextArea = (e:React.FormEvent<HTMLTextAreaElement>) => {
+        const t = e.currentTarget;
+        t.style.height = "auto";
+        t.style.height = t.scrollHeight + "px";
+    }
+
+
     const onKeyDownHandler = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
         switch (e.key) {
             case "Escape":
@@ -80,14 +87,11 @@ export const ActiveNote = ({ data, onNoteDelete, onSubmit, onInactive, onWantsAc
                 placeholder="Add note here..."
                 value={value}
                 onChange={(e) => {setValue(e.target.value); onWantsActive(e.target.value)}}
-                onInput={(e) => {
-                    const t = e.currentTarget;
-                    t.style.height = "auto";
-                    t.style.height = t.scrollHeight + "px";
-                }}
+                onFocus={resizeTextArea}
+                onInput={resizeTextArea}
                 onKeyDown={onKeyDownHandler}
-                className="bg-transparent border-b-2 border-[#9d7cd8] font-mono font-semibold
-                   focus:font-normal text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden"
+                className="bg-transparent border-2 border-[#9d7cd8] font-mono font-semibold focus:font-normal 
+                   text-[#c0caf5] px-2 py-1 transition-all duration-150 resize-none overflow-hidden outline-none shadow-[0_0_4px_#9d7cd8] min-h-2"
             />
 
             <ErrorHint triggerCheck={triggerErrorCheck} toValidate={value} message="Cannot submit an empty note" />

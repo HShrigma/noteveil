@@ -49,9 +49,9 @@ export const ActiveTask = ({ taskId, label, done, onSubmit, onChanged, onCancel 
         <div className="flex flex-col gap-1">
             <div className={`flex items-center gap-3 px-4 py-2 rounded-md bg-[#1f2335] border border-[#2a2f47] shadow-sm`}>
                 <button
-                    className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150
+                    className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150 cursor-pointer
                     ${done ? "border-purple-500 bg-transparent text-[#f6faff] hover:bg-purple-500 hover:text-[#1a1b26]"
-                            : "border-purple-500 bg-purple-500 text-[#f6faff] hover:bg-purple-400"}`}
+                            : "border-purple-500 bg-purple-500 text-[#f6faff] hover:bg-purple-400 "}`}
                     onClick={() => tryDiscard()}>
                     <X size={16} strokeWidth={4} />
                 </button>
@@ -66,7 +66,7 @@ export const ActiveTask = ({ taskId, label, done, onSubmit, onChanged, onCancel 
                 />
                 <button
                     onClick={handleSubmit}
-                    className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150
+                    className={`px-2 py-1 rounded-sm border-2 font-semibold transition-all duration-150 cursor-pointer
             ${done ? "border-[#9ece6a] bg-transparent text-[#f6faff] hover:bg-[#9ece6a] hover:text-[#1a1b26]"
                             : "border-[#8fbf5a] bg-[#8fbf5a] text-[#f6faff] hover:bg-[#a6d372]"}`}
                 >

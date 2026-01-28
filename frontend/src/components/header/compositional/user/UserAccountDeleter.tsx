@@ -5,11 +5,12 @@ import { useUserContext } from "../../../../context/users/userContext";
 import { deleteAccountMsg } from "../../../../utils/registries";
 
 interface UserAccountDeleterProps {
+    className?: string
     onLogout: () => void;
     resetKey?: any;
 }
 
-const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => {
+const UserAccountDeleter = ({ className, onLogout, resetKey }: UserAccountDeleterProps) => {
     const [isDelete, setIsDelete] = useState(false);
     const [password, setPassword] = useState("");
     const [isError, setIsError] = useState(false);
@@ -47,7 +48,7 @@ const UserAccountDeleter = ({ onLogout, resetKey }: UserAccountDeleterProps) => 
     };
 
     return (
-        <div>
+        <div className={className ?? ""}>
             {isDelete ? (
                 <form
                     onSubmit={onFormSubmit}

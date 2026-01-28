@@ -1,0 +1,1 @@
+export const getShorter = (text: string, charLimit:number = 5) => text.length > charLimit + 3 ? `${text.substring(0,charLimit)}...` : text; 

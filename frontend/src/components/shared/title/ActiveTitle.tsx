@@ -46,7 +46,7 @@ export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }
         <div className="flex items-center gap-2">
             <button
                 onClick={handleDiscard}
-                className="p-2 rounded-full bg-transparent border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#f7768e] transition-all duration-150"
+                className="p-2 rounded-full bg-transparent border-2 border-red-500 text-[#f7768e] hover:bg-red-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#f7768e] transition-all duration-150 cursor-pointer"
             >
                 <X size={18} strokeWidth={3} />
             </button>
@@ -60,7 +60,7 @@ export const ActiveTitle = ({ title, discardMsg, onDiscard, onSubmit, onChange }
             />
             <button
                 onClick={handleSubmit}
-                className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150"
+                className="p-2 rounded-full bg-transparent border-2 border-purple-500 text-purple-400 hover:bg-purple-500 hover:text-[#f6e0ff] hover:shadow-[0_0_8px_#9d7cd8] transition-all duration-150 cursor-pointer"
             >
                 <Check size={18} strokeWidth={3} />
             </button>

@@ -42,12 +42,13 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
         setError("");
     };
 
+    const formFieldClassname = "bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-purple-400 focus:!shadow-[0_0_8px_2px_rgba(157,124,216,0.35)]";
     return (
-        <div className="mt-4">
+        <div className="w-full">
             {isEditing ? (
                 <form
                     onSubmit={onFormSubmit}
-                    className="flex flex-col gap-3 p-4 border border-blue-500/40 rounded-md bg-[#16161e]"
+                    className="flex flex-col gap-3 p-4 border border-purple-400 shadow-[0_0_8px_2px_rgba(157,124,216,0.35)] rounded-md bg-[#16161e]"
                 >
                     <input
                         type="password"
@@ -55,7 +56,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
                         value={current}
                         onChange={(e) => setCurrent(e.target.value)}
                         autoComplete="current-password"
-                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                        className={formFieldClassname}
                         autoFocus
                     />
 
@@ -65,7 +66,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
                         value={confirmCurrent}
                         onChange={(e) => setConfirmCurrent(e.target.value)}
                         autoComplete="off"
-                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                        className={formFieldClassname}
                     />
 
                     <input
@@ -74,7 +75,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
                         value={newPass}
                         onChange={(e) => setNewPass(e.target.value)}
                         autoComplete="new-password"
-                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                        className={formFieldClassname}
                     />
 
                     <input
@@ -83,14 +84,14 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
                         value={confirmNew}
                         onChange={(e) => setConfirmNew(e.target.value)}
                         autoComplete="new-password"
-                        className="bg-[#1a1b26] border border-[#2a2f47] rounded-md px-3 py-2 text-[#c0caf5] focus:outline-none focus:border-blue-400"
+                        className={formFieldClassname}
                     />
 
                     <div className="flex gap-2">
                         <button
                             type="button"
                             onClick={() => setIsEditing(false)}
-                            className="flex-1 px-3 py-2 rounded-md border border-[#2a2f47] hover:bg-[#2a2f47]"
+                            className="flex-1 px-3 py-2 rounded-md border-1 cursor-pointer hover:bg-red-500 hover:text-[#1a1b26] hover:font-bold"
                         >
                             Cancel
                         </button>
@@ -98,7 +99,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
                         <button
                             type="submit"
                             disabled={!current || !confirmCurrent || !newPass || !confirmNew}
-                            className={`flex-1 px-3 py-2 rounded-md bg-blue-500 text-[#1a1b26] font-semibold disabled:opacity-50 cursor-pointer disabled:cursor-auto`}
+                            className={`flex-1 px-3 py-2 rounded-md border-2 border-purple-400 disabled:bg-purple-400 disabled:text-[#1a1b26] hover:text-[#1a1b26] hover:bg-purple-400 font-semibold disabled:opacity-50 cursor-pointer disabled:cursor-auto`}
                         >
                             Update
                         </button>
@@ -113,7 +114,7 @@ const UserPasswordUpdater = ({ resetKey }: UserPasswordUpdaterProps) => {
             ) : (
                 <button
                     type="button"
-                    className="px-3 py-2 rounded-md border border-[#2a2f47] hover:bg-[#2a2f47]"
+                    className="w-full flex items-center px-3 py-2 rounded-md border-2 hover:bg-purple-400 hover:text-[#1a1b26] hover:shadow-[0_0_8px_2px_rgba(157,124,216,0.35)] cursor-pointer"
                     onClick={() => setIsEditing(true)}
                 >
                     Change Password

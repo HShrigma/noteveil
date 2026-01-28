@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { TaskListData } from "../../../types/taskTypes";
+import { getShorter } from "../../../utils/formatting";
 
 interface GoesToButtonProps {
     ownId: number;
@@ -32,11 +33,11 @@ export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onActivi
                     border-purple-500 ${label ? "bg-purple-500" : "bg-purple-800"}
                     text-[#f6faff] transition-all duration-150
                     hover:bg-[#bb9af7] hover:shadow-[0_0_10px_#bb9af7]
-                    ${shaking ? "shake-subtle" : ""}
+                    ${shaking ? "shake-subtle" : ""} ${isActive ? "": "cursor-pointer"}
                 `}
                 onClick={() => onRequestActive(!isActive)}
             >
-                Goes To: {!label ? "None": label}
+                Goes To: {!label ? "None": getShorter(label,27)}
             </button>
 
             {isActive && (
@@ -50,7 +51,7 @@ export const GoesToButton = ({ ownId, label, items, isActive,onGoesTo , onActivi
                             className="px-3 py-2 hover:bg-purple-600 hover:text-white cursor-pointer transition-colors"
                             onClick={() => selectNext(item.id)}
                         >
-                            {item.title}
+                            {getShorter(item.title,12)}
                         </div>
                     ))}
                     <div

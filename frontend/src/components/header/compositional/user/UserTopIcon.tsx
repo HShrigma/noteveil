@@ -98,7 +98,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
                 >
                     {initials || "U"}
                 </div>
-                <span className="text-[#c0caf5] font-semibold hidden sm:inline">
+                <span className="text-[#c0caf5] font-semibold hidden sm:inline cursor-pointer">
                     {ctx.getUsername()}
                 </span>
             </div>
