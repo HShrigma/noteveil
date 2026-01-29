@@ -7,6 +7,14 @@ Store your ideas in markdown-supported notes, log your tasks and create workflow
 
 ---
 
+## Live Demo: https://noteveil.onrender.com/
+
+***WARNING***: This is a demo website using Render's free tier, persistence is not included.
+The database gets wiped over new deployments or after long periods of inactivity. ***Do not use the demo as a personal tool***.
+For interest in personal use, please check the  [Getting Started (Local Dev)](#getting-started-local-dev) guide instead.
+
+---
+
 ## Features
 
 ### Structure
