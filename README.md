@@ -3,7 +3,7 @@
 The desktop-first personal productivity app
 
 Noteveil solves the problem for personal projects of "Wait I gotta learn X tool just to log my progress?" by providing a clean slate that gets out of your way and lets you work.
-Store your ideas in markdown-supported notes, log your tasks and create workflow pipelines with the tasks menu and group your wokr through projects.
+Store your ideas in markdown-supported notes, log your tasks and create workflow pipelines with the tasks menu and group your work through projects.
 
 ---
 
@@ -35,7 +35,7 @@ Markdown-enabled notes allow for easy and expressive logging of notes.
 Notes and task lists support several keyboard shortcuts: 
 - `Ctrl+Enter` - quick submit note content
 - `Escape` - cancel/discard
-- `Enter` - submit title
+- `Enter` - submit title/task
 - `ctrl+Tab` - edit next note 
 
 ---
@@ -70,9 +70,9 @@ This allows for flexible development and less dependency management leading to q
 
 Clean architecture:
 - Routes handle user requests
-    - middleware handles authentication and custom checking for specific param and body fields before requests are handed off to bodies
+    - middleware handles authentication and custom checking for specific param and body fields before requests are handed off to controllers
 - Controllers form the JSON response by interpreting service returns
-- Services handle business logic before calling repositories
+- Services handle business logic, log server-side errors before calling repositories
 - Repositories use a lightweight hand-rolled query-builder where possible to execute database operations via query objects
 
 ---
