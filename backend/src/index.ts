@@ -38,10 +38,7 @@ app.use("/api/tasks", tasksRouter);
 app.use("/api/notes", notesRouter);
 
 //frontend
-const frontendPath = path.join(
-    __dirname,
-    "../../frontend/dist"
-);
+const frontendPath = path.join(__dirname, "../frontend");
 
 app.use(express.static(frontendPath));
 
