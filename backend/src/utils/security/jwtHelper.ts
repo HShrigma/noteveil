@@ -17,7 +17,7 @@ export type JwtRefreshPaload = {
 
 export const cookieSettings = {
     httpOnly: true,
-    secure: false, // true in prod (HTTPS)
+    secure: true, // true in prod (HTTPS)
     sameSite: "lax",
 } as CookieOptions;
 
