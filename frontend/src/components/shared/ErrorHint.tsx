@@ -18,7 +18,7 @@ export const ErrorHint = ({ message, toValidate, triggerCheck, className = "" }:
      }, [triggerCheck, toValidate]);
 
     if (isValid) return <></>;
-    return <div className={`self-start error-hint ${className}`}> {message}</div>;
+    return <div className={`self-start wrap-break-word error-hint ${className}`}> {message}</div>;
             
 };
 
