@@ -1,4 +1,4 @@
-# NoteVeil
+# Noteveil
 
 The desktop-first personal productivity app
 
