@@ -73,7 +73,7 @@ export const isPasswordValid = (password: string) => {
     if (upper && !/[A-Z]/.test(password)) return false;
     if (lower && !/[a-z]/.test(password)) return false;
     if (number && !/[0-9]/.test(password)) return false;
-    if (symbol && !/[!@#$%^&*(),.?":{}|<>]/.test(password)) return false;
+    if (symbol && !/[^A-Za-z0-9]/.test(password)) return false;
 
     return true;
 };
