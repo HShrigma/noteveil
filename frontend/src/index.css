@@ -44,14 +44,16 @@ body {
 }
 
 .error-hint {
-  display: inline-block;
-  font-size: 0.75rem;          
+  display: block;
+  max-width: 100%;
+  word-break: break-word;
+  font-size: 0.75rem;
   color: var(--tokyo-night-accent);
   margin-top: 0.25rem;
-  padding-left: 0.5rem;
-  padding-right: 0.5rem;
+  padding: 0 0.5rem;
   animation: error-hint-pulse 1s ease-in-out infinite;
 }
+
 
 @keyframes error-hint-pulse {
   0%, 100% { opacity: 1; }

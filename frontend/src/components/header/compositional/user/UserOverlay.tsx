@@ -35,7 +35,7 @@ const UserOverlay = ({ isOpen, onClose, onLogout, }: UserOverlayProps) => {
                         <X size={24} />
                     </button>
                 </div>
-                <div className="inline-grid auto-rows fade-in p-6 text-[#c0caf5]  items-baseline w-max gap-4">
+                <div className="flex flex-col fade-in p-6 text-[#c0caf5]  items-baseline w-full gap-4">
                     {!ctx.fromAuth && <UserPasswordUpdater resetKey={isOpen} /> }
                     <button onClick={() => onLogout(true)} className=" flex items-center font-medium border-1 gap-2 p-2 rounded-md text-[#c0caf5] hover:bg-purple-400 hover:text-[#1a1b26] shadow-[0_0_8px_2px_rgba(157,124,216,0.35)]transition-colors cursor-pointer">
                         <LogOutIcon className="inline" /> Logout
