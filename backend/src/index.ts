@@ -43,7 +43,7 @@ const frontendPath = path.join(__dirname, "../frontend");
 app.use(express.static(frontendPath));
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+    console.log(`Server running `);
 });
 
 app.get(/^(?!\/api).*/, (_, res) => {
