@@ -1,8 +1,7 @@
 import { runService } from "../utils/service";
 import UserRepository from "../repository/userRepository";
-import { GoogleUserInfo, UserJWTPayload, UserReturnObj } from "../models/users";
+import { GoogleUserInfo, User, UserReturnObj } from "../models/users";
 import { addUserWithCredentials, deleteAccountIfVerified, getUserIfPasswordMatches, getUserReturnObjIfPasswordMatches, getUserUpdateValueForKey } from "../utils/security/userServiceAuthHelpers";
-import { signAccessToken, verifyAccessToken } from "../utils/security/jwtHelper";
 import { throwHTTPError } from "../utils/controller/userControllerHelper";
 
 export class UserService {
@@ -23,7 +22,7 @@ export class UserService {
                 else throwHTTPError(500, "User could not be registered");
             }
 
-            res = { ...res, name: name, email: email, from_auth:true } as UserReturnObj;
+            res = { ...res, name: name, email: email, from_auth:true } as User; 
             return res;
         }
         catch (error) {
@@ -36,7 +35,7 @@ export class UserService {
         return runService(() => this.repo.getHasEmail(email), 'Error verifying email');
     }
 
-    async getUserById(id: number) {
+    getUserById(id: number) {
         const user = runService(() => this.repo.getUserById(id), 'Error fetching users:');
         if (!user) return null;
         return { id: user.id, email: user.email, name: user.name, from_auth: user.from_auth } as UserReturnObj;
@@ -59,7 +58,7 @@ export class UserService {
         return res ? { deleted: res.changes > 0, id: id } : null;
     }
 
-    async deleteUserById(id:number) {
+    deleteUserById(id:number) {
         const identifier = "UserService.deleteUserById";
         const res = runService(() => this.repo.deleteUser(id), `[ERROR] ${identifier}: Could not delete user`);
         return res ? { deleted: res.changes > 0, id: id } : null;

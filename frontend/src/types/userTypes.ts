@@ -1,7 +1,6 @@
 import type { TokenResponse } from "@react-oauth/google";
 
 export interface UserData{
-    id: number;
     name: string;
     email: string; 
 }

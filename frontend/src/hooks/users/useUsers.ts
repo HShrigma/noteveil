@@ -1,6 +1,5 @@
 import { useState } from "react";
 import type { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
-import { createTempId } from "../../utils/mathUtils";
 import { getSignupValidationError, getUserSignupLengthError, isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, verifyPasswordUpdate } from "./userErrorHelper";
 import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser, logoutAndClearToken } from "../../api/userApi";
 import type { TokenResponse } from "@react-oauth/google";
@@ -26,7 +25,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
 
             if (res !== null) {
                 setUser({
-                    id: res.id,
                     name: res.name,
                     email: res.email,
                 });
@@ -43,7 +41,6 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         if (!res) { console.error("Unexpected Authentication Error"); return; };
         if (res.error) { console.error(`Failed to Authenticate: ${res.error}`); return; };
         const newUser: UserData = {
-            id: res.body.id,
             name: res.body.name,
             email: res.body.email
         }
@@ -61,7 +58,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
             return;
         }
         setLoginError(false);
-        setUser({ id: foundUser.id, name: foundUser.name, email: foundUser.email });
+        setUser({ name: foundUser.name, email: foundUser.email });
         setFromAuth(false);
         onLoginSuccess();
     };
@@ -71,11 +68,9 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         setSignupError(err);
         if (err !== null) return;
 
-        const newUser: UserData = { id: createTempId(), email, name: name };
+        const newUser: UserData = { email, name: name };
         const res = await registerUser(newUser.email, newUser.name, password);
         if (!res || res.error) return;
-        const realId = Number(res.body.id);
-        newUser.id = realId;
 
         setSignupError(null);
         setUser(newUser);
@@ -90,7 +85,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
     }
     const removeUser = async (password: string) => {
         if (user === null) return "userNonExistent";
-        const res = await deleteUser(user.id, password);
+        const res = await deleteUser(password);
         if (res.success === false) return "currentPWIncorrect";
         return null;
     };
@@ -99,10 +94,10 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         const err = getUserSignupLengthError(newName);
         if (err !== null) return err;
         const oldName = user.name;
-        const newUser = { id: user.id, name: newName, email: user.email };
+        const newUser = { name: newName, email: user.email };
         setUser(newUser);
 
-        const res = await patchUser(user.id, "name", [newName]);
+        const res = await patchUser("name", [newName]);
         if (!res.success) {
             newUser.name = oldName;
             setUser(newUser);
@@ -114,7 +109,7 @@ export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void
         if (user === null) return "userNonExistent";
         const err = verifyPasswordUpdate(current, confirmCurrent, newPass, confirmNew);
         if (err !== null) return err;
-        const res = await patchUser(user.id, "password", [current, newPass]);
+        const res = await patchUser("password", [current, newPass]);
         if (res.error) return "currentPWIncorrect";
         return null;
     }

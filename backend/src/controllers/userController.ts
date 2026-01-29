@@ -1,21 +1,19 @@
 import { Request, Response } from "express";
-import { sendError, sendNotFoundError, sendSuccess } from "../utils/messages";
+import { sendError, sendNotFoundError } from "../utils/messages";
 import UserService from "../services/userService";
 import { GOOGLE_ID } from "..";
 import { OAuth2Client } from "google-auth-library";
 import { getGoogleUserInfo } from "../utils/security/googleApiHelper";
-import { getTokenForHeaderOrCookie } from "../utils/security/jwtHelper";
 import { clearAuthCookies, clearCookiesAndSendSuccess, decodeHTTPError, fetchHasEmail, getFetchCredentialsError, setAuthCookieFromToken, signAndSetAuthCookies, signCookieAndSendData, signCookieAndSendSuccess, throwHTTPError } from "../utils/controller/userControllerHelper";
 import { getUserToUserReturnObj } from "../utils/repo/userRepoHelpers";
-import userService from "../services/userService";
 
 const client = new OAuth2Client(GOOGLE_ID);
 
 export class UserController {
-    public refreshUser = async (req: Request, res: Response) => {
+    public refreshUser = (req: Request, res: Response) => {
         try {
             const userId = (req as Request & { userId: number }).userId;
-            const result = await UserService.getUserById(userId);
+            const result = UserService.getUserById(userId);
             if (result === null) throw new Error("Invalid User ID");
             return res.json(result);
         } catch (err: any) {
@@ -59,7 +57,7 @@ export class UserController {
 
     public deleteUser = async (req: Request, res: Response) => {
         const userId = (req as Request & { userId: number }).userId;
-        const result = !req.body ? await UserService.deleteUserById(userId) : await UserService.deleteUser(userId, req.body["password"]);
+        const result = !req.body ? UserService.deleteUserById(userId) : await UserService.deleteUser(userId, req.body["password"]);
         if (result === null) return sendError(res, 500, "Could not delete User");
         if (!result.deleted) return sendNotFoundError(res, "User");
 

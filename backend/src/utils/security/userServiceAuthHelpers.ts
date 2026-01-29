@@ -23,9 +23,13 @@ export const tryRunPasswordVerifiedOperation = async <T>(
         user.password,
         mismatchErr(identifier)
     );
-    if (!isMatch) return null;
-
-    return await verifiedOperation();
+    
+    if (!isMatch) {
+        return null;
+    }
+    
+    const result = await verifiedOperation();
+    return result;
 }
 
 export const getNewPasswordIfVerified = async (identifier: string, currentPW: string, newPW: string, id: number, repo: UserRepository) => {

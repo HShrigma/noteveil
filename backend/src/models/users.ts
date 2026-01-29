@@ -7,7 +7,6 @@ export interface User {
 };
 
 export interface UserReturnObj {
-    id: number;
     email: string;
     name: string;
     from_auth: boolean;

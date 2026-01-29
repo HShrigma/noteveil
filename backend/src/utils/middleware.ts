@@ -8,6 +8,7 @@ export interface MiddlewareParams {
     idFields?: string[];
     bodyFields?: string[];
     auth?: boolean;
+    noSanitize?: boolean;
 }
 
 const isIdInvalid = (id: number) => { return isNaN(id) || id <= 0; }
@@ -35,6 +36,7 @@ const validateIds = (fields: string[]) => {
         next();
     };
 }
+
 const sanitizeInput = () => {
     return (req: Request, res: Response, next: NextFunction) => {
         if (req.body) {
@@ -67,7 +69,7 @@ export const requireAuth = () => {
 export const runMiddleware = (params: MiddlewareParams) => {
     const middlewares: ((req: Request, res: Response, next: NextFunction) => void)[] = [];
 
-    middlewares.push(sanitizeInput());
+    if (!params.noSanitize) middlewares.push(sanitizeInput());
     // Validate body fields if required
     if (params.bodyFields && params.bodyFields.length > 0) middlewares.push(requireBodyFields(params.bodyFields));
     if (params.idFields && params.idFields.length > 0) middlewares.push(validateIds(params.idFields));

@@ -95,12 +95,12 @@ export const fetchUser = async (email: string, password: string) => {
 
 
 // Delete User
-export const deleteUser = async (id: number, password: string) => {
+export const deleteUser = async (password: string) => {
     const res = await fetch(`${BASE_URL}/delete`, {
         method: "DELETE",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: id, password: password })
+        body: JSON.stringify({ password: password })
     });
 
     const data = await res.json();
@@ -140,13 +140,13 @@ export const registerUser = async (email: string, name: string, password: string
 }
 
 // Update User
-export const patchUser = async (id: number, key: string, values: string[]) => {
+export const patchUser = async (key: string, values: string[]) => {
     const res = await fetch(`${BASE_URL}`, {
         method: "PATCH",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-            id: id, key: key, values: values
+            key: key, values: values
         })
     })
 

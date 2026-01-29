@@ -46,7 +46,6 @@ export const runUserInsertSingle = (db: Database, email: string, name: string, p
 
 export const getUserToUserReturnObj = (user: User, fromAuth: boolean): UserReturnObj => {
     return {
-        id: user.id,
         email: user.email,
         name: user.name,
         from_auth: fromAuth
