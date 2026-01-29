@@ -1,6 +1,7 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import { dbSchema, tableType } from './schema';
+import fs from "fs";
 
 class DB{
     private static instance: DB;
@@ -8,7 +9,12 @@ class DB{
 
     private constructor(){
         const dbPath = process.env.DB_PATH ?? path.resolve(process.cwd(), "db", "app.db");
+        const dbDir = path.dirname(dbPath);
+        if (!fs.existsSync(dbDir)) {
+            fs.mkdirSync(dbDir, { recursive: true });
+        }
         this.db = new Database(dbPath);
+
         this.db.pragma('foreign_keys = ON');
         this.initSchema();
     }
