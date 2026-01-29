@@ -8,6 +8,7 @@ import DB from "./config/db";
 import dotenv from "dotenv";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+import path from "path";
 
 const app = express();
 
@@ -36,8 +37,20 @@ app.use("/api/projects", projectsRouter);
 app.use("/api/tasks", tasksRouter);
 app.use("/api/notes", notesRouter);
 
+//frontend
+const frontendPath = path.join(
+    __dirname,
+    "../../frontend/dist"
+);
+
+app.use(express.static(frontendPath));
+
 app.listen(PORT, () => {
   console.log(`Server running at http://localhost:${PORT}`);
+});
+
+app.get(/^(?!\/api).*/, (_, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
 process.on('SIGINT', () => {

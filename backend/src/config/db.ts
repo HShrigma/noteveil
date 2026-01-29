@@ -7,7 +7,7 @@ class DB{
     private db: Database.Database;
 
     private constructor(){
-        const dbPath = path.resolve(__dirname,'../../db/app.db');
+        const dbPath = process.env.DB_PATH ?? path.resolve(process.cwd(), "db", "app.db");
         this.db = new Database(dbPath);
         this.db.pragma('foreign_keys = ON');
         this.initSchema();
