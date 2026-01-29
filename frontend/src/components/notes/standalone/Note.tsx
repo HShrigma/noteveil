@@ -1,6 +1,6 @@
 import ActiveNote from "../compositional/ActiveNote";
 import InactiveNote from "../compositional/InactiveNote";
-import { NoteData } from "../../../types/noteTypes";
+import type { NoteData } from "../../../types/noteTypes";
 import EditableTitle from "../../shared/title/EditableTitle";
 import { useNoteManagerContext } from "../../../context/notes/noteManagerContext";
 

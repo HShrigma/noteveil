@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { ProjectsContext } from "./projectsContext";
 import { useProjects } from "../../hooks/projects/useProjects";
 

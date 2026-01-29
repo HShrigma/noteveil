@@ -1,6 +1,6 @@
 import { Plus } from "lucide-react";
 import { triggerScreenBob } from "../../../utils/screenShake";
-import { NoteData } from "../../../types/noteTypes";
+import type { NoteData } from "../../../types/noteTypes";
 import ErrorHint from "../../shared/ErrorHint";
 import { useState } from "react";
 export interface NoteAdderProps {

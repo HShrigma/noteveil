@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { UserContext} from "./userContext";
 import { useUsers } from "../../hooks/users/useUsers";
 

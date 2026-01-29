@@ -1,8 +1,9 @@
-import { useEffect, useState } from 'react';
-import { MAIN_STATES, MainState } from './utils/registries';
+import { useState } from 'react';
+import { MAIN_STATES } from './utils/registries';
+import type { MainState } from './utils/registries';
 import { UserProvider } from './context/users/UserProvider';
 import { AppWithUser } from './components/AppWithUser';
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
+import { GoogleOAuthProvider} from "@react-oauth/google";
 
 function App() {
     const [state, setState] = useState<MainState>(MAIN_STATES.LOGIN_DISPLAY);
@@ -13,7 +14,7 @@ function App() {
         setState(value);
     };
 
-    const handleProjectOpened = (id: number) => {
+    const handleProjectOpened = () => {
         handleDisplayChange(MAIN_STATES.TASK_DISPLAY);
     }
 

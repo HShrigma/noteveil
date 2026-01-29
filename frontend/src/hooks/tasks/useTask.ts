@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { TaskListData, UseTaskResult } from "../../types/taskTypes";
+import type { TaskListData, UseTaskResult } from "../../types/taskTypes";
 import { addTask, deleteTask, deleteTaskList, fetchTasks, patchTaskDone, patchTaskLabel, patchListTitle, addList, patchNextId } from "../../api/tasksApi";
-import { getCreatedLists, getCreatedTaskList, getGoesToList, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getTaskIndex, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
+import { getCreatedLists, getCreatedTaskList, getGoesToList, getList, getRemovedLists, getRemovedTaskList, getTaskDoneList, getUpdatedTaskLabelList, getUpdatedTitleList } from "./tasksHelper";
 import { useProjectsContext } from "../../context/projects/projectsContext";
 import { useUserContext } from "../../context/users/userContext";
 

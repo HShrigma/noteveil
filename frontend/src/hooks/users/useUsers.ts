@@ -1,9 +1,9 @@
 import { useState } from "react";
-import { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
+import type { userErrorType, UserContextResult, UserData, UserType } from "../../types/userTypes";
 import { createTempId } from "../../utils/mathUtils";
-import { getSignupValidationError, getUserSignupLengthError, isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, isPasswordValid, verifyPasswordUpdate } from "./userErrorHelper";
+import { getSignupValidationError, getUserSignupLengthError, isErrorTypeEmail, isErrorTypePassword, isErrorTypeUser, verifyPasswordUpdate } from "./userErrorHelper";
 import { registerUser, authenticateWithGoogle, deleteUser, deleteUserById, fetchUser, patchUser, refreshUser, logoutAndClearToken } from "../../api/userApi";
-import { TokenResponse } from "@react-oauth/google";
+import type { TokenResponse } from "@react-oauth/google";
 
 export function useUsers(onLoginSuccess: () => void, onLogoutSuccess: () => void) {
     const [user, setUser] = useState<UserType>(null);

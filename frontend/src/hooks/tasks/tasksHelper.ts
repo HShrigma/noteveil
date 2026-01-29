@@ -1,5 +1,5 @@
 import { createTempId } from "../../utils/mathUtils";
-import { TaskListData } from "../../types/taskTypes";
+import type { TaskListData } from "../../types/taskTypes";
 
 export const getIndex = (id: number, tasks: TaskListData[]) => {
     return tasks.findIndex((t) => t.id === id);

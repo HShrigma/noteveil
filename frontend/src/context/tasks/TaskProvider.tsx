@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { TaskManagerContext } from "./taskManagerContext";
 import { useTaskManager } from "../../hooks/tasks/useTaskManager";
 

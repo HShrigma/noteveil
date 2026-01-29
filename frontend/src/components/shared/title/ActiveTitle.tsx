@@ -2,7 +2,7 @@ import { Check, X } from "lucide-react";
 import ErrorHint from "../ErrorHint";
 import { useEffect, useRef, useState } from "react";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
-import { discardMsgNoteTitle, discardMsgTaskTitle } from "../../../utils/registries";
+import { discardMsgNoteTitle} from "../../../utils/registries";
 
 export interface ActiveTitleProps {
     title: string;

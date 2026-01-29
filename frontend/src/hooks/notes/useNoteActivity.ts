@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NoteData, NotesActivity } from "../../types/noteTypes";
+import type { NoteData, NotesActivity } from "../../types/noteTypes";
 import { getIndex } from "./noteHelpers";
 import { discardMsgNoteContent, discardMsgNoteTitle } from "../../utils/registries";
 
@@ -8,7 +8,7 @@ export const useNoteActivity = () => {
     const isAdderDisabled = () => {
         return activeNote !== null;
     }
-    const confirmDiscardIfDirty = async (notes: NoteData[], reqtype: string): Promise<boolean> => {
+    const confirmDiscardIfDirty = async (notes: NoteData[]): Promise<boolean> => {
         if (activeNote === null) return true;
 
         const { id, type, value } = activeNote;
@@ -36,7 +36,7 @@ export const useNoteActivity = () => {
         }
 
         // Ask user
-        const canLeave = await confirmDiscardIfDirty(notes, req.type);
+        const canLeave = await confirmDiscardIfDirty(notes);
         if (!canLeave) return;
 
         setActiveNote(req);

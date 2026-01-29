@@ -1,6 +1,6 @@
 import Markdown from "react-markdown";
 import { Edit } from "lucide-react";
-import { NoteData } from "../../../types/noteTypes";
+import type { NoteData } from "../../../types/noteTypes";
 
 interface InactiveNoteProps {
     data: NoteData;

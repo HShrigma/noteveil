@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { ProjectsContextResult } from "../../types/projectTypes";
+import type { ProjectsContextResult } from "../../types/projectTypes";
 
 export const ProjectsContext = createContext<ProjectsContextResult | null>(null);
 

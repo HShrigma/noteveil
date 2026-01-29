@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { UseTaskManagerResult as UseTaskManagerResult } from "../../types/taskTypes";
+import type { UseTaskManagerResult } from "../../types/taskTypes";
 
 export const TaskManagerContext = createContext<UseTaskManagerResult | null>(null);
 

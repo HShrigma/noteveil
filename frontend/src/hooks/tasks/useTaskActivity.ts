@@ -1,14 +1,9 @@
 import { useState } from "react";
-import { TaskActivity } from "../../types/taskTypes";
-import {
-    discardMsgTask,
-    discardMsgTaskAdder,
-    discardMsgTaskBottomBar,
-    discardMsgTaskTitle,
-} from "../../utils/registries";
+import type { TaskActivity } from "../../types/taskTypes";
+import { discardMsgTask, discardMsgTaskAdder, discardMsgTaskBottomBar, discardMsgTaskTitle, } from "../../utils/registries";
 import { getIndex, getTaskIndex } from "./tasksHelper";
 import { tryCancelDiscard } from "../../utils/activityHelper";
-import { TaskListData } from "../../types/taskTypes"; // adjust if needed
+import type { TaskListData } from "../../types/taskTypes"; 
 
 export const useTaskActivity = (tasks: TaskListData[]) => {
     const [activeTask, setActiveTask] = useState<TaskActivity>(null);

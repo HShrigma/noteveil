@@ -1,4 +1,4 @@
-import { UseTaskManagerResult as UseTaskManagerResult, UseTaskResult } from "../../types/taskTypes";
+import type { UseTaskManagerResult, UseTaskResult } from "../../types/taskTypes";
 import { useTask } from "./useTask";
 import { useTaskActivity } from "./useTaskActivity";
 

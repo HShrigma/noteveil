@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { useNoteManagerResult } from "../../types/noteTypes";
+import type { useNoteManagerResult } from "../../types/noteTypes";
 
 export const NoteManagerContext = createContext<useNoteManagerResult | null>(null);
 

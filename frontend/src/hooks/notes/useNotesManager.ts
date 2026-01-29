@@ -1,4 +1,4 @@
-import { NoteData, NotesActivity } from "../../types/noteTypes";
+import type { NoteData, NotesActivity } from "../../types/noteTypes";
 import { useNotes } from "./useNote";
 import { useNoteActivity } from "./useNoteActivity";
 

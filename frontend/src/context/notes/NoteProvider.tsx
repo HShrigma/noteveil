@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import type { ReactNode } from "react";
 import { NoteManagerContext } from "./noteManagerContext";
 import { useNotesManager } from "../../hooks/notes/useNotesManager";
 

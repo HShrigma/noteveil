@@ -1,5 +1,5 @@
 import { fetchIfEmailExists } from "../../api/userApi";
-import { userErrorType, signupValidationParams, UserData, UserType } from "../../types/userTypes";
+import { type userErrorType, signupValidationParams, } from "../../types/userTypes";
 
 const getLengthHint = (isPassword: boolean) => {
     const min = isPassword ? signupValidationParams.minPassword : signupValidationParams.minUser;

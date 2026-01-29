@@ -28,7 +28,7 @@ export const deleteProject = async (id: number) => {
 
 
 // Add Project
-export const addProject = async (userId: number, title: string) => {
+export const addProject = async (title: string) => {
     const res = await fetch(`${getUserUrl()}/add`, {
         method: "POST",
         credentials: "include",

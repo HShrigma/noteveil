@@ -1,4 +1,4 @@
-import { TokenResponse, useGoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import { FaGoogle } from "react-icons/fa";
 import { useUserContext } from "../../../context/users/userContext";
 import ErrorHint from "../../shared/ErrorHint";
@@ -45,7 +45,7 @@ export const GoogleButton = ({ signIn }: GoogleButtonProps) => {
             >
                 <FaGoogle size="25" /> {`Sign ${signIn ? "in" : "up"} with Google`}
             </button>
-            <ErrorHint message={`Google sign ${signIn ? "in" : "up"} failed. Please try Again.`} toValidate={""} triggerCheck={false} />
+            <ErrorHint message={`Google sign ${signIn ? "in" : "up"} failed. Please try Again.`} toValidate={""} triggerCheck={error} />
         </div>
     );
 };

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { TaskListData } from "../../../types/taskTypes";
+import type { TaskListData } from "../../../types/taskTypes";
 import { getShorter } from "../../../utils/formatting";
 
 interface GoesToButtonProps {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { ProjectActivity, ProjectData, ProjectElementActivity, ProjectsContextResult } from "../../types/projectTypes"
+import type { ProjectActivity, ProjectData, ProjectElementActivity, ProjectsContextResult } from "../../types/projectTypes";
 import { triggerScreenBob } from "../../utils/screenShake";
 import { createTempId } from "../../utils/mathUtils";
 import { tryCancelDiscard } from "../../utils/activityHelper";
@@ -63,7 +63,7 @@ export function useProjects(onProjectOpened?: (id: number) => void) {
 
         setProjects(prev => [...prev, newProject]);
 
-        const res = await addProject(userCtx.user.id, title);
+        const res = await addProject(title);
         if (res.error) {
             setProjects(prev => prev.filter(n => n.id !== tempId))
             await userCtx.authLogout();
@@ -98,7 +98,7 @@ export function useProjects(onProjectOpened?: (id: number) => void) {
         }
     };
 
-    const didUserDiscardTitle = (req: ProjectElementActivity) => {
+    const didUserDiscardTitle = () => {
         if (activeProject === null || activeProjectElement?.type !== "title") return false;
         const proj = projects.find(p => p.id === activeProjectElement.id);
         if (!proj) return false;
@@ -118,12 +118,12 @@ export function useProjects(onProjectOpened?: (id: number) => void) {
         if (req.type !== activeProjectElement.type) {
             if (activeProjectElement.type === "adder"
                 && tryCancelDiscard(activeProjectElement.value !== "", discardMsgProjectAdder)) return;
-            if (didUserDiscardTitle(req)) return;
+            if (didUserDiscardTitle()) return;
         }
         if (req.type === "title"
             && activeProjectElement.type === "title"
             && req.id !== activeProjectElement.id
-            && didUserDiscardTitle(req)) return;
+            && didUserDiscardTitle()) return;
 
         setActiveProjectElement(req);
     };

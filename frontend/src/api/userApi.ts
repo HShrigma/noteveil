@@ -1,4 +1,4 @@
-import { TokenResponse } from "@react-oauth/google";
+import type { TokenResponse } from "@react-oauth/google";
 import { CORE_URL } from "./apiUtils"
 const BASE_URL = `${CORE_URL}/users`;
 

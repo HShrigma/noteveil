@@ -1,4 +1,4 @@
-import { ProjectData } from "../../../types/projectTypes";
+import type { ProjectData } from "../../../types/projectTypes";
 import { discardMsgProjectTitle  } from "../../../utils/registries";
 import ConfirmDeleteButton from "../../shared/ConfirmDeleteButton";
 import EditableTitle from "../../shared/title/EditableTitle";

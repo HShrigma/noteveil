@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { addNote, deleteNote, fetchNotes, patchNoteContent, patchNoteTitle } from "../../api/notesApi";
-import { NoteData } from "../../types/noteTypes";
+import type { NoteData } from "../../types/noteTypes";
 import { useProjectsContext } from "../../context/projects/projectsContext";
 import { getIndex } from "./noteHelpers";
 import { createTempId } from "../../utils/mathUtils";

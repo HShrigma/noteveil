@@ -28,7 +28,7 @@ const UserTopIcon = ({ OnIconClicked, isActive, }: UserTopIconProps) => {
         setError("");
     }, [ isEditing])
 
-    const onActivityRequest = (wantsActive: boolean, value: string) => {
+    const onActivityRequest = (wantsActive: boolean) => {
         if (wantsActive && !isEditing) {
             setIsEditing(true);
             setError("");

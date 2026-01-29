@@ -1,5 +1,4 @@
 import { Edit } from "lucide-react";
-import { getShorter } from "../../../utils/formatting";
 
 export interface InactiveTitleProps {
     title: string;

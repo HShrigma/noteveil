@@ -1,5 +1,5 @@
 import { createContext, useContext } from "react";
-import { UserContextResult } from "../../types/userTypes";
+import type { UserContextResult } from "../../types/userTypes";
 
 export const UserContext = createContext<UserContextResult | null>(null);
 

@@ -2,7 +2,7 @@ import EditableTitle from "../../shared/title/EditableTitle";
 import GoesToButton from "../compositional/GoesToButton";
 import Task  from "./Task";
 import TaskBottomBar from "../compositional/TaskBottomBar";
-import { TaskListData } from "../../../types/taskTypes";
+import type { TaskListData } from "../../../types/taskTypes";
 import { useTaskManagerContext } from "../../../context/tasks/taskManagerContext";
 import { triggerScreenBob, triggerScreenShake } from "../../../utils/screenShake";
 import { discardMsgTaskTitle } from "../../../utils/registries";
